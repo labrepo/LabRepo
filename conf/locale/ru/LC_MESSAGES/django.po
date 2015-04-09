@@ -1,0 +1,1591 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-20 18:28+0000\n"
+"PO-Revision-Date: 2015-01-13 14:39+0000\n"
+"Last-Translator: None None <admin@example.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Translated-Using: django-rosetta 0.7.4\n"
+
+#: apps/comments/documents.py:26 apps/search/forms.py:31
+msgid "comment"
+msgstr "комментарий"
+
+#: apps/comments/documents.py:27
+msgid "comments"
+msgstr "комментарии"
+
+#: apps/comments/tests.py:33 apps/comments/tests.py:65
+#: apps/comments/tests.py:91 apps/experiments/tests.py:35
+#: apps/experiments/tests.py:76 apps/experiments/tests.py:103
+#: apps/experiments/tests.py:130 apps/experiments/tests.py:156
+#: apps/labs/tests.py:36 apps/labs/tests.py:64 apps/labs/tests.py:89
+#: apps/labs/tests.py:117 apps/labs/tests.py:167 apps/measurements/tests.py:61
+#: apps/measurements/tests.py:112 apps/measurements/tests.py:144
+#: apps/measurements/tests.py:174 apps/measurements/tests.py:200
+#: apps/tags/tests.py:31 apps/tags/tests.py:74 apps/tags/tests.py:111
+#: apps/unit_collections/tests.py:37 apps/unit_collections/tests.py:110
+#: apps/unit_collections/tests.py:180 apps/unit_collections/tests.py:229
+#: apps/units/tests.py:48 apps/units/tests.py:126 apps/units/tests.py:161
+#: apps/units/tests.py:194 apps/units/tests.py:224 apps/units/tests.py:250
+#: apps/units/tests.py:274 templates/registration/invite_email.html:8
+#: templates/registration/login.html:4
+#: templates/registration_backup/invite_email.html:8
+#: templates/registration_backup/login.html:3
+#: templates/registration_backup/password_reset_complete.html:14
+msgid "Login"
+msgstr "Вход"
+
+#: apps/common/admin.py:43
+#, python-format
+msgid "Change history: %s"
+msgstr "Изменить историю: %s"
+
+#: apps/common/admin.py:76
+#, python-format
+msgid ""
+"The %(name)s \"%(obj)s\" was added successfully. You may edit it again below."
+msgstr ""
+"%(name)s \"%(obj)s\" был успешно добавлен. Ниже вы можете отредактировать "
+"его снова."
+
+#: apps/common/admin.py:87
+#, python-format
+msgid ""
+"The %(name)s \"%(obj)s\" was added successfully. You may add another "
+"%(name)s below."
+msgstr ""
+"%(name)s \"%(obj)s\" был успешно добавлен. Ниже вы можете добавить ещё "
+"%(name)s."
+
+#: apps/common/admin.py:94
+#, python-format
+msgid "The %(name)s \"%(obj)s\" was added successfully."
+msgstr "%(name)s \"%(obj)s\" был успешно добавлен."
+
+#: apps/common/forms.py:32
+msgid ""
+"Field value 'owners' should not interfere with the field values 'editors'"
+msgstr ""
+"Значения поля 'владельцы' не должно пересекаться с значениями поля "
+"'редакторы'"
+
+#: apps/common/forms.py:35
+msgid ""
+"Field value 'owners' should not interfere with the field values 'viewers'"
+msgstr ""
+"Значения поля 'владельцы' не должно пересекаться с значениями поля "
+"'пользователи'"
+
+#: apps/common/forms.py:45
+msgid "You have not permission change owners"
+msgstr "Недостаточно привилегий для изменения владельцев "
+
+#: apps/common/backends/registration/documents.py:21
+msgid "registration profile"
+msgstr "Профиль регистрации"
+
+#: apps/common/backends/registration/documents.py:22
+msgid "registration profiles"
+msgstr "Профили регистрации"
+
+#: apps/common/backends/registration/forms.py:18
+#: apps/common/backends/registration/forms.py:36
+#: templates/profiles/profile_update.html:16
+msgid "Email"
+msgstr "Email"
+
+#: apps/common/backends/registration/forms.py:38 apps/profiles/forms.py:48
+#: apps/profiles/forms.py:75
+msgid "Password"
+msgstr "Пароль"
+
+#: apps/common/backends/registration/forms.py:40
+msgid "Password (again)"
+msgstr "Пароль (еще раз)"
+
+#: apps/common/backends/registration/forms.py:52 apps/profiles/forms.py:73
+msgid "The two password fields didn't match."
+msgstr "Два поля с паролем не совпадают."
+
+#: apps/common/backends/registration/forms.py:62
+msgid ""
+"This email address is already in use. Please supply a different email "
+"address."
+msgstr "Этот email уже используется. Пожалуйста, укажите другой email."
+
+#: apps/dashboard/documents.py:16
+msgid "created"
+msgstr "создано"
+
+#: apps/dashboard/documents.py:17
+msgid "updated"
+msgstr "отредактировано"
+
+#: apps/dashboard/documents.py:18
+msgid "removed"
+msgstr "удалено"
+
+#: apps/dashboard/documents.py:19
+msgid "commented"
+msgstr "прокомментировано"
+
+#: apps/dashboard/documents.py:31
+msgid "recent activity"
+msgstr "последнее действие"
+
+#: apps/dashboard/documents.py:31
+msgid "recent activities"
+msgstr "последние действия"
+
+#: apps/experiments/admin.py:21 apps/experiments/documents.py:36
+#: apps/unit_collections/documents.py:28
+#: templates/experiments/experiment_detail.html:61
+msgid "owners"
+msgstr "владельцы"
+
+#: apps/experiments/admin.py:29 apps/experiments/documents.py:37
+#: apps/unit_collections/documents.py:29
+#: templates/experiments/experiment_detail.html:74
+msgid "editors"
+msgstr "редакторы"
+
+#: apps/experiments/admin.py:37 apps/experiments/documents.py:38
+#: apps/labs/admin.py:36 apps/unit_collections/documents.py:30
+#: templates/experiments/experiment_detail.html:86
+msgid "viewers"
+msgstr "пользователи"
+
+#: apps/experiments/documents.py:29
+msgid "Planned"
+msgstr "Запланировано"
+
+#: apps/experiments/documents.py:30
+msgid "In Progress"
+msgstr "Выполняется"
+
+#: apps/experiments/documents.py:31
+msgid "Completed"
+msgstr "Завершено"
+
+#: apps/experiments/documents.py:34 apps/labs/documents.py:23
+#: apps/measurements/documents.py:71 apps/tags/documents.py:19
+#: apps/unit_collections/documents.py:25 apps/units/admin.py:150
+#: apps/units/documents.py:27
+msgid "lab"
+msgstr "лаборатория"
+
+#: apps/experiments/documents.py:35 apps/search/forms.py:13
+#: apps/unit_collections/documents.py:26
+#: templates/experiments/experiment_detail.html:42
+msgid "title"
+msgstr "название"
+
+#: apps/experiments/documents.py:39 apps/experiments/forms.py:18
+msgid "start"
+msgstr "начало"
+
+#: apps/experiments/documents.py:40 apps/experiments/forms.py:20
+msgid "end"
+msgstr "конец"
+
+#: apps/experiments/documents.py:41 apps/measurements/documents.py:23
+#: apps/measurements/documents.py:68 apps/measurements/views.py:193
+#: apps/search/forms.py:14 apps/unit_collections/documents.py:31
+#: apps/units/documents.py:34
+msgid "description"
+msgstr "описание"
+
+#: apps/experiments/documents.py:42
+#: templates/experiments/experiment_detail.html:55
+msgid "status"
+msgstr "статус"
+
+#: apps/experiments/documents.py:43 apps/measurements/documents.py:24
+#: apps/measurements/documents.py:72 apps/units/documents.py:32
+msgid "active"
+msgstr "активный"
+
+#: apps/experiments/documents.py:46 apps/search/forms.py:32
+msgid "experiment"
+msgstr "эксперимент"
+
+#: apps/experiments/documents.py:46 apps/units/admin.py:134
+#: apps/units/documents.py:28 apps/units/views.py:50
+#: templates/labs/lab_detail.html:152 templates/units/unit_detail.html:45
+msgid "experiments"
+msgstr "эксперименты"
+
+#: apps/experiments/forms.py:30
+msgid "Start date must be less than end date"
+msgstr "Дата начала должна быть меньше даты окончания"
+
+#: apps/experiments/tests.py:61 apps/labs/tests.py:49
+msgid "This field is required"
+msgstr "Это поле обязательно"
+
+#: apps/experiments/views.py:55
+msgid "Experiment was added successfully."
+msgstr "Эксперимент был добавлен успешно"
+
+#: apps/experiments/views.py:93
+msgid "Experiment was updated successfully."
+msgstr "Эксперимент был отредактирован успешно"
+
+#: apps/experiments/views.py:136
+msgid "Experiment was removed successfully."
+msgstr "Эксперимент был успешно удален"
+
+#: apps/filemanager/fields.py:109
+msgid "Clear"
+msgstr "Очистить"
+
+#: apps/filemanager/fields.py:156
+msgid "That file does not exist"
+msgstr "Это поле не существует"
+
+#: apps/filemanager/fields.py:157
+#, python-format
+msgid ""
+"Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgstr ""
+"Убедитесь. что это поле имеет не больше %(max)d символов (в данный момент "
+"%(length)d)."
+
+#: apps/filemanager/views.py:197
+msgid ""
+"File with the same name already exists. The uploaded file has been renamed "
+"to '{}'"
+msgstr ""
+"Файл с таким именем уже существует. Загруженный файл будет переименован в "
+"'{}'"
+
+#: apps/labs/admin.py:20 apps/labs/documents.py:18
+#: templates/labs/lab_detail.html:107
+msgid "investigators"
+msgstr "исследователи"
+
+#: apps/labs/admin.py:28 apps/labs/documents.py:19
+#: templates/labs/lab_detail.html:119
+msgid "members"
+msgstr "участники"
+
+#: apps/labs/documents.py:17 templates/labs/lab_detail.html:101
+msgid "name"
+msgstr "название"
+
+#: apps/labs/documents.py:20 templates/labs/lab_detail.html:131
+msgid "guests"
+msgstr "гости"
+
+#: apps/labs/documents.py:21
+msgid "test lab"
+msgstr "тестовая лаборатория"
+
+#: apps/labs/documents.py:23
+msgid "labs"
+msgstr "Лаборатории"
+
+#: apps/labs/forms.py:42
+msgid "You have not permission change lab's investigator"
+msgstr "Недостаточно привилегий для изменения исследователя лаборатории"
+
+#: apps/labs/views.py:48
+msgid "Lab was added successfully."
+msgstr "Лаборатория добавлена успешно"
+
+#: apps/labs/views.py:76
+msgid "Lab was updated successfully."
+msgstr "Лаборатория отредактирована успешно"
+
+#: apps/labs/views.py:97
+msgid "Lab was removed successfully."
+msgstr "Лаборатория успешно удалена"
+
+#: apps/measurements/documents.py:20 apps/measurements/views.py:44
+#: templates/measurement/measurement_detail.html:42
+msgid "created at"
+msgstr "создано"
+
+#: apps/measurements/documents.py:21 apps/measurements/documents.py:70
+#: apps/measurements/documents.py:74 apps/measurements/views.py:44
+#: apps/measurements/views.py:193
+#: templates/measurement/measurement_detail.html:49
+#: templates/unit_collections/unit_collections_form.html:24
+msgid "measurement type"
+msgstr "Тип измерений"
+
+#: apps/measurements/documents.py:22 apps/measurements/views.py:44
+#: templates/measurement/measurement_detail.html:56
+msgid "value"
+msgstr "значение"
+
+#: apps/measurements/documents.py:27 templates/units/unit_detail.html:105
+msgid "measurement"
+msgstr "измерение"
+
+#: apps/measurements/documents.py:28 apps/units/documents.py:33
+#: templates/measurement/measurement_list.html:27
+#: templates/measurement/measurement_list.html:31
+msgid "measurements"
+msgstr "измерения"
+
+#: apps/measurements/documents.py:69 apps/measurements/views.py:193
+msgid "the units"
+msgstr "единицы изменения"
+
+#: apps/measurements/documents.py:75
+#: templates/measurement/measurement_type_list.html:11
+#: templates/measurement/measurement_type_list.html:15
+msgid "measurements type"
+msgstr "тип измерений"
+
+#: apps/measurements/views.py:44 apps/units/views.py:51
+msgid "change reasons"
+msgstr "причины измерения"
+
+#: apps/measurements/views.py:143
+msgid "Measurement was removed successfully."
+msgstr "Измерение успешно удалено"
+
+#: apps/measurements/views.py:177
+msgid "Measurement was updated successfully."
+msgstr "Измерение отредактировано успешно"
+
+#: apps/profiles/admin.py:27
+msgid "Personal info"
+msgstr "Персональная информация"
+
+#: apps/profiles/admin.py:28
+msgid "Permissions"
+msgstr "Разрешения"
+
+#: apps/profiles/admin.py:29
+msgid "Important dates"
+msgstr "Важные даты"
+
+#: apps/profiles/admin.py:120
+msgid "Password changed successfully."
+msgstr "Пароль изменен успешно"
+
+#: apps/profiles/admin.py:130
+#, python-format
+msgid "Change password: %s"
+msgstr "Изменить пароль: %s"
+
+#: apps/profiles/forms.py:18
+msgid "email address"
+msgstr "email адрес"
+
+#: apps/profiles/forms.py:36
+msgid "User already exist"
+msgstr "Пользователь с таким email уже существует"
+
+#: apps/profiles/forms.py:49
+msgid ""
+"Raw passwords are not stored, so there is no way to see this user's "
+"password, but you can change the password using <a href=\"password/\">this "
+"form</a>."
+msgstr ""
+"В чистом виде пароли не сохраняются, так что нет никакого способа, чтобы "
+"увидеть пароль этого пользователя, но вы можете изменить пароль, используя "
+"<a href=\"password/\">эту форму</a>."
+
+#: apps/profiles/forms.py:72
+msgid "A user with that email already exists."
+msgstr "Пользователь с таким email уже существует"
+
+#: apps/profiles/forms.py:77
+msgid "Password confirmation"
+msgstr "Подтверждение пароля"
+
+#: apps/profiles/forms.py:79
+msgid "Enter the same password as above, for verification."
+msgstr "Введите тот же пароль, что и выше, для проверки."
+
+#: apps/profiles/views.py:33 templates/profiles/profile_form.html:9
+msgid "Invite"
+msgstr "Пригласить"
+
+#: apps/search/forms.py:9
+msgid "text"
+msgstr "текст"
+
+#: apps/search/forms.py:10
+msgid "init user.email"
+msgstr "email пользователя"
+
+#: apps/search/forms.py:15
+msgid "owners.email"
+msgstr "email владельца"
+
+#: apps/search/forms.py:16
+msgid "editors.email"
+msgstr "email редактора"
+
+#: apps/search/forms.py:17
+msgid "viewers.email"
+msgstr "email пользователя"
+
+#: apps/search/forms.py:20 apps/units/documents.py:30 apps/units/views.py:50
+#: templates/units/unit_detail.html:63
+msgid "sample"
+msgstr "образец"
+
+#: apps/search/forms.py:21
+msgid "tags.details"
+msgstr "теги.детальное описание"
+
+#: apps/search/forms.py:22
+msgid "tags.params"
+msgstr "теги.параметры"
+
+#: apps/search/forms.py:25
+msgid "email"
+msgstr "email"
+
+#: apps/search/forms.py:26
+msgid "first name"
+msgstr "имя"
+
+#: apps/search/forms.py:27
+msgid "last name"
+msgstr "фамилия"
+
+#: apps/search/forms.py:30 templates/sidebar.html:18
+#: templates/rosetta/pofile.html:56 templates/tags/tag_list.html:32
+#: templates/unit_collections/unit_collections_list.html:31
+msgid "Search"
+msgstr "Поиск"
+
+#: apps/search/forms.py:33 apps/units/documents.py:37
+msgid "unit"
+msgstr "группа измерений"
+
+#: apps/search/forms.py:34
+msgid "profile"
+msgstr "профиль"
+
+#: apps/search/forms.py:50 apps/search/forms.py:54
+msgid "Not enough characters for search"
+msgstr "Не достаточно символов для поиска"
+
+#: apps/search/forms.py:56
+msgid "Not enough parameters for search"
+msgstr "Не достаточно параметров для поиска"
+
+#: apps/tags/documents.py:15
+msgid "details"
+msgstr "подробности"
+
+#: apps/tags/documents.py:16 apps/units/documents.py:29
+#: templates/units/unit_detail.html:54
+msgid "parent"
+msgstr "родитель"
+
+#: apps/tags/documents.py:17
+msgid "color"
+msgstr "цвет"
+
+#: apps/tags/documents.py:18 apps/tags/forms.py:69
+msgid "params"
+msgstr "параметры"
+
+#: apps/tags/documents.py:24
+msgid "tag"
+msgstr "тег"
+
+#: apps/tags/documents.py:24 apps/units/documents.py:31 apps/units/views.py:50
+#: templates/units/unit_detail.html:70
+msgid "tags"
+msgstr "теги"
+
+#: apps/tags/forms.py:56
+msgid "Must be a dict"
+msgstr "Должен быть словарь"
+
+#: apps/tags/forms.py:90
+msgid "Must be unique inside lab and parent"
+msgstr "Должно быть уникальным в пределах лаборатории и родительского объекта"
+
+#: apps/tags/views.py:58
+msgid "Tag \"{}\" was created successfully."
+msgstr "Тег \"{}\"  был успешно создан."
+
+#: apps/tags/views.py:93
+msgid "Tag \"{}\" was updated successfully."
+msgstr "Тег \"{}\"  был успешно отредактирован."
+
+#: apps/tags/views.py:125
+msgid "Tag was removed successfully."
+msgstr "Тег был успешно удален."
+
+#: apps/unit_collections/documents.py:27 apps/units/documents.py:37
+#: templates/units/unit_list.html:25
+msgid "units"
+msgstr "Группы измерений"
+
+#: apps/unit_collections/documents.py:34
+msgid "collection"
+msgstr "коллекция"
+
+#: apps/unit_collections/documents.py:34 templates/sidebar.html:71
+#: templates/unit_collections/unit_collections_list.html:6
+#: templates/unit_collections/unit_collections_list.html:10
+msgid "collections"
+msgstr "коллекции"
+
+#: apps/unit_collections/forms.py:33 apps/unit_collections/tests.py:47
+msgid "You have not permission to add this units {} in your collection"
+msgstr "У Вас нет прав на добавление этих единиц {} к вашей коллекции"
+
+#: apps/unit_collections/forms.py:59
+msgid "You didn't select any units."
+msgstr "Вы не выбрали ни одной единицы."
+
+#: apps/unit_collections/tests.py:53 apps/unit_collections/tests.py:88
+#: apps/unit_collections/tests.py:129 apps/unit_collections/tests.py:166
+msgid "Select a valid choice. {} is not one of the available choices."
+msgstr "Выберите правильный вариант. {} нет в возможных вариантах."
+
+#: apps/unit_collections/views.py:34
+msgid "Collection was added successfully."
+msgstr "Коллекция была добавлена успешно"
+
+#: apps/unit_collections/views.py:49 apps/unit_collections/views.py:81
+msgid "Collection was changed successfully."
+msgstr "Коллекция успешно изменена"
+
+#: apps/unit_collections/views.py:107
+msgid "Collection was removed successfully."
+msgstr "Коллекция была успешно удалена"
+
+#: apps/unit_collections/views.py:110
+msgid "You don't have permission to remove collection"
+msgstr "У Вас нет прав на удаление коллекции"
+
+#: apps/unit_collections/views.py:168
+msgid "Date"
+msgstr "Дата"
+
+#: apps/unit_collections/views.py:169
+msgid "Values"
+msgstr "Значения"
+
+#: apps/unit_collections/views.py:175
+msgid "Measurements type {}"
+msgstr "Тип измерений"
+
+#: apps/unit_collections/views.py:178
+msgid "Not found"
+msgstr "Не найдено"
+
+#. Translators: Model verbose name and instance representation, suitable to be an item in a list
+#: apps/units/admin.py:83
+#, python-format
+msgid "%(class_name)s %(instance)s"
+msgstr "%(class_name)s %(instance)s"
+
+#: apps/units/admin.py:89
+msgid "and"
+msgstr "и"
+
+#: apps/units/admin.py:90
+#, python-format
+msgid ""
+"Deleting %(class_name)s %(instance)s would require deleting the following "
+"protected related objects: %(related_objects)s"
+msgstr ""
+"Удаление %(class_name)s %(instance)s потребует удаления следующих объектов: "
+"%(related_objects)s"
+
+#: apps/units/admin.py:142 apps/units/views.py:50
+msgid "parents"
+msgstr "родители"
+
+#: apps/units/views.py:185
+msgid "Unit was removed successfully."
+msgstr "Группа измерений была успешно удалена"
+
+#: apps/units/views.py:218
+msgid "Unit was updated successfully."
+msgstr "Группа измерений была успешно создана"
+
+#: settings/base.py:196
+msgid "English"
+msgstr "Английский"
+
+#: settings/base.py:197
+msgid "Russian"
+msgstr "Русский"
+
+#: templates/alert.html:14
+msgid "Are you sure you want remove"
+msgstr "Вы уверены, что хотите удалить"
+
+#: templates/alert.html:23 templates/alert_backup.html:15
+#: templates/units/description.html:19
+msgid "cancel"
+msgstr "отмена"
+
+#: templates/alert.html:26 templates/alert_backup.html:20
+#: templates/experiments/experiment_detail.html:30
+#: templates/labs/lab_detail.html:12
+#: templates/measurement/measurement_detail.html:27
+#: templates/units/unit_detail.html:36
+msgid "delete"
+msgstr "удалить"
+
+#: templates/alert_backup.html:8
+msgid "Confirmation delete"
+msgstr "Подтверждение удаления"
+
+#: templates/alert_backup.html:11
+msgid "Are you sure you want remove it?"
+msgstr "Вы уверены, что хотите удалить это?"
+
+#: templates/base.html:22
+msgid "LabRepo.org"
+msgstr "LabRepo.org"
+
+#: templates/base.html:62
+msgid "Switch lab"
+msgstr "Переключиться на лабораторию"
+
+#: templates/base.html:67
+#, python-format
+msgid "You have %(labs_list|length)s laboratories"
+msgstr ""
+
+#: templates/base.html:88
+msgid "Profile"
+msgstr "Профиль"
+
+#: templates/base.html:93
+msgid "Sign out"
+msgstr "Выход"
+
+#: templates/base.html:116 templates/labs/lab_list.html:4
+#: templates/rosetta/languages.html:8 templates/rosetta/pofile.html:23
+msgid "Home"
+msgstr "Начало"
+
+#: templates/base.html:118
+#, python-format
+msgid "%(lab)s"
+msgstr "%(lab)s"
+
+#: templates/handsontable.html:40
+#: templates/experiments/experiment_form.html:26
+#: templates/labs/lab_form.html:31 templates/profiles/profile_update.html:28
+#: templates/tags/tag_form.html:15
+#: templates/unit_collections/unit_collections_form.html:17
+#: templates/units/description.html:18
+msgid "Save"
+msgstr "Сохранить"
+
+#: templates/modal.html:9 templates/modal.html.py:20
+msgid "Close"
+msgstr "Закрыть"
+
+#: templates/sidebar.html:32 templates/dashboard/dashboard.html:6
+msgid "Dashboard"
+msgstr "Рабочая панель"
+
+#: templates/sidebar.html:37 templates/search/search_list.html:25
+msgid "Experiments"
+msgstr "Эксперименты"
+
+#: templates/sidebar.html:49
+msgid "Create"
+msgstr "Создать"
+
+#: templates/sidebar.html:53
+msgid "Experiment"
+msgstr "Эксперимент"
+
+#: templates/sidebar.html:57
+msgid "Unit"
+msgstr "Группа измерений"
+
+#: templates/sidebar.html:64
+msgid "Definitions"
+msgstr "Определения"
+
+#: templates/sidebar.html:68 templates/experiments/experiment_detail.html:170
+#: templates/tags/tag_list.html:6
+msgid "Tags"
+msgstr "Теги"
+
+#: templates/sidebar.html:75
+msgid "Measurement type"
+msgstr "Тип измерений"
+
+#: templates/sidebar.html:82
+msgid "Filemanager"
+msgstr "Файловый менеджер"
+
+#: templates/small-box_collapse.html:13
+msgid "More info"
+msgstr "Больше информации"
+
+#: templates/small-box_collapse.html:17
+msgid "No info"
+msgstr "Информация отсутствует"
+
+#: templates/admin/index.html:22
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr "Модели в %(name)s приложениях"
+
+#: templates/admin/index.html:23
+#, python-format
+msgid "%(name)s"
+msgstr "%(name)s"
+
+#: templates/admin/index.html:35
+msgid "Add"
+msgstr "Добавить"
+
+#: templates/admin/index.html:41
+msgid "Change"
+msgstr "Изменить"
+
+#: templates/admin/index.html:53
+msgid "System Translations"
+msgstr "Система переводов"
+
+#: templates/admin/index.html:57
+msgid "Translations"
+msgstr "Переводы"
+
+#: templates/admin/index.html:68
+msgid "You don't have permission to edit anything."
+msgstr "У Вас нет прав на редактирование."
+
+#: templates/admin/index.html:76
+msgid "Recent Actions"
+msgstr "Последние действия"
+
+#: templates/admin/index.html:78
+msgid "My Actions"
+msgstr "Мои действия"
+
+#: templates/admin/index.html:82
+msgid "None available"
+msgstr "Ни один не доступен"
+
+#: templates/admin/index.html:96
+msgid "Unknown content"
+msgstr "Неизвестное содержание"
+
+#: templates/admin/edit_inline/tabular.html:22
+msgid "Delete?"
+msgstr "Удалить?"
+
+#: templates/admin/edit_inline/tabular.html:40
+msgid "View on site"
+msgstr "Посмотреть на сайте"
+
+#: templates/admin/edit_inline/tabular.html:85
+#, python-format
+msgid "Add another %(verbose_name)s"
+msgstr "Добавить другой %(verbose_name)s"
+
+#: templates/admin/edit_inline/tabular.html:86
+#: templates/comments/comment.html:17
+msgid "Remove"
+msgstr "Удалить"
+
+#: templates/comments/comment.html:12 templates/units/description.html:11
+msgid "Edit"
+msgstr "Редактировать"
+
+#: templates/comments/comment_form.html:8
+#: templates/dashboard/dashboard.html:17
+#: templates/experiments/experiment_detail.html:108
+#: templates/search/search_list.html:34
+msgid "Comments"
+msgstr "Комментарии"
+
+#: templates/comments/comment_form.html:25
+msgid "Add comment"
+msgstr "Добавить комментарий"
+
+#: templates/comments/comment_form.html:38
+msgid "Submit comment"
+msgstr "Отправить комментарий"
+
+#: templates/dashboard/dashboard.html:15
+#: templates/experiments/experiment_detail.html:105
+#: templates/rosetta/languages.html:27 templates/rosetta/pofile.html:48
+msgid "All"
+msgstr "Все"
+
+#: templates/dashboard/dashboard.html:16 templates/search/search_list.html:31
+msgid "Measurement"
+msgstr "Измерение"
+
+#: templates/dashboard/dashboard.html:48
+msgid "quick email"
+msgstr "Быстро отправить email"
+
+#: templates/dashboard/dashboard.html:53
+msgid "email to"
+msgstr "email"
+
+#: templates/dashboard/dashboard.html:56
+msgid "subject"
+msgstr "тема"
+
+#: templates/dashboard/dashboard.html:59
+msgid "message"
+msgstr "сообщение"
+
+#: templates/dashboard/dashboard.html:65
+msgid "send"
+msgstr "отправить"
+
+#: templates/dashboard/dashboard.html:77
+msgid "to do list"
+msgstr "Список дел"
+
+#: templates/dashboard/dashboard.html:114
+msgid "Add item"
+msgstr "Добавить элемент"
+
+#: templates/experiments/experiment_detail.html:15
+#: templates/labs/lab_detail.html:17
+msgid "edit"
+msgstr "редактировать"
+
+#: templates/experiments/experiment_detail.html:22
+#: templates/labs/lab_detail.html:31
+msgid "units list"
+msgstr "Список групп измерений"
+
+#: templates/experiments/experiment_detail.html:48
+#: templates/units/unit_detail.html:104
+msgid "date"
+msgstr "дата"
+
+#: templates/experiments/experiment_detail.html:106
+#: templates/experiments/experiment_detail.html:137
+msgid "Measurements"
+msgstr "Измерения"
+
+#: templates/experiments/experiment_detail.html:136
+#: templates/search/search_list.html:28
+msgid "Units"
+msgstr "Группы измерений"
+
+#: templates/experiments/experiment_detail.html:167
+#: templates/units/description.html:5
+msgid "Description"
+msgstr "Описание"
+
+#: templates/experiments/experiment_form.html:11
+#: templates/labs/lab_detail.html:24
+msgid "Create Experiment"
+msgstr "Создать Эксперимент"
+
+#: templates/filemanager/content.html:19
+msgid "Upload"
+msgstr "Загрузить"
+
+#: templates/filemanager/content.html:20
+msgid "New Folder"
+msgstr "Новая директория"
+
+#: templates/filemanager/filemanager.html:13
+#: templates/filemanager/filemanager.html:17
+msgid "File Manager"
+msgstr "Файловый менеджер"
+
+#: templates/history/history_detail.html:17
+msgid "Histories"
+msgstr "История изменений"
+
+#: templates/history/history_detail.html:28
+msgid "Data"
+msgstr "Дата"
+
+#: templates/history/history_list.html:18
+msgid "Revision"
+msgstr "Ревизия"
+
+#: templates/labs/lab_detail.html:5
+msgid "Details"
+msgstr "Подробности"
+
+#: templates/labs/lab_detail.html:62 templates/labs/lab_list.html:49
+msgid "Investigators"
+msgstr "Исследователи"
+
+#: templates/labs/lab_detail.html:71 templates/labs/lab_detail.html.py:83
+#: templates/labs/lab_detail.html:95 templates/labs/lab_list.html:58
+#: templates/labs/lab_list.html.py:70 templates/labs/lab_list.html:82
+msgid "Not a single person"
+msgstr "Ни одного человека"
+
+#: templates/labs/lab_detail.html:74 templates/labs/lab_list.html:61
+msgid "Members"
+msgstr "Участники"
+
+#: templates/labs/lab_detail.html:86 templates/labs/lab_list.html:73
+msgid "Guests"
+msgstr "Гости"
+
+#: templates/labs/lab_form.html:14
+msgid "invite members"
+msgstr "пригласить участников"
+
+#: templates/labs/lab_list.html:12 templates/labs/lab_list.html.py:94
+msgid "Create <i>Lorem Impsum</i> lab"
+msgstr "Создать лабораторию <i>Lorem Impsum</i>"
+
+#: templates/labs/lab_list.html:15 templates/labs/lab_list.html.py:97
+msgid "Create empty lab"
+msgstr "Создать пустую лабораторию"
+
+#: templates/labs/lab_list.html:24
+msgid "Laboratories"
+msgstr "Лаборатории"
+
+#: templates/labs/lab_list.html:41
+msgid "Go to the lab"
+msgstr "Перейти к лаборатории"
+
+#: templates/measurement/measurement_detail.html:37
+#: templates/units/unit_detail.html:22
+msgid "History"
+msgstr "История"
+
+#: templates/profiles/profile_update.html:10
+msgid "Last Login"
+msgstr "Последний Вход"
+
+#: templates/profiles/profile_update.html:32
+msgid "update"
+msgstr "редактировать"
+
+#: templates/registration/activate.html:4
+msgid "activation failed"
+msgstr "активация завершилась с ошибкой"
+
+#: templates/registration/activate.html:10
+#: templates/registration_backup/activate.html:9
+msgid "Account activation is failed"
+msgstr "Активация учетной записи не удалась"
+
+#: templates/registration/activate.html:11
+#: templates/registration_backup/activate.html:11
+msgid "There is wrong activation key"
+msgstr "Неверный ключ активации"
+
+#: templates/registration/activation_complete.html:4
+#: templates/registration_backup/activation_complete.html:4
+msgid "Activation complete"
+msgstr "Активация завершена"
+
+#: templates/registration/activation_complete.html:10
+#: templates/registration_backup/activation_complete.html:10
+msgid "Your account is activated"
+msgstr "Ваша учетная запись активирована"
+
+#: templates/registration/activation_email.html:5
+#: templates/registration_backup/activation_email.html:5
+msgid "Registration"
+msgstr "зарегистрироваться"
+
+#: templates/registration/activation_email.html:7
+#: templates/registration_backup/activation_email.html:7
+msgid "In order to activate your account you need to click on this link"
+msgstr "Для того, чтобы активировать аккаунт вам нужно нажать на эту ссылку"
+
+#: templates/registration/activation_email.html:8
+#: templates/registration_backup/activation_email.html:8
+msgid "Activate account"
+msgstr "Активизировать аккаунт"
+
+#: templates/registration/alert.html:8
+msgid "alert"
+msgstr "тревога"
+
+#: templates/registration/base.html:12
+msgid "Sign in use social networks"
+msgstr "Войти c помощью социальных сетей"
+
+#: templates/registration/invite_email.html:7
+#: templates/registration_backup/invite_email.html:7
+msgid "You're invited to the site"
+msgstr "Вы приглашены на сайт"
+
+#: templates/registration/invite_email.html:9
+#: templates/registration_backup/invite_email.html:9
+msgid "Your email"
+msgstr "Ваш email"
+
+#: templates/registration/invite_email.html:10
+#: templates/registration_backup/invite_email.html:10
+msgid "Your password"
+msgstr "Ваш пароль"
+
+#: templates/registration/invite_email.html:11
+#: templates/registration_backup/invite_email.html:11
+msgid "Thank you for using our site!"
+msgstr "Спасибо за использование нашего сайта!"
+
+#: templates/registration/login.html:6 templates/registration/login.html:9
+#: templates/registration/registration_form.html:10
+#: templates/registration_backup/base.html:19
+#: templates/registration_backup/login.html:7
+#: templates/registration_backup/login.html:12
+#: templates/registration_backup/login_bak.html:13
+#: templates/registration_backup/login_bak.html:20
+#: templates/registration_backup/registration_form.html:9
+msgid "Sign in"
+msgstr "Войти"
+
+#: templates/registration/login.html:10
+msgid "i forgot my password"
+msgstr "востановить пароль"
+
+#: templates/registration/login.html:11
+msgid "register a new membership"
+msgstr "зарегистрировать нового участника"
+
+#: templates/registration/logout.html:4
+msgid "log out"
+msgstr "выйти"
+
+#: templates/registration/logout.html:10
+msgid "Come back soon"
+msgstr "Возвращайтесь скорее"
+
+#: templates/registration/password_changedone.html:4
+msgid "password change successful"
+msgstr "пароль успешно изменен"
+
+#: templates/registration/password_changedone.html:10
+#: templates/registration_backup/password_changedone.html:4
+#: templates/registration_backup/password_changedone.html:8
+msgid "Password change successful"
+msgstr "Пароль успешно изменен"
+
+#: templates/registration/password_changedone.html:11
+msgid "Your password was changed"
+msgstr "Ваш пароль был изменен"
+
+#: templates/registration/password_form.html:4
+#: templates/registration/password_form.html:6
+#: templates/registration/password_reset_confirm.html:6
+#: templates/registration/password_reset_form.html:4
+#: templates/registration/password_reset_form.html:6
+msgid "password reset"
+msgstr "восстановление пароля"
+
+#: templates/registration/password_form.html:35
+#: templates/registration/password_reset_form.html:15
+#: templates/registration_backup/password_form.html:29
+#: templates/registration_backup/password_reset_form.html:13
+msgid "Reset my password"
+msgstr "Востановить пароль"
+
+#: templates/registration/password_form.html:36
+#: templates/registration/password_reset_confirm.html:25
+#: templates/registration/password_reset_form.html:16
+msgid "Back to main"
+msgstr "На главную"
+
+#: templates/registration/password_reset_complete.html:4
+msgid "password reset complete"
+msgstr "восстановление пароля завершено"
+
+#: templates/registration/password_reset_complete.html:10
+#: templates/registration_backup/password_reset_complete.html:5
+#: templates/registration_backup/password_reset_complete.html:10
+msgid "Password reset complete"
+msgstr "Восстановление пароля завершено"
+
+#: templates/registration/password_reset_complete.html:11
+msgid "Your password has been set. You may go ahead and log in now"
+msgstr "Ваш пароль был установлен. Вы можете пойти дальше и войти в систему."
+
+#: templates/registration/password_reset_confirm.html:4
+#: templates/registration_backup/password_form.html:6
+#: templates/registration_backup/password_reset_confirm.html:5
+#: templates/registration_backup/password_reset_form.html:6
+msgid "Password reset"
+msgstr "Восстановление пароля"
+
+#: templates/registration/password_reset_confirm.html:24
+#: templates/registration_backup/password_reset_confirm.html:21
+msgid "Change my password"
+msgstr "Изменить мой пароль"
+
+#: templates/registration/password_reset_done.html:4
+msgid "password reset successful"
+msgstr "пароль восстановлен успешно"
+
+#: templates/registration/password_reset_done.html:10
+#: templates/registration_backup/password_reset_done.html:5
+#: templates/registration_backup/password_reset_done.html:10
+msgid "Password reset successful"
+msgstr "Пароль восстановлен успешно"
+
+#: templates/registration/password_reset_done.html:12
+msgid ""
+"\n"
+"    We've e-mailed you instructions for setting your password to the e-mail "
+"address you submitted.\n"
+"    You should be receiving it shortly.\n"
+"  "
+msgstr ""
+"\n"
+"На указанный Вами адрес электронной почты мы выслали инструкцию по "
+"восстановлению пароля. Вы должны получить ее в ближайшее время."
+
+#: templates/registration/password_reset_email.html:6
+#: templates/registration_backup/password_reset_email.html:6
+#, python-format
+msgid ""
+"\n"
+"    You're receiving this email because you requested a password reset for "
+"your user account at %(site_name)s.\n"
+"  "
+msgstr ""
+"\n"
+"Вы получили это письмо, потому что вы просили восстановить пароль для "
+"учетной записи пользователя %(site_name)s."
+
+#: templates/registration/password_reset_email.html:10
+#: templates/registration_backup/password_reset_email.html:10
+msgid "Please go to this "
+msgstr "Пожалуйста, перейдите на эту "
+
+#: templates/registration/password_reset_email.html:12
+#: templates/registration_backup/password_reset_email.html:12
+msgid "page"
+msgstr "страница"
+
+#: templates/registration/password_reset_email.html:14
+#: templates/registration_backup/password_reset_email.html:14
+msgid "and choose a new password"
+msgstr "и выбрать новый пароль"
+
+#: templates/registration/password_reset_email.html:16
+#: templates/registration_backup/password_reset_email.html:16
+msgid "Thanks for using our site!"
+msgstr "Спасибо за использование нашего сайта!"
+
+#: templates/registration/registration_closed.html:4
+#: templates/registration_backup/registration_closed.html:4
+msgid "Registration closed"
+msgstr "Регистрация закрыта"
+
+#: templates/registration/registration_closed.html:10
+#: templates/registration_backup/registration_closed.html:7
+msgid "Sorry, registration temporarily closed"
+msgstr "К сожалению, регистрация временно закрыта"
+
+#: templates/registration/registration_complete.html:4
+msgid "registration completed"
+msgstr "регистрация завершена"
+
+#: templates/registration/registration_complete.html:11
+#: templates/registration_backup/registration_complete.html:10
+msgid "An email has been sent to your email to activate your account"
+msgstr "Сообщение для активации аккаунта было отправлено на ваш email"
+
+#: templates/registration/registration_form.html:4
+#: templates/registration/registration_form.html:6
+#: templates/registration_backup/base.html:18
+#: templates/registration_backup/login.html:6
+#: templates/registration_backup/login_bak.html:12
+#: templates/registration_backup/registration_form.html:4
+#: templates/registration_backup/registration_form.html:13
+msgid "Sign up"
+msgstr "Зарегистрироваться"
+
+#: templates/registration/registration_form.html:9
+#: templates/registration_backup/registration_form.html:7
+msgid "get started"
+msgstr "начать"
+
+#: templates/registration/registration_form.html:10
+#: templates/registration_backup/registration_form.html:8
+msgid "Already a member?"
+msgstr "Вы уже зарегистрированы?"
+
+#: templates/registration/include/alert.html:7
+#, python-format
+msgid " %(alert_header)s "
+msgstr "%(alert_header)s"
+
+#: templates/registration/include/alert.html:9
+#, python-format
+msgid " %(alert_message)s "
+msgstr "%(alert_message)s"
+
+#: templates/registration_backup/activate.html:4
+msgid "Activation failed"
+msgstr "Активация завершилась с ошибкой"
+
+#: templates/registration_backup/base.html:21
+#: templates/registration_backup/login.html:9
+#: templates/registration_backup/login_bak.html:15
+msgid "Reset password"
+msgstr "Восстановить пароль"
+
+#: templates/registration_backup/base.html:27
+msgid "Use social networks"
+msgstr "Используйте социальные сети"
+
+#: templates/registration_backup/logout.html:5
+msgid "Log out"
+msgstr "Выйти"
+
+#: templates/registration_backup/password_changedone.html:10
+msgid "Your password was changed."
+msgstr "Ваш пароль был изменен."
+
+#: templates/registration_backup/password_form.html:8
+#: templates/registration_backup/password_reset_form.html:8
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll e-mail "
+"instructions for setting a new one."
+msgstr ""
+"Забыли пароль? Введите ваш адрес электронной почты ниже, и мы вышлем "
+"инструкции по установке нового."
+
+#: templates/registration_backup/password_reset_complete.html:12
+msgid "Your password has been set. You may go ahead and log in now."
+msgstr "Ваш пароль был установлен. Вы можете пойти дальше и войти в систему."
+
+#: templates/registration_backup/password_reset_confirm.html:11
+msgid "Enter new password"
+msgstr "Ведите новый пароль"
+
+#: templates/registration_backup/password_reset_confirm.html:12
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+"Пожалуйста, введите новый пароль дважды, чтобы мы могли проверить, правильно "
+"ли вы его ввели."
+
+#: templates/registration_backup/password_reset_confirm.html:14
+msgid "Password reset unsuccessful"
+msgstr "Пароль не был восстановлен"
+
+#: templates/registration_backup/password_reset_confirm.html:15
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used. Please request a new password reset."
+msgstr ""
+"Ссылка на страницу сброса пароля является недействительной, возможно, потому "
+"что уже была использована. Пожалуйста, запросите восстановление пароля еще "
+"раз."
+
+#: templates/registration_backup/password_reset_done.html:12
+msgid ""
+"We've e-mailed you instructions for setting your password to the e-mail "
+"address you submitted. You should be receiving it shortly."
+msgstr ""
+"На указанный Вами адрес электронной почты мы выслали инструкцию по "
+"восстановлению пароля. Вы должны получать ее в ближайшее время."
+
+#: templates/registration_backup/registration_complete.html:5
+msgid "Registration completed"
+msgstr "Регистрация завершена"
+
+#: templates/rosetta/languages.html:5 templates/rosetta/languages.html.py:9
+#: templates/rosetta/pofile.html:24
+msgid "Language selection"
+msgstr "Выбор языка"
+
+#: templates/rosetta/languages.html:9 templates/rosetta/pofile.html:24
+msgid "translations"
+msgstr "переводы"
+
+#: templates/rosetta/languages.html:12
+msgid ""
+"Couldn't load the specified language file. This usually happens when using "
+"the Encrypted Cookies Session Storage backend on Django 1.4 or higher.<br/"
+">Setting ROSETTA_STORAGE_CLASS = 'rosetta.storage.CacheRosettaStorage' in "
+"your settings file should fix this."
+msgstr ""
+
+#: templates/rosetta/languages.html:19
+msgid "Filter"
+msgstr "Фильтры"
+
+#: templates/rosetta/languages.html:21
+msgid "Project"
+msgstr "Проект"
+
+#: templates/rosetta/languages.html:23
+msgid "Third party"
+msgstr "Сторонние"
+
+#: templates/rosetta/languages.html:40
+msgid "Application"
+msgstr "Приложения"
+
+#: templates/rosetta/languages.html:41
+msgid "Progress"
+msgstr "Выполняется"
+
+#: templates/rosetta/languages.html:42
+msgid "Messages"
+msgstr "Сообщения"
+
+#: templates/rosetta/languages.html:43
+msgid "Translated"
+msgstr "Перевод"
+
+#: templates/rosetta/languages.html:44 templates/rosetta/pofile.html:75
+msgid "Fuzzy"
+msgstr "Неточные"
+
+#: templates/rosetta/languages.html:45
+msgid "Obsolete"
+msgstr "Устаревшие"
+
+#: templates/rosetta/languages.html:46
+msgid "File"
+msgstr "Файл"
+
+#: templates/rosetta/languages.html:72
+msgid "Nothing to translate!"
+msgstr "Нечего переводить!"
+
+#: templates/rosetta/languages.html:73
+msgid ""
+"You haven't specified any languages in your settings file, or haven't yet "
+"generated a batch of translation catalogs."
+msgstr ""
+"Вы не указали языки в файле настроек, или еще не сгенерировали каталог с "
+"переводами."
+
+#: templates/rosetta/languages.html:74
+#, python-format
+msgid ""
+"Please\n"
+"                                                                                                             refer "
+"to\n"
+"      <a href=\"%(i18n_doc_link)s\">Django's I18N documentation</a> for a "
+"guide on how to set up\n"
+"                                                                                                             internationalization\n"
+"                                                                                                             for "
+"your\n"
+"                                                                                                             project."
+msgstr ""
+
+#: templates/rosetta/pofile.html:9
+msgid "Pick another file"
+msgstr "Выберите другой файл"
+
+#: templates/rosetta/pofile.html:10
+msgid "Download this catalog"
+msgstr "Загрузить этот каталог"
+
+#: templates/rosetta/pofile.html:27
+#, python-format
+msgid ""
+"Progress:\n"
+"      %(percent_translated)s%%"
+msgstr "Прогресс: %(percent_translated)s%%"
+
+#: templates/rosetta/pofile.html:31
+msgid "File is read-only: download the file when done editing!"
+msgstr ""
+"Файл доступен только для чтения: загрузите файл, когда закончите "
+"редактирование!"
+
+#: templates/rosetta/pofile.html:33
+msgid ""
+"Some items in your last translation block couldn't be saved: this usually "
+"happens when the catalog file changes on disk after you last loaded it."
+msgstr ""
+"Некоторые элементы в вашем последнем блоке перевода не могут быть сохранены: "
+"обычно это происходит при изменении каталога файлов на диске, после "
+"последней его загрузки."
+
+#: templates/rosetta/pofile.html:38
+#, python-format
+msgid "Translate into %(rosetta_i18n_lang_name)s"
+msgstr "Перевести в %(rosetta_i18n_lang_name)s"
+
+#: templates/rosetta/pofile.html:41
+msgid "Display:"
+msgstr "Показать:"
+
+#: templates/rosetta/pofile.html:43
+msgid "Untranslated only"
+msgstr "Только без перевода"
+
+#: templates/rosetta/pofile.html:45
+msgid "Translated only"
+msgstr "Только с переводом"
+
+#: templates/rosetta/pofile.html:47
+msgid "Fuzzy only"
+msgstr "Только неточные"
+
+#: templates/rosetta/pofile.html:59
+msgid "Go"
+msgstr "Перейти"
+
+#: templates/rosetta/pofile.html:70
+msgid "Original"
+msgstr "Оригинальный"
+
+#: templates/rosetta/pofile.html:76
+msgid "Occurrences(s)"
+msgstr "Событие(я)"
+
+#: templates/rosetta/pofile.html:90 templates/rosetta/pofile.html.py:93
+#: templates/rosetta/pofile.html:110 templates/rosetta/pofile.html.py:113
+msgid "Context hint"
+msgstr "Контекстная подсказка"
+
+#: templates/rosetta/pofile.html:123
+msgid "suggest"
+msgstr "предложить"
+
+#: templates/rosetta/pofile.html:135
+#, python-format
+msgid ""
+"\n"
+"                  %(more_count)s more"
+msgid_plural "%(more_count)s more"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: templates/rosetta/pofile.html:148
+msgid "Save and translate next block"
+msgstr "Сохранить и перевести следующий блок"
+
+#: templates/rosetta/pofile.html:153
+msgid "Skip to page:"
+msgstr "Перейти на страницу:"
+
+#: templates/rosetta/pofile.html:166
+msgid "Displaying:"
+msgstr "Отображается:"
+
+#: templates/rosetta/pofile.html:171
+#, python-format
+msgid ""
+"%(hits)s/%(message_number)s message\n"
+"                "
+msgid_plural "%(hits)s/%(message_number)s messages"
+msgstr[0] ""
+msgstr[1] "%(hits)s/%(message_number)s сообщение"
+msgstr[2] ""
+
+#: templates/search/collection_form.html:17
+msgid "add to existing collection"
+msgstr "добавить в существующую коллекцию"
+
+#: templates/search/search_list.html:38
+msgid "Profiles"
+msgstr "Профили"
+
+#: templates/search/search_list.html:73
+msgid "create new collection"
+msgstr "создать новую коллекцию"
+
+#: templates/tags/tag_list.html:11
+msgid "tags tree"
+msgstr "дерево тегов"
+
+#: templates/tags/tag_list.html:16
+msgid "create tag"
+msgstr "создать тег"
+
+#: templates/tags/tag_list.html:22
+msgid "remove tags"
+msgstr "удалить тег"
+
+#: templates/unit_collections/unit_collections_list.html:17
+msgid "create collection"
+msgstr "создать новую коллекцию"
+
+#: templates/unit_collections/unit_collections_list.html:23
+msgid "remove collection"
+msgstr "удалить коллекцию"
+
+#: templates/units/unit_detail.html:28
+msgid "create measurements"
+msgstr "создать измерения"
+
+#: templates/units/unit_detail.html:88
+msgid "Summary of measurements"
+msgstr "Сводка измерений"
+
+#~ msgid ""
+#~ "Dashboard\n"
+#~ "  <small>Control panel</small>"
+#~ msgstr "Панель управления"
+
+#~ msgid "Create laboratories"
+#~ msgstr "Создать лаборатории"
+
+#~ msgid "%(message)s"
+#~ msgstr "%(message)s"
+
+#~ msgid "Hello"
+#~ msgstr "Здравствуйте"
+
+#~ msgid "Online"
+#~ msgstr "Online"
+
+#~ msgid "%(experiment)s"
+#~ msgstr "%(experiment)s"
+
+#~ msgid "create node"
+#~ msgstr "создать узел"
+
+#~ msgid "remove node"
+#~ msgstr "удалить узел"
+
+#~ msgid "Progress: %(percent_translated)s%%"
+#~ msgstr "Прогресс: %(percent_translated)s%%"
+
+#~ msgid "%(hits)s/%(message_number)s message"
+#~ msgid_plural "%(hits)s/%(message_number)s messages"
+#~ msgstr[0] "%(hits)s/%(message_number)s сообщений"
+#~ msgstr[1] "%(hits)s/%(message_number)s сообщение"
+#~ msgstr[2] "%(hits)s/%(message_number)s сообщения"
+
+#~ msgid "science lab"
+#~ msgstr "научная лаборатория"
+
+#~ msgid "Add сomment"
+#~ msgstr "Добавить комментарий"
+
+#~ msgid "create"
+#~ msgstr "создать"
+
+#~ msgid "You can"
+#~ msgstr "Вы можете"
+
+#~ msgid "login"
+#~ msgstr "войти"

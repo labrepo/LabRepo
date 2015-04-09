@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% load i18n bootstrap_tags %}
+
+{% block content %}
+  <div class="col-lg-6">
+    <form method="post" class="form-horizontal"> {% csrf_token %}
+      {{ form|as_bootstrap }}
+      <button type="submit" class="btn btn-info btn-sm">{% trans 'Invite'|upper %}</button>
+    </form>
+  </div>
+{% endblock %}

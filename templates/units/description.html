@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="col-lg-12">
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#description" data-toggle="tab">{% trans 'Description' %}</a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="description">
+        <div class="description-show">
+          {% if is_owner or is_member %}
+            <button class="description-edit fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+          {% endif %}
+          {{ object.description|default:' '|safe }}
+        </div>
+        <div class="description-editor" style="display: none">
+          <form action="" method="post">{% csrf_token %}
+            {% include 'form.html' %}
+            <button type="submit" class="btn btn-info">{% trans 'Save' %}</button>
+            <button class="btn btn-info cancel-edit">{% trans 'cancel'|title %}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

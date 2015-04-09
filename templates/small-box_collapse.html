@@ -1,0 +1,40 @@
+{% load i18n %}
+<div class="box box-solid" style="border: 0px;">
+  <div class="box-header">
+    <div class="small-box bg-{{ color }}" style="margin-bottom: 0px;">
+      <div class="inner">
+        <h3>{{ obj_list|length }}</h3>
+
+        <p>{% trans title_box|title %}</p>
+      </div>
+      <div class="icon"><i class="fa fa-{{ icon }}"></i></div>
+      {% if obj_list %}
+        <a data-target="#{{ title_box }}" data-toggle="collapse" class="small-box-footer">
+          {% trans 'More info' %} <i class="fa fa-chevron-down"></i>
+        </a>
+      {% else %}
+        <a href="javascript:void(0);" class="small-box-footer">
+          {% trans 'No info' %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+  <div id="{{ title_box }}" class="box-body collapse">
+    <ul class="list-unstyled">
+      {% for obj in obj_list %}
+
+        <li>
+          <a href="{{ obj.get_absolute_url }}">
+            {% if obj.title %}
+              <i class="fa fa-eyedropper"></i>
+            {% elif obj.full_name %}
+              <i class="fa fa-user"></i>
+            {% endif %}
+            {{ obj }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+</div>

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% load i18n bootstrap_tags %}
+
+{% block modal %}
+  {% url 'profiles:invite' as action %}
+  {% include 'modal.html' with fields='investigator,members,guests' class='invite-member' button_name='invite'|upper modal_title='invite members' %}
+{% endblock %}
+
+{% block manage_buttons %}
+  <div class="text-right">
+    <div class="btn-group">
+      <a href="#" data-toggle="modal" data-target="#modal" class="btn bg-aqua btn-sm btn-flat">
+        <i class="ion ion-person-add"></i> {% trans 'invite members'|upper %}
+      </a>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="col-md-offset-2 col-md-8 col-sm-12">
+    <div class="box box-solid">
+      <form method="post">
+        <div class="box-body">
+          {% csrf_token %}
+          {{ form|as_bootstrap }}
+        </div>
+
+        <div class="box-footer form-actions text-right">
+          <button type="submit" class="btn bg-olive btn-sm btn-flat btn-block">
+            <i class="fa fa-save"></i> {% trans 'Save'|upper %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block form_script %}{{ form.media }}{% endblock %}
+

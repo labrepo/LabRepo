@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% load i18n common_tags %}
+
+{% block breadcrumb %}
+  {% if object.experiments %}
+    <li>
+      {% for experiment in object.experiments %}
+        <a href="{{ experiment.get_absolute_url }}"><i class="fa fa-eyedropper"></i> {% trans experiment.title %}</a>
+        &nbsp;
+      {% endfor %}
+    </li>
+  {% endif %}
+  <li class="active">{% trans object.sample|title %}</li>
+{% endblock %}
+
+{% block content_header %}{% trans object.sample|title %}{% endblock %}
+
+{% block manage_buttons %}
+  <div class="btn-group  pull-right">
+    <a href="{% url 'history:list' class_name='Unit' pk=object.pk lab_pk=lab.pk %}"
+       class="btn bg-yellow btn-flat btn-sm"><i class="fa fa-history"></i> {% trans 'History' %}</a>
+  </div>
+  {% if is_owner or is_member %}
+    <div class="btn-group">
+      <a href="{% url 'measurements:list' unit_pk=object.pk lab_pk=object.lab.pk %}"
+         class="btn btn-info btn-sm btn-flat btn-flat"><i
+          class="fa fa-plus"></i> {% trans 'create measurements'|upper %}</a>
+    </div>
+  {% endif %}
+  {% if is_owner %}
+    <div class="btn-group">
+      <a class="btn btn-danger btn-sm btn-flat"
+         data-href="{% url 'units:delete-one' lab_pk=object.lab.pk pk=object.pk %}"
+         data-toggle="modal" data-target="#confirm-delete" href="#">
+        <i class="fa fa-trash-o"></i> {% trans 'delete'|upper %}</a>
+    </div>
+  {% endif %}
+
+{% endblock %}
+
+{% block content %}
+  <div class="col-lg-6">
+    <div class="list-group">
+      <div class="col-sm-4 title-desc">{% trans 'experiments'|upper %}</div>
+      <div class="col-sm-8">
+        <ul class="list-group">
+          {% for expriment in object.experiments %}
+            <li class="list-group-item">{{ expriment }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% if object.parent %}
+        <div class="col-sm-4 title-desc">{% trans 'parent'|upper %}</div>
+        <div class="col-sm-8">
+          <ul class="list-group">
+            {% for unit in object.parent %}
+              <li class="list-group-item">{{ unit }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      <div class="col-sm-4 title-desc">{% trans 'sample'|upper %}</div>
+      <div class="col-sm-8">
+        <ul class="list-group">
+          <li class="list-group-item">{{ object.sample }}</li>
+        </ul>
+      </div>
+      {% if object.tags %}
+        <div class="col-sm-4 title-desc">{% trans 'tags'|upper %}</div>
+        <div class="col-sm-8">
+          <ul class="list-group">
+            {% for tag in object.tags %}
+              <li class="list-group-item">{{ tag }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-lg-6"> {% include 'comments/comment_form.html' %}</div>
+
+  <div class="col-lg-6"> {% include 'units/description.html' %}</div>
+
+  <div class="col-lg-6">
+    {% if measurements %}
+      <div class="col-lg-12">
+        <h3>{% trans 'Summary of measurements' %}</h3>
+        <!-- Custom Tabs (Pulled to the right) -->
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            {% for measurement in measurements %}
+              <li {% if measurement.active %}class="active"{% endif %}>
+                <a href="#{{ measurement.measurement_type }}" data-toggle="tab">{{ measurement.measurement_type }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+          <div class="tab-content table-responsive">
+            {% for measurement in measurements %}
+              <div class="tab-pane{% if measurement.active %} active{% endif %}"
+                   id="{{ measurement.measurement_type }}">
+                <table class="table table-bordered table-striped ">
+                  <tr>
+                    <th>{% trans 'date'|title %}</th>
+                    <th>{% trans 'measurement'|title %}</th>
+                  </tr>
+                  {% for value in measurement.values %}
+                    <tr>
+                      <td>{{ value.date|create_date|date:'m/d/Y H:i' }}</td>
+                      <td>
+                        <a href="{% url 'measurements:detail' unit_pk=object.pk pk=value.pk lab_pk=lab.pk %}">
+                          {{ value.value }}
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </table>
+              </div><!-- /.tab-pane -->
+            {% endfor %}
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- nav-tabs-custom -->
+      </div><!-- /.col -->
+    {% endif %}
+
+  </div>
+  <!-- /.row -->
+  {% include 'alert.html' %}
+{% endblock %}

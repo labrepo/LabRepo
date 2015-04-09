@@ -1,0 +1,11 @@
+{% extends "registration/alert.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "activation failed"|title %}{% endblock title %}
+
+{% block alert_tag %}danger{% endblock %}
+
+{% block icon %}ban{% endblock %}
+
+{% block alert_header %}{% trans "Account activation is failed" %}.{% endblock %}
+{% block alert_message %}{% trans "There is wrong activation key" %}.{% endblock %}

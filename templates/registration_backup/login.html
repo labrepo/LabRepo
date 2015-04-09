@@ -1,0 +1,12 @@
+{% extends "registration/base.html" %}
+{% load i18n %}
+{% block box_header %}{% trans "Login" %}{% endblock %}
+{% block box_footer %}
+  <div class="clearfix">
+    <a href="{% url 'registration_register' %}" class="btn btn-danger pull-left">{% trans 'Sign up' %}</a>
+    <input type="submit" value="{% trans 'Sign in' %}" class="btn btn-info pull-right">
+  </div>
+  <h4><a href="{% url 'auth_reset_password' %}">{% trans 'Reset password' %}</a></h4>
+{% endblock %}
+
+{% block title %}{% trans 'Sign in' %}{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "registration/base.html" %}
+{% load i18n %}
+
+{% block box_header %}{% trans 'Sign up' %}{% endblock %}
+
+{% block box_footer %}
+  <input type="submit" value="{% trans 'get started'|upper %}" class="btn btn-info">
+  <h4 class="pull-right">{% trans "Already a member?" %}
+    <a href="{% url 'login_auth' %}">{% trans "Sign in" %}</a>
+  </h4>
+{% endblock %}
+
+{% block title %}{% trans 'Sign up' %}{% endblock %}

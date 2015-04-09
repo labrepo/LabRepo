@@ -1,0 +1,11 @@
+{% extends "registration/form.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Sign up' %}{% endblock %}
+
+{% block box_header %}{% trans 'Sign up' %}{% endblock %}
+
+{% block box_footer %}
+  <button type="submit" class="btn bg-olive btn-block">{% trans 'get started'|upper %}</button>
+  {% trans "Already a member?" %} <a href="{% url 'login_auth' %}">{% trans "Sign in" %}</a>
+{% endblock %}

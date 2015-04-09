@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+  <section class="col-sm-offset-2 col-sm-8">
+    <div class="box">
+      <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        <div class="box-header">
+          <h1 class="box-title">{% block box_header %}{% endblock %}</h1>
+        </div>
+
+        <div class="box-body">
+          {% include 'form.html' %}
+        </div>
+
+        <div class="box-footer clearfix no-border">
+          {% block box_footer %}
+            <a href="{% url 'registration_register' %}" class="btn btn-danger pull-left">{% trans 'Sign up' %}</a>
+            <input type="submit" value="{% trans 'Sign in' %}" class="btn btn-info pull-right">
+            <br>
+            <h4><a href="{% url 'auth_reset_password' %}">{% trans 'Reset password' %}</a></h4>
+          {% endblock %}
+        </div>
+      </form>
+    </div>
+    <div class="margin text-center">
+      <span>{% blocktrans %}Use social networks{% endblocktrans %}</span>
+      <br>
+      <a href="{% url 'social:begin' backend='facebook' %}" class="btn btn-social-icon btn-facebook">
+        <i class="fa fa-facebook"></i>
+      </a>
+      <a href="{% url 'social:begin' backend='linkedin-oauth2' %}" class="btn btn-social-icon btn-linkedin">
+        <i class="fa fa-linkedin"></i>
+      </a>
+      <a href="{% url 'social:begin' backend='google-oauth2' %}" class="btn btn-social-icon btn-google-plus">
+        <i class="fa fa-google-plus"></i>
+      </a>
+    </div>
+  </section>
+{% endblock %}

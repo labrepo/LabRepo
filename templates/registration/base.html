@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block html_classes %}bg-black{% endblock %}
+{% block body_classes %}bg-black{% endblock %}
+{% block body %}
+  <div class="form-box" id="login-box">
+
+    {% block content %}{% endblock %}
+
+    <div class="margin text-center">
+      <span>{% trans 'Sign in use social networks' %}</span>
+      <br>
+      <a href="{% url 'social:begin' backend='facebook' %}" class="btn btn-circle btn-facebook">
+        <i class="fa fa-facebook"></i>
+      </a>
+      <a href="{% url 'social:begin' backend='linkedin-oauth2' %}" class="btn btn-circle btn-linkedin">
+        <i class="fa fa-linkedin"></i>
+      </a>
+      <a href="{% url 'social:begin' backend='google-oauth2' %}" class="btn btn-circle btn-google-plus">
+        <i class="fa fa-google-plus"></i>
+      </a>
+    </div>
+  </div>
+
+  <script src="{% static 'adminLTE/js/jquery-ui-1.10.3.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/forms.js' %}"></script>
+{% endblock %}

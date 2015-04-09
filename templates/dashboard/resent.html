@@ -1,0 +1,30 @@
+<li class="list-group-item">
+  {{ object.action_time|date:"m/d/Y H:i" }}
+  <a href="{{ object.init_user.get_absolute_url }}">{{ object.init_user.full_name|title }}</a>
+  {{ object.get_action_flag_display }}
+  {% if object.action_flag == object.COMMENT %}
+    {{ object.comment_model|lower }}
+    {% with comment_object=object.content_object.get_object %}
+      {% if comment_object and comment_object.active %}
+        <a href="{{ comment_object.get_absolute_url }}">{{ comment_object|safe }}</a>
+      {% else %}
+        {{ comment_object|safe }}
+      {% endif %}
+      -
+      {% if object.content_object %}
+        {{ object.content_object.text|safe }}
+      {% else %}
+        {{ object.extra.object_name|safe }}
+      {% endif %}
+    {% endwith %}
+  {% elif object.content_object.active %}
+    {{ object.instance_type|lower }}
+    <a href="{{ object.content_object.get_absolute_url }}">{{ object.content_object|safe|default_if_none:'' }}</a>
+  {% else %}
+    {% if object.content_object %}
+      {{ object.content_object|safe }}
+    {% else %}
+      {{ object.extra.object_name|safe|default:'' }}
+    {% endif %}
+  {% endif %}
+</li>

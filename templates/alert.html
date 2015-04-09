@@ -1,0 +1,33 @@
+{% load i18n %}
+
+<div class="modal fade" id="{{ modal_id|default:"confirm-delete" }}" tabindex="-1" role="dialog"
+     aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="alert box box-warning">
+
+      <i class="fa fa-warning bg-yellow"></i>
+
+      <div class="box-header">
+        <div class="box-tools pull-right">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <h4 class="box-title">{% trans 'Are you sure you want remove' %}
+          <span class="text-red">{% trans obj|default:'it' %}</span>?
+        </h4>
+      </div>
+
+      <div class="box-body text-center">
+        <form method="post" action="" role="form" id="formConfirmDelete">
+          {% csrf_token %}
+          <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">
+            {% trans 'cancel'|title %}
+          </button>
+          <button type="submit" class="btn btn-danger btn-flat {{ class }}" id="{{ btn_id }}">
+            <i class="fa fa-trash-o"></i> {% trans 'delete'|title %}
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

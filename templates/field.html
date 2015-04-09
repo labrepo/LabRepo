@@ -1,0 +1,11 @@
+{% if field.label %}
+  <label for="{{ field.name }}" class="col-sm-{{ label_width }} control-label">{{ field.label|title }}</label>
+{% endif %}
+<div class="col-sm-{% if field.label %}{{ 12|add:field_width }}{% else %}12{% endif %}">
+  {{ field }}
+  {% if field.errors %}
+    <span class="has-error" data-for="{{ field.auto_id }}" role="alert">
+            {{ field.errors.0 }}
+        </span>
+  {% endif %}
+</div>

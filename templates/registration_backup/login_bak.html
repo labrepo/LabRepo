@@ -1,0 +1,20 @@
+{% extends "registration/base.html" %}
+{% load i18n %}
+{% block content %}
+  <div class="header">Sign In</div>
+  <form action="" method="post" class="form">
+    {% csrf_token %}
+    <div class="body bg-gray">
+      {% include 'form.html' %}
+    </div>
+
+    <div class="footer">
+      <a href="{% url 'registration_register' %}" class="btn btn-danger pull-left">{% trans 'Sign up' %}</a>
+      <input type="submit" value="{% trans 'Sign in' %}" class="btn btn-info pull-right">
+
+      <p><a href="{% url 'auth_reset_password' %}">{% trans 'Reset password' %}</a></p>
+    </div>
+  </form>
+{% endblock %}
+
+{% block title %}{% trans 'Sign in' %}{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "registration/alert.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Activation complete" %}{% endblock %}
+
+{% block alert_tag %}success{% endblock %}
+
+{% block icon %}check{% endblock %}
+
+{% block alert_message %}{% trans "Your account is activated" %}.{% endblock %}

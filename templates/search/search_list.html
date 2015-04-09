@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% load static i18n  bootstrap_tags %}
+
+{% block content %}
+
+  <div class="col-xs-12">
+    <div class="box box-solid">
+      <div class="box-body">
+        <form method="get">
+          <div class="input-group">
+            {{ form|as_bootstrap }}
+            <ul class="nav nav-pills nav-justified" id="search-component"></ul>
+            <span class="input-group-btn top-vertical-align">
+                <button type="submit" name="search" title="Search" id="search-btn" class="btn btn-flat btn-info">
+                  <i class="fa fa-search"></i>
+                </button>
+            </span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        {% if experiments %}
+          <li class="active"><a href="#experiment" data-toggle="tab">
+            <i class="fa fa-eyedropper"></i> {% trans 'Experiments' %}</a></li>
+        {% endif %}
+        {% if units %}
+          <li class=""><a href="#unit" data-toggle="tab">
+            <i class="fa fa-cubes"></i> {% trans 'Units' %}</a></li>
+        {% endif %}
+        {% if measurements %}
+          <li class=""><a href="#measurement" data-toggle="tab">{% trans 'Measurement' %}</a></li>
+        {% endif %}
+        {% if comments %}
+          <li class=""><a href="#comment" data-toggle="tab">
+            <i class="fa fa-comments-o"></i> {% trans 'Comments' %}</a></li>
+        {% endif %}
+        {% if profiles %}
+          <li {% if not comments and not measurements and not units and not experiments %}class="active"{% endif %}><a
+              href="#profile" data-toggle="tab">
+            <i class="fa fa-users"></i> {% trans 'Profiles' %}</a></li>
+        {% endif %}
+      </ul>
+      <div class="tab-content search-content">
+        {% if experiments %}
+          <div class="tab-pane active" id="experiment">
+            <div class="panel panel-default resent-activities">
+              <ul class="list-group">
+                {% for result in experiments %}
+                  <li class="list-group-item"><a href="{{ result.url }}">{{ result.title }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div><!-- /.tab-pane -->
+        {% endif %}
+        {% if units %}
+          <div class="tab-pane" id="unit">
+            <div class="panel panel-default resent-activities">
+              <ul class="list-group">
+                {% for result in units %}
+                  <li class="list-group-item">
+                    <label><input type="checkbox" value="{{ result.id }}" name="{{ result.sample }}"></label>
+                    <a href="{{ result.url }}">{{ result.sample }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+              <div class="col-sm-12">
+                {% if update_collection_form.fields.collection.queryset %}
+                  <form class="form-inline update-collection-form col-sm-4" role="form" method="post"
+                        action="{% url 'collections:unit-update' lab_pk=lab.pk %}">{% csrf_token %}
+                    {% include 'search/collection_form.html' %}
+                  </form>
+                {% endif %}
+
+                <button class="btn btn-sm btn-info pull-left" data-toggle="modal"
+                        data-target="#modal">{% trans 'create new collection'|title %}</button>
+                {% url 'collections:create' lab_pk=lab.pk as create_collection_url %}
+                {% include 'modal.html' with extra_form=create_collection_form action=create_collection_url class='create-collection-form' %}
+              </div>
+            </div>
+          </div><!-- /.tab-pane -->
+        {% endif %}
+        {% if measurements %}
+          <div class="tab-pane" id="measurement">
+            <div class="panel panel-default resent-activities">
+              <ul class="list-group">
+                {% for result in measurements %}
+                  <li class="list-group-item"><a href="{{ result.url }}">{{ result.description|safe }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div><!-- /.tab-pane -->
+        {% endif %}
+        {% if comments %}
+          <div class="tab-pane" id="comment">
+            <div class="panel panel-default resent-activities">
+              <ul class="list-group">
+                {% for result in comments %}
+                  <li class="list-group-item"><a href="{{ result.url }}">{{ result.init_user.email }}
+                    : {{ result.text|safe }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div><!-- /.tab-pane -->
+        {% endif %}
+        {% if profiles %}
+          <div
+              class="tab-pane{% if not comments and not measurements and not units and not experiments %} active{% endif %}"
+              id="profile">
+            <div class="panel panel-default resent-activities">
+              <ul class="list-group">
+                {% for result in profiles %}
+                  <li class="list-group-item"><a href="{{ result.url }}">{{ result.email }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div><!-- /.tab-pane -->
+        {% endif %}
+      </div>
+      <!-- /.tab-content -->
+    </div>
+  </div>
+
+{% endblock %}
+
+
+{% block script %}
+
+  <script src="{% static 'js/search.js' %}"></script>
+
+{% endblock %}

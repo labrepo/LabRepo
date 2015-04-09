@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans 'Registration completed' %}{% endblock %}
+
+{% block content %}
+  <div class="form-holder">
+    <header>
+      <p>{% trans "An email has been sent to your email to activate your account" %}.</p>
+    </header>
+  </div>
+{% endblock %}

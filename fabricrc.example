@@ -1,0 +1,29 @@
+[Fabric]
+remote_host=<server ip or domain address>
+user=<user with sudo privileges>
+dir=labrepo <folder name for ptoject code, default value is labrepo>
+branch=master <remote branch of git repository, default value is master>
+repo_url=<repository url>
+domain=<FQDN for the project or just IP addres of server>
+
+[Django]
+admin_email=<e-mail for sending debug information>
+secret_key=<50 random characters unique key>
+language_code=en-us<language code, defult value is en-us>
+mongodb_user=<admin user for mongodb>
+mongodb_passwd=<password for admin user>
+mongodb_name=<mongo database name>
+mongodb_host=127.0.0.1<mongo database host, defult is 127.0.0.1>
+mongodb_port=27017<mongo database port name>
+email_host=<SMTP server address>
+email_port=<SMTP server port>
+email_host_user=<SMTP server user>
+email_host_password=<SMTP server password>
+email_use_tls=<use or not encrypted connection, values: True or False only>
+server_email=<email address for outgoing e-mails>
+social_auth_facebook_key=<social_auth_facebook_key>
+social_auth_facebook_secret=<social_auth_facebook_secret>
+social_auth_google_oauth2_key=<social_auth_google_oauth2_key>
+social_auth_google_oauth2_secret=<social_auth_google_oauth2_secret>
+social_auth_linkedin_oauth2_key=<social_auth_linkedin_oauth2_key>
+social_auth_linkedin_oauth2_secret=<social_auth_linkedin_oauth2_secret>

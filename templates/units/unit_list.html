@@ -1,0 +1,26 @@
+{% extends 'handsontable.html' %}
+
+{% load static i18n %}
+
+{% block urls %}
+  data-url='{% url "units:create" lab_pk=lab.pk %}'
+  data-remove-url='{% url "units:delete" lab_pk=lab.pk %}'
+{% endblock %}
+
+{% block content %}
+  {{ block.super }}
+  {% include 'modal.html' with action='' %}
+{% endblock %}
+
+{% block extra_script %}
+  <script src="{% static 'jstree/jstree.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/jsTreeEditor.js' %}"></script>
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
+{% endblock %}
+
+{% block breadcrumb_active %}
+  {% trans 'units'|title %}
+{% endblock %}

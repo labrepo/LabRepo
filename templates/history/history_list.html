@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+
+{% block breadcrumb %}
+  {% with object=object_list.0.get_object %}
+    {% if object %}
+      {% if object.experiments %}
+        <li>
+          {% for expriment in object.experiments %}
+            <a href="{{ experiment.get_absolute_url }}">{{ expriment }}</a>&nbsp;
+          {% endfor %}
+        </li>
+      {% endif %}
+      <li><a href="{{ object.get_absolute_url }}">{{ object|title }}</a></li>
+    {% endif %}
+  {% endwith %}
+  <li class="active">{% trans 'Revision' %}</li>
+{% endblock %}
+
+{% block content %}
+  <div class="col-sm-6">
+    <div class="list-group col-sm-12">
+      <ul class="list-group">
+        {% for revision in object_list %}
+          <li class="list-group-item">
+            <a href="{% url 'history:detail' pk=revision.pk lab_pk=lab.pk %}">
+              {{ revision.timestamp }} - {{ revision.user.email }}, {{ revision.comment }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}

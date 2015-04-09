@@ -1,0 +1,200 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-03 16:01+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: apps/common/static/js/calendar.js:21
+msgid "all-day"
+msgstr "все дни"
+
+#: apps/common/static/js/calendar.js:30
+msgid "January"
+msgstr "Январь"
+
+#: apps/common/static/js/calendar.js:30
+msgid "February"
+msgstr "Февраль"
+
+#: apps/common/static/js/calendar.js:30
+msgid "March"
+msgstr "Март"
+
+#: apps/common/static/js/calendar.js:30
+msgid "April"
+msgstr "Апрель"
+
+#: apps/common/static/js/calendar.js:30 apps/common/static/js/calendar.js:31
+msgid "May"
+msgstr "Май"
+
+#: apps/common/static/js/calendar.js:30
+msgid "June"
+msgstr "Июнь"
+
+#: apps/common/static/js/calendar.js:30
+msgid "July"
+msgstr "Июль"
+
+#: apps/common/static/js/calendar.js:30
+msgid "August"
+msgstr "Август"
+
+#: apps/common/static/js/calendar.js:30
+msgid "September"
+msgstr "Сентябрь"
+
+#: apps/common/static/js/calendar.js:30
+msgid "October"
+msgstr "Октябрь"
+
+#: apps/common/static/js/calendar.js:30
+msgid "November"
+msgstr "Ноябрь"
+
+#: apps/common/static/js/calendar.js:30
+msgid "December"
+msgstr "Декабрь"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Jan"
+msgstr "Янв"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Feb"
+msgstr "Фев"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Mar"
+msgstr "Мрт"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Apr"
+msgstr "Апр"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Jun"
+msgstr "Июн"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Jul"
+msgstr "Июл"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Aug"
+msgstr "Авг"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Sep"
+msgstr "Сен"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Oct"
+msgstr "Окт"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Nov"
+msgstr "Нбр"
+
+#: apps/common/static/js/calendar.js:31
+msgid "Dec"
+msgstr "Дек"
+
+#: apps/common/static/js/calendar.js:32
+msgid "Sunday"
+msgstr "Воскресенье"
+
+#: apps/common/static/js/calendar.js:32
+msgid "Monday"
+msgstr "Понедельник"
+
+#: apps/common/static/js/calendar.js:32
+msgid "Tuesday"
+msgstr "Вторник"
+
+#: apps/common/static/js/calendar.js:32
+msgid "Wednesday"
+msgstr "Среда"
+
+#: apps/common/static/js/calendar.js:32
+msgid "Thursday"
+msgstr "Четверг"
+
+#: apps/common/static/js/calendar.js:32
+msgid "Friday"
+msgstr "Пятница"
+
+#: apps/common/static/js/calendar.js:32
+msgid "Saturday"
+msgstr "Суббота"
+
+#: apps/common/static/js/calendar.js:33
+msgid "Sun"
+msgstr "Вс"
+
+#: apps/common/static/js/calendar.js:33
+msgid "Mon"
+msgstr "Пн"
+
+#: apps/common/static/js/calendar.js:33
+msgid "Tue"
+msgstr "Вт"
+
+#: apps/common/static/js/calendar.js:33
+msgid "Wed"
+msgstr "Ср"
+
+#: apps/common/static/js/calendar.js:33
+msgid "Thu"
+msgstr "Чт"
+
+#: apps/common/static/js/calendar.js:33
+msgid "Fri"
+msgstr "Пт"
+
+#: apps/common/static/js/calendar.js:33
+msgid "Sat"
+msgstr "Сб"
+
+#: apps/common/static/js/calendar.js:37
+msgid "today"
+msgstr "сегодня"
+
+#: apps/common/static/js/calendar.js:38
+msgid "month"
+msgstr "месяц"
+
+#: apps/common/static/js/calendar.js:39
+msgid "week"
+msgstr "неделя"
+
+#: apps/common/static/js/calendar.js:40
+msgid "day"
+msgstr "день"
+
+#: apps/common/static/js/handson-table.js:85
+msgid "Please fill in all required fields"
+msgstr "Пожалуйста заполните все обязательные поля"
+
+#: apps/common/static/js/handson-table.js:85
+msgid "Your data has been saved."
+msgstr "Данные были сохранены"
+
+#: apps/common/static/js/params_widget.js:17
+msgid "add property"
+msgstr "добавить свойство"

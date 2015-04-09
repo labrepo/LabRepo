@@ -1,0 +1,10 @@
+{% extends 'registration/base_email.html' %}
+
+{% load i18n %}
+{% block content %}
+  <h3>{% trans 'Registration'|title %}</h3>
+  <p>
+    {% trans 'In order to activate your account you need to click on this link' %}:
+    <a href="http://{{ site }}/accounts/activate/{{ activation_key }}/">{% trans 'Activate account' %}</a>
+  </p>
+{% endblock %}

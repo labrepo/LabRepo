@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="col-xs-12" data-pk="{{ comment.pk }}">
+  <div class="list-group-item list-group-item-info list-group-item-sm disabled">
+    <strong>{{ comment.init_user.full_name }}</strong>
+
+    <div class="pull-right">
+      {{ comment.action_time|timesince }}
+      {% if user == comment.init_user or user in lab.investigator %}
+        <!--  <span class="input-group-btn"> -->
+        <button class="btn btn-default btn-flat btn-xs comment-edit" type="button" data-toggle="modal"
+                data-target="#comment-modal" data-url="{% url 'comment:update' lab_pk=lab.pk pk=comment.pk %}">
+          <i class="fa fa-edit" title='{% trans "Edit" %}'></i>
+        </button>
+        <button class="btn btn-default btn-flat btn-xs" type="button" data-target="#confirm-delete-comment"
+                data-toggle="modal"
+                data-href="{% url 'comment:delete' lab_pk=lab.pk pk=comment.pk %}">
+          <i class="fa fa-trash-o" title='{% trans "Remove" %}'></i></button>
+        <!-- </span> -->
+      {% endif %}
+    </div>
+  </div>
+  <div class="list-group-item list-group-item-sm disabled">
+    <div class="comment-context">{{ comment|safe }}</div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+{% load i18n bootstrap_tags %}
+
+{% if object.pk %}
+  {% url 'tags:update' pk=object.pk lab_pk=lab.pk as action %}
+{% else %}
+  {% url 'tags:create' lab_pk=lab.pk as action %}
+{% endif %}
+
+<form method="post" id="location-form" action="{{ action }}">
+  <div class="box-body">
+    {% csrf_token %}
+    {{ form|as_bootstrap }}
+  </div>
+  <div class="box-footer form-actions">
+    <button type="submit" class="btn btn-info btn-sm" id="btn-form">{% trans 'Save'|upper %}</button>
+  </div>
+</form>
+
+{% block form_script %}{{ form.media }}{% endblock %}

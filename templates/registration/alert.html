@@ -1,0 +1,12 @@
+{% extends 'registration/base.html' %}
+{% load i18n %}
+
+{% block content %}
+  <div class="alert alert-{% block alert_tag %}{% endblock %} alert-dismissable">
+    <i class="fa fa-{% block icon %}{% endblock %}"></i>
+    <a href="/" class="close">×</a>
+    <b>{% block alert_header %}{% trans 'alert'|title %}!{% endblock %}</b>
+
+    <p>{% block alert_message %}{% endblock %}</p>
+  </div>
+{% endblock %}

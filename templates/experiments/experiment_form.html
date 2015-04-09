@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load i18n bootstrap_tags %}
+
+{% block content_header %}{% trans object.title|default:'Create Experiment' %}{% endblock %}
+
+{% block breadcrumb %}
+  {% if object %}
+    <li class="active"><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
+  {% else %}
+    <li class="active">{% trans 'Create Experiment' %}</li>
+  {% endif %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="col-md-offset-2 col-md-8 col-sm-12">
+  <div class="box box-solid">
+    <form method="post">
+      <div class="box-body">
+        {% csrf_token %}
+        {{ form|as_bootstrap }}
+      </div>
+      <div class="box-footer form-actions">
+        <button type="submit" class="btn bg-olive btn-sm btn-flat btn-block">
+          <i class="fa fa-save"></i> {% trans 'Save'|upper %}
+        </button>
+      </div>
+    </form>
+  </div>
+  </div>
+{% endblock %}
+
+{% block form_script %}{{ form.media }}{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load i18n common_tags %}
+
+{% block breadcrumb %}
+  {% with obj=object.get_object %}
+    {% if obj.experiments %}
+      <li>
+        {% for expriment in obj.experiments %}
+          <a href="{{ experiment.get_absolute_url }}">{{ expriment }}</a>&nbsp;
+        {% endfor %}
+      </li>
+    {% endif %}
+    <li><a href="{{ obj.get_absolute_url }}">{{ obj|title }}</a></li>
+  {% endwith %}
+  <li><a
+      href="{% url 'history:list' class_name=object.instance_type.class_name pk=object.instance_id lab_pk=lab.pk %}">{% trans 'Histories' %}</a>
+  </li>
+  <li class="active">{{ object|title }}</li>
+{% endblock %}
+
+{% block content %}
+  <ul class="list-group col-sm-7">
+    <li class="list-group-item">{{ object.user.email }}</li>
+    <li class="list-group-item">{{ object.timestamp }}</li>
+    <li class="list-group-item">{{ object.comment }}</li>
+    <li class="list-group-item">
+      {% trans 'Data' %}
+      <ul class="list-group">
+        {% for data, value in object.instance_data.items %}
+          {% if data != 'id' %}
+            <li class="list-group-item">
+              {{ data }} :
+              {% if value.get_absolute_url %}
+                <a href="{{ value.get_absolute_url }}">{{ value|default:'-' }}</a>
+              {% elif value|check_list %}
+                <ul>
+                  {% for v in value %}
+                    <li><a href="{{ v.get_absolute_url }}">{{ v|default:'-' }}</a></li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                {{ value|default:'-' }}
+              {% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+  </ul>
+{% endblock %}

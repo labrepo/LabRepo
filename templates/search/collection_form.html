@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<span class="non-field-error has-error pull-left" role="alert">
+    {{ form.non_field_errors.0 }}
+</span>
+
+{% for field in update_collection_form.visible_fields %}
+  <div class="form-group col-sm-8">
+    <div class="input-group col-sm-12{% if field.errors %} has-error{% endif %}">
+      {% include 'field.html' with field_width=-3 label_width=3 %}
+    </div>
+  </div>
+{% endfor %}
+{% for field in update_collection_form.hidden_fields %}
+  {{ field }}
+{% endfor %}
+<button class="btn btn-sm btn-info">{% trans 'add to existing collection'|title %}</button>
+{{ update_collection_form.media }}

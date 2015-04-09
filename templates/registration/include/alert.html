@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<div class="alert alert-{{ alert_tag }} alert-dismissable">
+  <i class="fa fa-{{ icon }}"></i>
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+
+  <b>{% blocktrans %} {{ alert_header }} {% endblocktrans %}</b>
+
+  <p>{% blocktrans %} {{ alert_message }} {% endblocktrans %}</p>
+</div>

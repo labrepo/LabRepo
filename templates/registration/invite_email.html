@@ -1,0 +1,13 @@
+{% extends 'registration/base_email.html' %}
+
+{% load i18n %}
+
+{% block content %}
+
+  {% trans "You're invited to the site" %} {{ site }} <br>
+  <p><a href="{{ protocol }}://{{ site }}{% url 'login_auth' %}">{% trans 'Login' %}</a></p>
+  <p>{% trans "Your email" %} : {{ user.email }}</p>
+  <p>{% trans "Your password" %} : {{ password }}</p>
+  <p>{% trans "Thank you for using our site!" %}</p>
+
+{% endblock %}

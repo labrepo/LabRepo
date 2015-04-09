@@ -1,0 +1,12 @@
+{% extends "registration/form.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Login" %}{% endblock %}
+
+{% block box_header %}{% trans 'Sign in' %}{% endblock %}
+
+{% block box_footer %}
+  <button type="submit" class="btn bg-olive btn-block">{% trans 'Sign in' %}</button>
+  <p><a href="{% url 'auth_reset_password' %}">{% trans 'i forgot my password'|title %}</a></p>
+  <a href="{% url 'registration_register' %}">{% trans 'register a new membership'|title %}</a>
+{% endblock %}

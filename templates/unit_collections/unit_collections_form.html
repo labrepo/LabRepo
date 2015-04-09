@@ -1,0 +1,42 @@
+{% load i18n bootstrap_tags %}
+
+{% if object.pk %}
+  {% url 'collections:update' pk=object.pk lab_pk=lab.pk as action %}
+{% else %}
+  {% url 'collections:create' lab_pk=lab.pk as action %}
+{% endif %}
+
+{% block content %}
+
+  <form method="post" id="location-form" action="{{ action }}">
+    <div class="box-body">
+      {% csrf_token %}
+      {{ form|as_bootstrap }}
+    </div>
+    <div class="box-footer text-right form-actions">
+      <button type="submit" class="btn bg-olive btn-flat btn-sm">{% trans 'Save'|upper %}</button>
+    </div>
+  </form>
+  {% if measurement_types and object.units %}
+    <div class="box-body">
+      <hr>
+      <div id="div_id_measurement_type" class="form-group  ">
+        <label for="measurement_type" class="control-label">{% trans 'measurement type'|title %}</label>
+        <select class="form-control" id="measurement_type">
+          <option value=""></option>
+          {% for measurement_type in measurement_types %}
+            <option value="{{ measurement_type.pk }}"
+                    data-url="{% url 'collections:plot' lab_pk=lab.pk pk=object.pk measurement_type_pk=measurement_type.pk %}">
+              {{ measurement_type }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="box-footer">
+      <div id="plot"></div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block form_script %}{{ form.media }}{% endblock %}

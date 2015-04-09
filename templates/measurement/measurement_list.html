@@ -1,0 +1,32 @@
+{% extends 'handsontable.html' %}
+
+{% load static i18n %}
+
+{% block urls %}
+  data-url='{% url "measurements:create" unit_pk=unit_pk lab_pk=lab.pk %}'
+  data-remove-url='{% url "measurements:delete" unit_pk=unit_pk lab_pk=lab.pk %}'
+{% endblock %}
+
+{% block script %}
+  <script src="{% static 'datetimepicker/js/moment.js' %}"></script>
+  <script src="{% static 'datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+  {{ block.super }}
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" media="screen" href="{% static 'datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
+  {{ block.super }}
+{% endblock %}
+
+{% block content %}
+  {{ block.super }}
+  {% include 'modal.html' with action='' %}
+{% endblock %}
+
+{% block breadcrumb_active %}
+  {% trans 'measurements'|title %}
+{% endblock %}
+
+{% block content_header %}
+  {% trans 'measurements'|title %}
+{% endblock %}

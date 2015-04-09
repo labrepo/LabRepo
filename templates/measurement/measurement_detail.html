@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+
+{% block content_header %}{{ object }}{% endblock %}
+
+{% block breadcrumb %}
+  {% if unit.experiments %}
+    <li>
+      {% for experiment in unit.experiments %}
+        <a href="{{ experiment.get_absolute_url }}">
+          <i class="fa fa-eyedropper"></i> {% trans experiment.title|title %}
+        </a>&nbsp;
+      {% endfor %}
+    </li>
+  {% endif %}
+  <li><a href="{{ unit.get_absolute_url }}">{% trans unit|title %}</a></li>
+  <li class="active">{{ object }}</li>
+{% endblock %}
+
+{% block manage_buttons %}
+  {% if is_owner %}
+    <div class="btn-group pull-right">
+      <a class="btn btn-danger btn-sm btn-flat"
+         data-href="{% url 'measurements:delete-one' unit_pk=unit.pk pk=object.pk lab_pk=lab.pk %}"
+         data-toggle="modal" data-target="#confirm-delete" href="#">
+        <i class="fa fa-trash-o"></i> {% trans 'delete'|upper %}
+      </a>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="col-sm-4 title-desc">
+    <div class="col-sm-12">
+      <a href="{% url 'history:list' class_name='Measurement' pk=object.pk lab_pk=lab.pk %}"
+         class="btn btn-info pull-right">{% trans 'History' %}</a>
+    </div>
+
+    <div class="col-sm-12 voffset4">
+      <div class="list-group">
+        <div class="col-sm-4 title-desc">{% trans 'created at'|upper %}</div>
+        <div class="col-sm-8">
+          <ul class="list-group">
+            <li class="list-group-item">{{ object.created_at|date:'m/d/Y H:i' }}</li>
+          </ul>
+        </div>
+        {% if measurement_type %}
+          <div class="col-sm-4 title-desc">{% trans 'measurement type'|upper %}</div>
+          <div class="col-sm-8">
+            <ul class="list-group">
+              <li class="list-group-item">{{ object.measurement_type }}</li>
+            </ul>
+          </div>
+        {% endif %}
+        <div class="col-sm-4 title-desc">{% trans 'value'|upper %}</div>
+        <div class="col-sm-8">
+          <ul class="list-group">
+            <li class="list-group-item">{{ object.value }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      {% include 'comments/comment_form.html' %}
+    </div>
+
+  </div>
+
+  <div class="col-md-6">
+    {% include 'units/description.html' %}
+  </div>
+  {% include 'alert.html' %}
+{% endblock %}

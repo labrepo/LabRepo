@@ -1,0 +1,10 @@
+{% extends "registration/alert.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'log out'|title %}{% endblock %}
+
+{% block alert_tag %}warning{% endblock %}
+
+{% block icon %}frown-o{% endblock %}
+
+{% block alert_message %}{% trans 'Come back soon' %}{% endblock %}

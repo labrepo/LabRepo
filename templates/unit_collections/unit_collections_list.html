@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% load i18n static %}
+
+{% block breadcrumb %}
+  <li class="active">{% trans 'collections'|title %}</li>
+{% endblock %}
+
+{% block content_header %}
+  {% trans 'collections'|title %}
+{% endblock %}
+
+{% block manage_buttons %}
+  <div class="btn-group">
+    <button class="btn bg-olive btn-sm btn-flat" id="location-create"
+            data-url="{% url 'collections:create' lab_pk=lab.pk %}">
+      <i class="fa fa-plus"></i> {% trans 'create collection'|upper %}
+    </button>
+  </div>
+  <div class="btn-group pull-right">
+    <a class="btn bg-red btn-sm btn-flat" data-href="{% url 'collections:delete' lab_pk=lab.pk %}"
+       data-toggle="modal" data-target="#confirm-delete" href="#">
+      <i class="fa fa-trash-o"></i> {% trans 'remove collection'|upper %}
+    </a>
+  </div>
+{% endblock %}
+{% block content %}
+  <section class="col-sm-5">
+    <div class="box box-solid">
+      <div class="box-body">
+        <input id="search" placeholder="{% trans 'Search' %}..." class="form-control">
+      </div>
+      <div class="box-footer">
+        <div id="location-tree" data-content='{{ collections|safe }}'></div>
+      </div>
+    </div>
+
+  </section>
+  <section class="col-sm-7">
+    <div class="box box-solid" id="location-container"></div>
+  </section>
+
+{% endblock %}
+
+{% block modal %}{% include 'alert.html' with btn_id="location-remove" modal_id="confirm-delete" %}{% endblock %}
+
+{% block script %}
+  <script src="{% static 'jstree/jstree.js' %}"></script>
+  <script src="{% static 'js/forms.js' %}"></script>
+  <script src="{% static 'js/tree.js' %}"></script>
+  {% block form_script %}{% endblock %}
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
+{% endblock %}

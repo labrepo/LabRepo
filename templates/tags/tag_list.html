@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% load i18n static %}
+
+{% block breadcrumb %}
+  <li class="active"><i class="fa fa-tags"></i> {% trans 'Tags' %}</li>
+{% endblock %}
+
+{% block modal %}{% include 'alert.html' with btn_id="location-remove" modal_id="confirm-delete" %}{% endblock %}
+
+{% block content_header %}{% trans 'tags tree'|title %}{% endblock %}
+{% block manage_buttons %}
+  <div class="btn-group">
+    <a href="#location-tree" class="btn btn-sm bg-olive btn-flat" id="location-create"
+       data-url="{% url 'tags:create' lab_pk=lab.pk %}">
+      <i class="fa fa-tag"></i> {% trans 'create tag'|upper %}
+    </a>
+  </div>
+  <div class="btn-group pull-right">
+    <button class="btn btn-sm bg-red btn-flat" data-href="{% url 'tags:delete' lab_pk=lab.pk %}"
+            data-toggle="modal" data-target="#confirm-delete">
+      <i class="fa fa-trash-o"></i> {% trans 'remove tags'|upper %}
+    </button>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+  <section class="col-sm-7">
+    <div class="box box-solid">
+      <div class="box-body">
+        <input id="search" placeholder="{% trans 'Search' %}..." class="form-control">
+      </div>
+      <div class="box-footer">
+        <div id="location-tree" data-content='{{ tags }}'></div>
+      </div>
+    </div>
+
+  </section>
+  <section class="col-sm-5">
+    <div class="box box-solid" id="location-container"></div>
+  </section>
+{% endblock %}
+
+{% block script %}
+  <script src="{% static 'jstree/jstree.js' %}"></script>
+  <script src="{% static 'js/tree.js' %}"></script>
+  <script>
+    // $('.hideSection').click(function (el) {
+    //   el = $(el.currentTarget);
+    //   var leftSection = $('#left-section'),
+    //       rightSection = $('#right-section'),
+    //       side = el.attr('side'),
+    //       button = el.html(''),
+    //       buttonON = $('<i>', {'class': 'fa fa-toggle-on'}),
+    //       buttonOFF = $('<i>', {'class': 'fa fa-toggle-off'}),
+    //       tmp;
+    //   console.log(side);
+    //   if (side === 'right') {
+    //
+    //     tmp = leftSection.attr('class');
+    //     leftSection.attr('class', leftSection.attr('class-to-replace'));
+    //     leftSection.attr('class-to-replace', tmp);
+    //     $('#location-container').html() === '' ? rightSection.hide() : rightSection.fadeIn();
+    //     // rightSection.is(":hidden") ? leftSection.fadeIn() : leftSection.hide();
+    //     rightSection.is(":hidden") ? el.html('').append(buttonOFF) : el.html('').append(buttonON);
+    //   }
+    //   else if (side === 'left') {
+    //
+    //     tmp = rightSection.attr('class');
+    //     rightSection.attr('class', rightSection.attr('class-to-replace'));
+    //     rightSection.attr('class-to-replace', tmp);
+    //     $('#location-container').html() === '' ? leftSection.hide() : leftSection.fadeIn();
+    //     leftSection.is(":hidden") ? el.html('').append(buttonOFF) : el.html('').append(buttonON);
+    //   }
+    // });
+  </script>
+  {% block form_script %}{% endblock %}
+{% endblock %}
+{% block css %}
+  <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
+{% endblock %}

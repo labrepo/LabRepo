@@ -1,0 +1,5 @@
+-r base.txt
+gunicorn
+django-dotenv>=1.2
+fabtools
+factory

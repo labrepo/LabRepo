@@ -1,0 +1,10 @@
+{% extends "registration/alert.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Registration closed' %}{% endblock %}
+
+{% block alert_tag %}danger{% endblock %}
+
+{% block icon %}ban{% endblock %}
+
+{% block alert_message %}{% trans "Sorry, registration temporarily closed" %}.{% endblock %}

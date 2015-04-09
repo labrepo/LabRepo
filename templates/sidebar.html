@@ -1,0 +1,95 @@
+{% load i18n static %}
+<section class="sidebar">
+  {% if user.is_authenticated %}
+    <div class="user-panel">
+      <div class="image pull-left">
+        <img src="{% static 'ava_placeholder.png' %}" class="img-circle" alt="User Image">
+      </div>
+      <div class="pull-left info">
+        <p>{{ user.full_name }}</p>
+
+        <a href="javascript: void(0);"><i class="fa fa-circle text-success"></i> Online</a>
+      </div>
+    </div>
+  {% endif %}
+  {% if lab %}
+    <form action="{% url 'search:all' lab_pk=lab.pk %}" method="get" class="sidebar-form">
+      <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="{% trans 'Search' %}...">
+          <span class="input-group-btn">
+            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+              <i class="fa fa-search"></i>
+            </button>
+          </span>
+      </div>
+    </form>
+  {% endif %}
+  <!-- sidebar: style can be found in sidebar.less -->
+  <ul class="sidebar-menu">
+    {% if lab %}
+      <li class="{% if active_tab == 'dashboard' %}active{% endif %}">
+        <a href="{% url 'dashboard:dashboard' lab_pk=lab.pk %}">
+          <i class="fa fa-dashboard"></i> <span>{% trans 'Dashboard' %}</span>
+        </a>
+      </li>
+      {% if experiments_list %}
+        <li class="treeview{% if object in experiments_list %} active{% endif %}">
+          <a href=""><i class="fa fa-eyedropper"></i> {% trans 'Experiments' %}</a>
+          <ul class="treeview-menu">
+            {% for experiment in experiments_list %}
+              <li class="{% if object == experiment %}active{% endif %}">
+                <a href="{{ experiment.get_absolute_url }}">
+                  <i class="fa fa-eyedropper"></i>{% trans experiment.title %}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endif %}
+      <li class="treeview{% if active_tab in 'experiments,units' %} active{% endif %}">
+        <a href=""><i class="fa fa-edit"></i>{% trans 'Create' %}</a>
+        <ul class="treeview-menu">
+          <li class="{% if active_tab == 'experiments' %}active{% endif %}">
+            <a href="{% url 'experiments:create' lab_pk=lab.pk %}">
+              <i class="fa fa-eyedropper"></i> {% trans 'Experiment' %}</a>
+          </li>
+          {% if experiments_list %}
+            <li class="{% if active_tab == 'units' %}active{% endif %}">
+              <a href="{% url 'units:list' lab_pk=lab.pk %}">
+                <i class="fa fa-cube"></i> {% trans 'Unit' %}
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </li>
+      <li class="treeview{% if active_tab in 'tags,measurement types,collections' %} active{% endif %}">
+        <a href="">
+          <i class="fa fa-folder{% if active_tab in 'tags,measurement types,collections' %}-open{% endif %}-o"></i>
+          {% trans 'Definitions' %}
+        </a>
+        <ul class="treeview-menu">
+          <li class="{% if active_tab == 'tags' %}active{% endif %}">
+            <a href="{% url 'tags:list' lab_pk=lab.pk %}">
+              <i class="fa fa-tags"></i> {% trans 'Tags' %}
+            </a>
+          </li>
+          <li class="{% if active_tab == 'collections' %}active{% endif %}">
+            <a href="{% url 'collections:list' lab_pk=lab.pk %}">
+              <i class="fa fa-cubes"></i> {% trans 'collections'|title %}
+            </a>
+          </li>
+          <li class="{% if active_tab == 'measurement types' %}active{% endif %}">
+            <a href="{% url 'measurements:measurement_type_list' lab_pk=lab.pk %}">
+              {% trans 'Measurement type' %}
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="{% if not active_tab and not object %} active{% endif %}">
+        <a href="{% url 'filemanager' lab_pk=lab.pk %}">
+          <i class="fa fa-folder{% if not active_tab and not object %}-open{% endif %}"></i>{% trans 'Filemanager' %}
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</section>
+<!-- /.sidebar -->
