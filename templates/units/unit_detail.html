@@ -83,46 +83,71 @@
   <div class="col-lg-6"> {% include 'units/description.html' %}</div>
 
   <div class="col-lg-6">
-    {% if measurements %}
+      {% if measurements %}
       <div class="col-lg-12">
         <h3>{% trans 'Summary of measurements' %}</h3>
-        <!-- Custom Tabs (Pulled to the right) -->
         <div class="nav-tabs-custom">
-          <ul class="nav nav-tabs">
-            {% for measurement in measurements %}
-              <li {% if measurement.active %}class="active"{% endif %}>
-                <a href="#{{ measurement.measurement_type }}" data-toggle="tab">{{ measurement.measurement_type }}</a>
-              </li>
-            {% endfor %}
-          </ul>
           <div class="tab-content table-responsive">
-            {% for measurement in measurements %}
-              <div class="tab-pane{% if measurement.active %} active{% endif %}"
-                   id="{{ measurement.measurement_type }}">
                 <table class="table table-bordered table-striped ">
                   <tr>
-                    <th>{% trans 'date'|title %}</th>
-                    <th>{% trans 'measurement'|title %}</th>
+                     {% for header in measurements.headers %}
+                        <th>{{ header|default:""|title }}</th>
+                      {% endfor %}
                   </tr>
-                  {% for value in measurement.values %}
+                  {% for row in measurements.table_data %}
                     <tr>
-                      <td>{{ value.date|create_date|date:'m/d/Y H:i' }}</td>
-                      <td>
-                        <a href="{% url 'measurements:detail' unit_pk=object.pk pk=value.pk lab_pk=lab.pk %}">
-                          {{ value.value }}
-                        </a>
-                      </td>
+                        {% for col in row %}
+                          <td>{{ col|default:""  }}</td>
+                        {% endfor %}
                     </tr>
                   {% endfor %}
                 </table>
-              </div><!-- /.tab-pane -->
-            {% endfor %}
           </div>
-          <!-- /.tab-content -->
         </div>
-        <!-- nav-tabs-custom -->
       </div><!-- /.col -->
     {% endif %}
+
+
+    <!--{% if measurements %}-->
+      <!--<div class="col-lg-12">-->
+        <!--<h3>{% trans 'Summary of measurements' %}</h3>-->
+        <!--&lt;!&ndash; Custom Tabs (Pulled to the right) &ndash;&gt;-->
+        <!--<div class="nav-tabs-custom">-->
+          <!--<ul class="nav nav-tabs">-->
+            <!--{% for measurement in measurements %}-->
+              <!--<li {% if measurement.active %}class="active"{% endif %}>-->
+                <!--<a href="#{{ measurement.measurement_type }}" data-toggle="tab">{{ measurement.measurement_type }}</a>-->
+              <!--</li>-->
+            <!--{% endfor %}-->
+          <!--</ul>-->
+          <!--<div class="tab-content table-responsive">-->
+            <!--{% for measurement in measurements %}-->
+              <!--<div class="tab-pane{% if measurement.active %} active{% endif %}"-->
+                   <!--id="{{ measurement.measurement_type }}">-->
+                <!--<table class="table table-bordered table-striped ">-->
+                  <!--<tr>-->
+                    <!--<th>{% trans 'date'|title %}</th>-->
+                    <!--<th>{% trans 'measurement'|title %}</th>-->
+                  <!--</tr>-->
+                  <!--{% for value in measurement.values %}-->
+                    <!--<tr>-->
+                      <!--<td>{{ value.date|create_date|date:'m/d/Y H:i' }}</td>-->
+                      <!--<td>-->
+                        <!--<a href="{% url 'measurements:detail' unit_pk=object.pk pk=value.pk lab_pk=lab.pk %}">-->
+                          <!--{{ value.value }}-->
+                        <!--</a>-->
+                      <!--</td>-->
+                    <!--</tr>-->
+                  <!--{% endfor %}-->
+                <!--</table>-->
+              <!--</div>&lt;!&ndash; /.tab-pane &ndash;&gt;-->
+            <!--{% endfor %}-->
+          <!--</div>-->
+          <!--&lt;!&ndash; /.tab-content &ndash;&gt;-->
+        <!--</div>-->
+        <!--&lt;!&ndash; nav-tabs-custom &ndash;&gt;-->
+      <!--</div>&lt;!&ndash; /.col &ndash;&gt;-->
+    <!--{% endif %}-->
 
   </div>
   <!-- /.row -->

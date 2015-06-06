@@ -100,15 +100,15 @@ def update_in_index(sender, document, **kw):
         tasks.create_mapping(UnitMappingType)
         tasks.create_mapping(MeasurementMappingType)
         tasks.index_objects.delay(UnitMappingType, [document.id])
-        for measurement in document.measurements:
-            tasks.index_objects.delay(MeasurementMappingType, [measurement.id])
+        # for measurement in document.measurements:
+        #     tasks.index_objects.delay(MeasurementMappingType, [measurement.id])
     else:
         tasks.unindex_objects.delay(UnitMappingType, [document.id])
-        tasks.unindex_objects.delay(MeasurementMappingType, [measurement.id for measurement in document.measurements])
+        # tasks.unindex_objects.delay(MeasurementMappingType, [measurement.id for measurement in document.measurements])
 
 
 @receiver(pre_delete, sender=Unit)
 def remove_from_index(sender, document, **kw):
     from common import tasks
     tasks.unindex_objects.delay(UnitMappingType, [document.id])
-    tasks.unindex_objects.delay(MeasurementMappingType, [measurement.id for measurement in document.measurements])
+    # tasks.unindex_objects.delay(MeasurementMappingType, [measurement.id for measurement in document.measurements])

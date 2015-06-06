@@ -14,13 +14,19 @@ class Measurement(HistoryDocument, me.EmbeddedDocument):
     """
     The model is for storing Measurement data. Bind to Unit
 
-    :measurement_type: reference on MeasurementType model
-    :type measurement_type: :class:`measurements.documents.MeasurementType`
+    formats
+    headers: [title1, title2, title3]
+    table_data: [
+       ['a1','a2']
+       ['b1','b2']
+    ]
     """
-    created_at = me.DateTimeField(required=True, verbose_name=_('created at'))
-    measurement_type = me.ReferenceField('MeasurementType', required=True, verbose_name=_('measurement type'))
-    value = me.FloatField(required=True, verbose_name=_('value'))
-    description = me.StringField(required=False, verbose_name=_('description'))
+    # created_at = me.DateTimeField(required=True, verbose_name=_('created at'))
+    # measurement_type = me.ReferenceField('MeasurementType', required=True, verbose_name=_('measurement type'))
+    # value = me.FloatField(required=True, verbose_name=_('value'))
+    # description = me.StringField(required=False, verbose_name=_('description'))
+    table_data = me.ListField(required=True, verbose_name=_('table data'))
+    headers = me.ListField(required=True, verbose_name=_('headers'))
     active = me.BooleanField(default=True, verbose_name=_('active'))
 
     meta = {'related_fkey_lookups': [], 'local_fields': [], 'virtual_fields': [], 'auto_created': False,
@@ -28,7 +34,7 @@ class Measurement(HistoryDocument, me.EmbeddedDocument):
             'verbose_name_plural': ugettext('measurements')}
 
     def __unicode__(self):
-        return u'{}-{}'.format(self.measurement_type, self.value)
+        return u'{}'.format(self.headers)
 
     def get_absolute_url(self):
         unit = self.get_unit()
@@ -43,7 +49,7 @@ class Measurement(HistoryDocument, me.EmbeddedDocument):
     def get_unit(self):
         from units.documents import Unit
         try:
-            return Unit.objects.get(measurements___id=self.pk)
+            return Unit.objects.get(measurements=self)
         except Unit.DoesNotExist:
             # todo this should not occur
             return None
@@ -56,6 +62,12 @@ class Measurement(HistoryDocument, me.EmbeddedDocument):
 
     def is_member(self, user):
         return self.get_unit().is_member(user)
+
+    def as_table(self):
+        result = []
+        result.append(self.headers)
+        result.extend(self.table_data)
+        return result
 
 
 Measurement._default_manager = Measurement.objects

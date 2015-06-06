@@ -223,28 +223,29 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         return ctx
 
     def get_measurement(self):
-        result = self.model._get_collection().aggregate([
-            {'$unwind': "$measurements"},
-            {'$match': {'$and': [{'measurements.active': True}, {'_id': ObjectId(self.kwargs.get('pk'))}]}},
-            {'$group': {
-                '_id': {
-                    'measurement_type': "$measurements.measurement_type"
-                },
-                'values': {'$push': {
-                    'date': {
-                        'year': {'$year': '$measurements.created_at'},
-                        'month': {'$month': '$measurements.created_at'},
-                        'day': {'$dayOfMonth': '$measurements.created_at'},
-                        'hour': {'$hour': '$measurements.created_at'},
-                        'minute': {'$minute': '$measurements.created_at'}
-                    },
-                    'value': "$measurements.value",
-                    'pk': "$measurements._id"
-                }}
-            }},
-        ])
-        for row in result['result']:
-            row['measurement_type'] = MeasurementType.objects.get(pk=row['_id']['measurement_type'])
-        if result['result']:
-            result['result'][0]['active'] = True
-        return result['result']
+        return self.object.measurements
+        # result = self.model._get_collection().aggregate([
+        #     {'$unwind': "$measurements"},
+        #     {'$match': {'$and': [{'measurements.active': True}, {'_id': ObjectId(self.kwargs.get('pk'))}]}},
+        #     {'$group': {
+        #         '_id': {
+        #             'measurement_type': "$measurements.measurement_type"
+        #         },
+        #         'values': {'$push': {
+        #             'date': {
+        #                 'year': {'$year': '$measurements.created_at'},
+        #                 'month': {'$month': '$measurements.created_at'},
+        #                 'day': {'$dayOfMonth': '$measurements.created_at'},
+        #                 'hour': {'$hour': '$measurements.created_at'},
+        #                 'minute': {'$minute': '$measurements.created_at'}
+        #             },
+        #             'value': "$measurements.value",
+        #             'pk': "$measurements._id"
+        #         }}
+        #     }},
+        # ])
+        # for row in result['result']:
+        #     row['measurement_type'] = MeasurementType.objects.get(pk=row['_id']['measurement_type'])
+        # if result['result']:
+        #     result['result'][0]['active'] = True
+        # return result['result']

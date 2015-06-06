@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% load i18n static %}
+
+
+{% block content_header %}
+  {% if unit_pk %}
+    <li><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
+  {% endif %}
+{% endblock %}
+
+
+{% block breadcrumb %}
+  {% if experiment %}
+    <li><a href="{{ experiment.get_absolute_url }}"><i class="fa fa-eyedropper"></i> {% trans experiment.title|title %}
+    </a></li>
+  {% endif %}
+  {% if unit_pk %}
+    {% if object.experiments %}
+      <li>
+        {% for experiment in object.experiments %}
+          <a href="{{ experiment.get_absolute_url }}">
+            <i class="fa fa-eyedropper"></i> {% trans experiment.title|title %}
+          </a>&nbsp;
+        {% endfor %}
+      </li>
+    {% endif %}
+    <li><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
+  {% endif %}
+  <li class="active">
+    {% block breadcrumb_active %}
+    {% endblock %}
+  </li>
+{% endblock %}
+
+
+{% block manage_buttons %}
+  {% if is_member %}
+    <div class="btn-group">
+      <button id="save" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Saves' %}</button>
+    </div>
+  {% endif %}
+    <div class="btn-group">
+      <button  class="addcolumn btn bg-olive"><i class="fa fa-add"></i> {% trans 'Add Column' %}</button>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+  <div class="col-lg-12">
+    <div class="wrap-handsontable">
+      <div id="dataTable" data-content='{{ data }}' data-title='{{ title }}' data-column='{{ column }}'
+           data-headers='{{ headers }}' {% block urls %}{% endblock %}></div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block css %}
+  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.full.css' %}">
+  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.bootstrap.css' %}">
+  {% block extra_css %}{% endblock %}
+{% endblock %}
+
+
+{% block script %}
+  <script src="{% static 'jquery-handsontable/jquery.handsontable.full.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/selectMultipleEditor.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/select2Editor.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/datetimeEditor.js' %}"></script>
+  {% block extra_script %}{% endblock %}
+  <script src="{% static 'js/handson-table-new.js' %}"></script>
+{% endblock %}

@@ -148,7 +148,8 @@ class ExperimentDetailView(CheckLabPermissionMixin, CheckViewPermissionMixin, La
         ctx = super(ExperimentDetailView, self).get_context_data(**kwargs)
         ctx['units'] = self.units
         ctx['tags'] = set([tag for unit in self.units for tag in unit.tags])
-        ctx['measurements'] = [measurement for unit in self.units for measurement in unit.measurements if measurement.active]
+        # ctx['measurements'] = [measurement for unit in self.units for measurement in unit.measurements if measurement.active]
+        ctx['measurements'] = [unit.measurements  for unit in self.units]
                               # self.units.filter(measurements__match={"active": True})
         return ctx
 

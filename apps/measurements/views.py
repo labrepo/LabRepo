@@ -1,4 +1,5 @@
 import json
+import re
 from bson import ObjectId
 
 from django.contrib import messages
@@ -24,7 +25,7 @@ from labs.documents import Lab
 from units.documents import Unit
 
 
-class MeasurementCreateView(LoginRequiredMixin, DataMixin, CheckEditPermissionMixin, AjaxableResponseMixin, RecentActivityMixin,
+class MeasurementCreateView(LoginRequiredMixin, CheckEditPermissionMixin, AjaxableResponseMixin, RecentActivityMixin,
                             ModelFormMixin, TemplateResponseMixin, BaseDetailView, View):
     """
      View for creating a new measurement
@@ -36,7 +37,7 @@ class MeasurementCreateView(LoginRequiredMixin, DataMixin, CheckEditPermissionMi
     active_tab = 'measurement'
     title = {
         'pk': 'pk', 'created_at': 'created_at', 'measurement_type_pk': 'measurement_type', 'value': 'value',
-        'change reasons': 'comment'
+        'change reasons': 'comment', 'data': 'data'
     }
     template_name = 'measurement/measurement_list.html'
     title_field = ['pk', 'created_at', 'measurement_type', 'value']
@@ -48,8 +49,12 @@ class MeasurementCreateView(LoginRequiredMixin, DataMixin, CheckEditPermissionMi
         ctx = {'active_tab': self.active_tab, 'object': self.object}
         user = self.request.user
         ctx.update(self.kwargs)
-        # todo change queryset
-        measurements =[measurement for measurement in self.object.measurements if measurement.active]
+        if self.object.measurements:
+            measurements = self.object.measurements.as_table()
+        else:
+            measurements = [
+                ['', ''], ['', '']
+            ]
         ctx['data'] = json.dumps(measurements, cls=JsonDocumentEncoder, fields=self.title_field, extra_fields=self.extra_title)
         measurement_type = MeasurementType.objects.filter(lab=self.kwargs['lab_pk'], active=True).values_list('pk', 'measurement_type')
         ctx['column'] = json.dumps([
@@ -79,21 +84,48 @@ class MeasurementCreateView(LoginRequiredMixin, DataMixin, CheckEditPermissionMi
     def is_changed(self, data):
         return True
 
-    def form_valid(self, form):
-        if not self.kwargs.get('pk'):
-            measurement = Measurement(**form.cleaned_data).save(user=self.request.user, revision_comment=form.cleaned_data.get('comment'))
-            self.object.measurements.append(measurement)
-            self.object = self.object.save(user=self.request.user)
-        else:
-            measurement = Measurement(pk=self.kwargs.get('pk'), **form.cleaned_data)
-            self.model.objects(pk=self.kwargs[self.pk_url_kwarg], measurements___id=ObjectId(self.kwargs.get('pk'))).update(set__measurements__S=measurement)
-            # todo update measurement instance change
-            measurement_old = Measurement.objects.get(pk=self.kwargs.get('pk'))
-            for key, value in form.cleaned_data.iteritems():
-                setattr(measurement_old, key, value)
-            measurement_old.save(user=self.request.user, revision_comment=form.cleaned_data.get('comment'))
-        self.save_recent_activity(self.flag, obj=measurement, unit=self.object.pk, experiment=[unicode(obj.pk) for obj in self.object.experiments])
-        return {'pk': unicode(measurement.pk), 'success': True}
+    def post(self, request, *args, **kwargs):
+
+        self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
+        data_list = dict(self.request.POST.iterlists())
+        table_data = [[None] * int(data_list['width'][0]) for x in xrange(int(data_list['length'][0]))]
+        headers = [None] * int(data_list['width'][0])
+
+        for key in data_list.keys():
+            if key.startswith("row-0"):
+                index = int(re.search(r'row-0-col-(.+?)', key).group(1))
+                headers[index] =  data_list[key][0]
+            elif key.startswith("row-"):
+                row_index = int(re.search(r'row-(.+)-col-.+', key).group(1))
+                col_index = int(re.search(r'row-.+-col-(.+?)', key).group(1))
+                table_data[row_index][col_index] = data_list[key][0]
+
+        self.object = self.get_object()
+        user = request.user
+        if self.object and not (self.object.is_member(user) or self.object.is_owner(user)):
+            return self.render_to_json_response({'errors': {'non_field_error': 'Permission denied'}, 'success': False})
+
+        measurement = Measurement(table_data=table_data[1:],headers=headers).save(user=self.request.user)
+        self.object.measurements = measurement
+        self.object = self.object.save(user=self.request.user)
+
+        return self.render_to_json_response({'success': True})
+
+    # def form_valid(self, form):
+    #     if not self.kwargs.get('pk'):
+    #         measurement = Measurement(**form.cleaned_data).save(user=self.request.user, revision_comment=form.cleaned_data.get('comment'))
+    #         self.object.measurements.append(measurement)
+    #         self.object = self.object.save(user=self.request.user)
+    #     else:
+    #         measurement = Measurement(pk=self.kwargs.get('pk'), **form.cleaned_data)
+    #         self.model.objects(pk=self.kwargs[self.pk_url_kwarg], measurements___id=ObjectId(self.kwargs.get('pk'))).update(set__measurements__S=measurement)
+    #         # todo update measurement instance change
+    #         measurement_old = Measurement.objects.get(pk=self.kwargs.get('pk'))
+    #         for key, value in form.cleaned_data.iteritems():
+    #             setattr(measurement_old, key, value)
+    #         measurement_old.save(user=self.request.user, revision_comment=form.cleaned_data.get('comment'))
+    #     self.save_recent_activity(self.flag, obj=measurement, unit=self.object.pk, experiment=[unicode(obj.pk) for obj in self.object.experiments])
+    #     return {'pk': unicode(measurement.pk), 'success': True}
 
 
 class MeasurementDeleteView(LoginRequiredMixin, AjaxableResponseMixin, CheckDeletePermissionMixin, ActiveTabMixin,

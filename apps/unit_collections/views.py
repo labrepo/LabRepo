@@ -19,7 +19,7 @@ from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
 from common.decorators import get_obj_or_404
 from dashboard.documents import RecentActivity
-from measurements.documents import MeasurementType
+# from measurements.documents import MeasurementType
 from unit_collections.documents import Collection
 from unit_collections.forms import UpdateUnitsCollectionForm
 from common.mixins import LoginRequiredMixin, AjaxableResponseMixin, RecentActivityMixin, CheckLabPermissionMixin, \
@@ -142,8 +142,9 @@ class PlotView(AjaxableResponseMixin, View):
 
     @method_decorator(get_obj_or_404)
     def get(self, request, *args, **kwargs):
-        measurement_type_pk = kwargs.get('measurement_type_pk')
-        measurement_type = MeasurementType.objects.get(pk=measurement_type_pk)
+        return self.render_to_json_response({'plot': u''})
+        # measurement_type_pk = kwargs.get('measurement_type_pk')
+        # measurement_type = MeasurementType.objects.get(pk=measurement_type_pk)
         collection = Collection.objects.get(pk=kwargs.get('pk'))
         units = Unit.objects.filter(measurements__match={'measurement_type': measurement_type.pk, 'active': True},
                                     pk__in=[unit.pk for unit in collection.units], active=True)
@@ -172,7 +173,8 @@ class PlotView(AjaxableResponseMixin, View):
 
             bk.get_default_color()
 
-            plot.title = ugettext('Measurements type {}'.format(measurement_type.__unicode__()))
+            plot.title = ugettext('Measurements type')
+            # plot.title = ugettext('Measurements type {}'.format(measurement_type.__unicode__()))
             js, tag = autoload_static(plot, Resources(mode='server', root_url=settings.STATIC_URL), "")
             return self.render_to_json_response({'plot': u'{}<script>{}</script>'.format(tag, js)})
         return self.render_to_json_response(ugettext('Not found'), status=404)

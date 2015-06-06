@@ -9,16 +9,18 @@ from .documents import Measurement, MeasurementType
 
 
 class MeasurementForm(BaseForm):
-
+    """
+    Not used
+    """
     def __init__(self, *args, **kwargs):
         lab_pk = kwargs.pop('lab_pk')
         super(MeasurementForm, self).__init__(*args, **kwargs)
-        self.fields['created_at'] = forms.DateTimeField(widget=DateTimeWidget(format='%m/%d/%Y %H:%M'))
-        self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk)
+        # self.fields['created_at'] = forms.DateTimeField(widget=DateTimeWidget(format='%m/%d/%Y %H:%M'))
+        # self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk)
 
     class Meta:
         document = Measurement
-        fields = ('created_at', 'measurement_type', 'value', 'description')
+        fields = ('data', )
 
 
 class MeasurementDescriptionForm(BaseForm):

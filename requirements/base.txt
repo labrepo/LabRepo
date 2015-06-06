@@ -23,3 +23,5 @@ bokeh==0.6.1
 numpy==1.9.1
 panda==0.1.5
 redis==2.10.3
+amqp
+anyjson

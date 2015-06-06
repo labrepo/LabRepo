@@ -30,7 +30,8 @@ class Unit(HistoryDocument):
     sample = me.StringField(required=True, verbose_name=_('sample'))
     tags = me.ListField(me.ReferenceField(Tag), required=False, verbose_name=_('tags'))
     active = me.BooleanField(default=True, verbose_name=_('active'))
-    measurements = me.ListField(me.EmbeddedDocumentField(Measurement), verbose_name=_('measurements'))
+    # measurements = me.ListField(me.EmbeddedDocumentField(Measurement), verbose_name=_('measurements'))
+    measurements = me.EmbeddedDocumentField(Measurement)
     description = me.StringField(required=False, verbose_name=_('description'))
 
     meta = {'create_revision_after_save': True, 'versioned': True, 'related_fkey_lookups': [], 'local_fields': [],
