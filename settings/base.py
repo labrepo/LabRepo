@@ -180,7 +180,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 AUTH_USER_MODEL = 'mongo_auth.MongoUser'
-MONGOENGINE_USER_DOCUMENT = 'mongoengine.django.auth.User'
+MONGOENGINE_USER_DOCUMENT = 'profiles.models.LabUser'
 
 # registration
 ACCOUNT_ACTIVATION_DAYS = 1

@@ -4,8 +4,8 @@ from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
-from mongoengine.django.auth import User
-
+# from mongoengine.django.auth import User
+from profiles.models import LabUser
 from common.forms import BaseForm
 from profiles.documents import TempPassword
 
@@ -18,30 +18,36 @@ class InviteUserForm(BaseForm):
         self.fields['email'].label = _('email address').capitalize()
 
     class Meta:
-        document = User
+        document = LabUser
         fields = ('email',)
         using = 'mongodb'
 
     def save(self, commit=True):
         allowed_chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'
         password = ''.join([choice(allowed_chars) for i in range(10)])
-        user = User.create_user(self.cleaned_data['email'].replace('@', '_'), password, email=self.cleaned_data['email'])
+        user = LabUser.create_user(self.cleaned_data['email'].replace('@', '_'), password, email=self.cleaned_data['email'])
         TempPassword(user=user, password=password).save()
         return user
 
     def clean_email(self):
         data = self.cleaned_data.get('email')
         try:
-            User.objects.get(email=data)
+            LabUser.objects.get(email=data)
             raise forms.ValidationError(_("User already exist"))
-        except User.DoesNotExist:
+        except LabUser.DoesNotExist:
             return data
 
 
 class UserUpdateForm(BaseForm):
+
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['plot_un'].widget = forms.widgets.TextInput()
+        self.fields['plot_key'].widget = forms.widgets.TextInput()
+
     class Meta:
-        document = User
-        fields = ('first_name', 'last_name',)
+        document = LabUser
+        fields = ('first_name', 'last_name', 'plot_un', 'plot_key')
 
 
 class ChangeUserForm(BaseForm):
@@ -51,7 +57,7 @@ class ChangeUserForm(BaseForm):
                     "using <a href=\"password/\">this form</a>."))
 
     class Meta:
-        document = User
+        document = LabUser
         exclude = ('user_permissions', 'username')
 
     def clean_password(self):
@@ -79,15 +85,15 @@ class ProfileCreationForm(BaseForm):
                                 help_text=_("Enter the same password as above, for verification."))
 
     class Meta:
-        model = User
+        model = LabUser
         fields = ('email',)
         exclude = ('user_permissions', )
 
     def clean_email(self):
         email = self.cleaned_data["email"]
         try:
-            User._default_manager.get(email=email)
-        except User.DoesNotExist:
+            LabUser._default_manager.get(email=email)
+        except LabUser.DoesNotExist:
             return email
         raise forms.ValidationError(
             self.error_messages['duplicate_email'],

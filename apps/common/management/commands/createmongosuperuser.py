@@ -5,14 +5,14 @@ from __future__ import unicode_literals
 from django.contrib.auth.hashers import make_password
 
 from django.core.management.base import BaseCommand
-from mongoengine.django.auth import User
-
+# from mongoengine.django.auth import User
+from profiles.models import LabUser
 
 class Command(BaseCommand):
 
     def __init__(self, *args, **kwargs):
         super(Command, self).__init__(*args, **kwargs)
-        self.UserModel = User
+        self.UserModel = LabUser
         self.username_field = 'username'
 
     help = 'Used to create a superuser.'

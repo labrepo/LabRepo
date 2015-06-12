@@ -48,6 +48,16 @@
           <dd>
             <i class="fa fa-calendar-o"></i> {{ object.last_login|date }}
           </dd>
+            <hr>
+          <br>
+          <dt>{% trans 'Plot.ly username' %}</dt>
+          <dd>
+            <i class="fa fa-area-chart"></i> {{ object.plot_un|default:"" }}
+          </dd>
+          <dt>{% trans 'Plot.ly key' %}</dt>
+          <dd>
+            <i class="fa fa-area-chart"></i> {{ object.plot_key|default:"" }}
+          </dd>
         </dl>
       </div>
     </div>

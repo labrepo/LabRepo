@@ -28,15 +28,16 @@ function ColorLuminance(hex, lum) {
 }
 
 function getRequiredCol(table, col, title) {
-    var n_cols = table.countCols(),
-        name = (Object.keys(title).filter(function (item) {
-            return title[item].toLowerCase() === table.getColHeader(col).split('<')[0].trim().toLowerCase()
-        })[0] + '_pk').toLowerCase();
-    for (var j = 1; j <= n_cols; j++) {
-        if (typeof table.getColHeader(j) !== 'undefined' && name == table.getColHeader(j).toLowerCase()) {
-            return j;
-        }
-    }
+    return false
+//    var n_cols = table.countCols(),
+//        name = (Object.keys(title).filter(function (item) {
+//            return title[item].toLowerCase() === table.getColHeader(col).split('<')[0].trim().toLowerCase()
+//        })[0] + '_pk').toLowerCase();
+//    for (var j = 1; j <= n_cols; j++) {
+//        if (typeof table.getColHeader(j) !== 'undefined' && name == table.getColHeader(j).toLowerCase()) {
+//            return j;
+//        }
+//    }
 }
 
 function treeValueToJson(value, column, col) {
@@ -198,6 +199,13 @@ $(function () {
                     }
                 }
             }
+            // update plot form
+            var options = $(table).handsontable('getDataAtRow', 0);
+            $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
+            for (var i = 0, max = options.length; i < max; i += 1) {
+                $('#plot-form .asis').append('<option value="'+ i +'">' + options[i] + '</option>')
+            }
+
         },
         cells: function (row, col, prop) {
             var cellProperties = {};
@@ -227,6 +235,8 @@ $(function () {
             }
             if (flag_empty) {
                 data.splice(-1, 1)
+            } else {
+                break
             }
         }
 

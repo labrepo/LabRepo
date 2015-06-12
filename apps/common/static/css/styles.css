@@ -19,7 +19,12 @@ body {
 .dashboard-tab {
     min-height: 615px;
 }
-
+.plot-area {
+    padding-bottom: 15px;
+}
+.create-plot-btn {
+    padding-top: 5px;
+}
 .handsontable .handsontable table {
     -webkit-box-shadow: none;
     box-shadow: none;

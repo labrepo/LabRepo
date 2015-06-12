@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% load i18n static %}
+
+
+{% block content_header %}
+  {% if unit_pk %}
+    <li><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
+  {% endif %}
+{% endblock %}
+
+
+{% block breadcrumb %}
+  {% if experiment %}
+    <li><a href="{{ experiment.get_absolute_url }}"><i class="fa fa-eyedropper"></i> {% trans experiment.title|title %}
+    </a></li>
+  {% endif %}
+  {% if unit_pk %}
+    {% if object.experiments %}
+      <li>
+        {% for experiment in object.experiments %}
+          <a href="{{ experiment.get_absolute_url }}">
+            <i class="fa fa-eyedropper"></i> {% trans experiment.title|title %}
+          </a>&nbsp;
+        {% endfor %}
+      </li>
+    {% endif %}
+    <li><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
+  {% endif %}
+  <li class="active">
+    {% block breadcrumb_active %}
+    {% endblock %}
+  </li>
+{% endblock %}
+
+
+{% block manage_buttons %}
+  {% if is_member %}
+    <div class="btn-group">
+      <button id="save" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Saves' %}</button>
+    </div>
+  {% endif %}
+    <div class="btn-group">
+      <button  class="addcolumn btn bg-olive"><i class="fa fa-plus"></i> {% trans 'Add Column' %}</button>
+    </div>
+    <div class="btn-group">
+      <button  class="show-plot btn bg-olive"><i class="fa fa-area-chart"></i> {% trans 'Create plot' %}</button>
+    </div>
+{% endblock %}
+
+{% block content %}
+  <div class="col-lg-12">
+
+    <div class="plot-area">
+        <div class="row">
+            <div class="col-lg-4">
+        <form id="plot-form" style="display: none">
+            <div class="plot-link"></div>
+            <div class="form-inline">
+                <div class="form-group">
+                    <select  class="form-control asis" name="xasis">
+                        <option selected disabled>x-asis</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="form-control asis" name="yasis">
+                        <option selected disabled>y-asis</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select  class="input-small form-control" name="type">
+                        <option disabled>type</option>
+                        <option selected value="scatter">scatter</option>
+                        <option value="bar">bar</option>
+                    </select>
+                </div>
+            </div>
+            <div class="create-plot-btn">
+              <button class="create-plot btn bg-olive"><i class="fa fa-area-chart"></i> {% trans 'Create plot' %}</button>
+            </div>
+        </form>
+        </div>
+        </div>
+    </div>
+    <div class="wrap-handsontable">
+      <div id="dataTable" data-content='{{ data }}' data-title='{{ title }}' data-column='{{ column }}'
+           data-headers='{{ headers }}' {% block urls %}{% endblock %}></div>
+    </div>
+  </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="set_un" tabindex="-1" role="dialog" aria-labelledby="Modal"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" title="{% trans 'Close' %}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" id="Modal">{% trans 'Error' %}</h3>
+      </div>
+      <form method="post" class="modal-form {{ class }}" action="{{ action }}" data-field="{{ fields }}">
+        <div class="modal-body">
+          <p>Please set plot.ly username and key in <a href="{% url 'profiles:update' pk=user.pk %}">your profile</a>. You can access it in <a href="https://plot.ly/settings/api">plot.ly profile page</a></p>
+        </div>
+        <div class="modal-footer form-actions">
+          <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block css %}
+  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.full.css' %}">
+  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.bootstrap.css' %}">
+  {% block extra_css %}{% endblock %}
+{% endblock %}
+
+
+{% block script %}
+  <script src="{% static 'jquery-handsontable/jquery.handsontable.full.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/selectMultipleEditor.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/select2Editor.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/datetimeEditor.js' %}"></script>
+  {% block extra_script %}{% endblock %}
+  <script src="{% static 'js/handson-table-new.js' %}"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            var table = $("#dataTable");
+            var options = $(table).handsontable('getDataAtRow', 0);
+            $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
+            for (var i = 0, max = options.length; i < max; i += 1) {
+                $('#plot-form .asis').append('<option value="'+ i +'">' + options[i] + '</option>')
+            }
+        });
+
+        $('.show-plot').click(function (e) {
+            $('form#plot-form').toggle();
+        });
+        $('form#plot-form').submit(function (e) {
+
+            e.preventDefault();
+
+            if(! ('{{ user.plot_un|default:"" }}' && '{{ user.plot_key|default:"" }}')){
+                $('#set_un').modal('toggle');
+                return false
+            }
+
+            var x_asis = $(this).find('select[name="xasis"]').val();
+            var y_asis = $(this).find('select[name="yasis"]').val();
+
+            if (x_asis === null){
+                $(this).find('select[name="xasis"]').closest('div').addClass('has-error');
+                return false
+            }
+            if (y_asis === null){
+                $(this).find('select[name="yasis"]').closest('div').addClass('has-error');
+                return false
+            }
+            $(this).find('select[name="xasis"]').closest('div').removeClass('has-error');
+            $(this).find('select[name="yasis"]').closest('div').removeClass('has-error');
+
+            var plot_type = $(this).find('select[name="plot_type"]').val();
+
+            var plot_data = {};
+            plot_data['un'] = '{{ user.plot_un }}';
+            plot_data['key'] = '{{ user.plot_key }}';
+            plot_data['origin'] = 'plot';
+            plot_data['platform'] = 'javascript';
+
+            var table = $("#dataTable");
+            var handsontable = table.data('handsontable');
+
+            var plot_args = table_to_plot_data(handsontable.getData());
+            var args = [plot_args[x_asis], plot_args[y_asis]];
+            plot_data['args'] = JSON.stringify(args);
+
+            plot_data['kwargs'] = JSON.stringify({"filename": "plot for {{ object }}",
+                                   "fileopt": "overwrite",
+                                        "style": {
+                                            "type": plot_type
+                                        },
+                                    "layout": {
+                                        "title": "plot for {{ object }}"
+                                    },
+                                    "world_readable": true
+                                    });
+            $.post('https://plot.ly/clientresp', plot_data, function( data ) {
+                var plot_url =JSON.parse(data).url;
+                $('.plot-link').html('<p><a target="_blank" href="' + plot_url + '">View the plot on plot.ly</a></p>')
+            });
+        });
+
+        function table_to_plot_data(table_data) {
+            // Remove table headers
+            table_data = table_data.slice(1);
+
+            // Remove empty row from end
+            for(var i = table_data.length-1; i > 1; i -= 1){
+                var flag_empty = true;
+                for(var j = 0, max2 = table_data[i].length; j < max2; j += 1){
+                    if(table_data[i][j] ){
+                        flag_empty = false
+                        break
+                    }
+                }
+                if (flag_empty) {
+                    table_data.splice(-1, 1)
+                } else {
+                break
+                }
+            }
+            // Initialize plot_data object
+            var plot_data = []
+            for (var i = 0, max = table_data[0].length; i < max; i += 1) {
+                plot_data.push([])
+            }
+
+            // Fill plot_data object
+            for (var i = 0, max = table_data.length; i < max; i += 1) {
+                for (var j = 0, max2 = table_data[i].length; j < max2; j += 1) {
+                    plot_data[j].push(table_data[i][j])
+                }
+            }
+            return plot_data
+        }
+    </script>
+{% endblock %}

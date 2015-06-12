@@ -1,10 +1,11 @@
 from django.contrib import auth
 
 from mongoengine.django.auth import MongoEngineBackend
-
+from profiles.models import LabUser
 
 class MongoEngineEmailBackend(MongoEngineBackend):
-
+    
+    user_document = LabUser
     def authenticate(self, username=None, password=None):
         user = self.user_document.objects(email=username).first()
         if user:
