@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from .views import (MeasurementCreateView, MeasurementDeleteView, MeasurementDetailView,
                     MeasurementTypeCreateView, MeasurementTypeDeleteView, MeasurementTypeAppendView,
-                    MeasurementDeleteOneView)
+                    MeasurementDeleteOneView, MeasurementHistoryRevert)
 
 
 urlpatterns = patterns('',
@@ -15,5 +15,7 @@ urlpatterns = patterns('',
     url(r'^(?P<unit_pk>[\d\w]+)/list/$', MeasurementCreateView.as_view(), name='list'),
     url(r'^(?P<unit_pk>[\d\w]+)/(?P<pk>[\d\w]+)/detail/$', MeasurementDetailView.as_view(), name='detail'),
     url(r'^(?P<unit_pk>[\d\w]+)/(?P<pk>[\d\w]+)/delete/$', MeasurementDeleteOneView.as_view(), name='delete-one'),
+
+    url(r'^(?P<unit_pk>[\d\w]+)/revert/(?P<revision_pk>[\d\w]+)/$', MeasurementHistoryRevert.as_view(), name='measurement-revert'),
 
 )

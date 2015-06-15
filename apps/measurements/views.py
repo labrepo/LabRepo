@@ -1,5 +1,6 @@
 import json
 import re
+import datetime
 from bson import ObjectId
 
 from django.contrib import messages
@@ -12,6 +13,7 @@ from django.views.generic.detail import BaseDetailView
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.utils.translation import gettext_lazy as _, ugettext
+from django.utils import formats
 
 from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckViewPermissionMixin,
                            CheckDeletePermissionMixin, RecentActivityMixin,
@@ -19,6 +21,7 @@ from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckViewPermissi
                            CheckEditPermissionMixin, InitialLabMixin)
 from common.serializer import JsonDocumentEncoder
 from dashboard.documents import RecentActivity
+from history.documents import History
 from .documents import Measurement, MeasurementType
 from .forms import MeasurementForm, MeasurementTypeForm, MeasurementUpdateForm, MeasurementDescriptionForm
 from labs.documents import Lab
@@ -55,6 +58,8 @@ class MeasurementCreateView(LoginRequiredMixin, CheckEditPermissionMixin, Ajaxab
             measurements = [
                 ['', ''], ['', '']
             ]
+        if self.object.measurements:
+            ctx['revisions'] = self.object.measurements.revisions()
         ctx['data'] = json.dumps(measurements, cls=JsonDocumentEncoder, fields=self.title_field, extra_fields=self.extra_title)
         measurement_type = MeasurementType.objects.filter(lab=self.kwargs['lab_pk'], active=True).values_list('pk', 'measurement_type')
         ctx['column'] = json.dumps([
@@ -104,12 +109,38 @@ class MeasurementCreateView(LoginRequiredMixin, CheckEditPermissionMixin, Ajaxab
         user = request.user
         if self.object and not (self.object.is_member(user) or self.object.is_owner(user)):
             return self.render_to_json_response({'errors': {'non_field_error': 'Permission denied'}, 'success': False})
+        if self.object.measurements:
+            # create history revision for measurement
+            measurements = self.object.measurements
+            if measurements.headers != headers or measurements.table_data != table_data[1:]:
+                # if measurment table data changed
+                measurement_old = Measurement.objects.get(pk=self.object.measurements.pk)
+                measurement_old.headers = headers
+                measurement_old.table_data = table_data[1:]
+                measurement_old.save(user=self.request.user, revision_comment=u'update')
+                revision = measurement_old.latest_revision
+                self.object.update(set__measurements=measurement_old)
+                response = {'success': True,
+                            'revision_pk': str(revision.id),
+                            'revision_timestamp': formats.date_format(revision.timestamp, 'DATETIME_FORMAT'),
+                            'revision_url': reverse('measurements:measurement-revert', kwargs={'lab_pk': self.object.lab.pk, 'unit_pk': self.object.id, 'revision_pk': revision.pk}),
+                            }
 
-        measurement = Measurement(table_data=table_data[1:],headers=headers).save(user=self.request.user)
-        self.object.measurements = measurement
-        self.object = self.object.save(user=self.request.user)
+            else:
+                response = {'success': True, 'message': 'nothing has changed'}
+        else:
+            # create new measurement
+            measurement = Measurement(table_data=table_data[1:], headers=headers).save(user=self.request.user)
+            self.object.measurements = measurement
+            self.object = self.object.save(user=self.request.user)
+            revision = measurement.latest_revision
+            response = {'success': True,
+                        'revision_pk': str(revision.id),
+                        'revision_timestamp': formats.date_format(revision.timestamp, 'DATETIME_FORMAT'),
+                        'revision_url': reverse('measurements:measurement-revert', kwargs={'lab_pk': self.object.lab.pk, 'unit_pk': self.object.id, 'revision_pk': revision.pk}),
+                        }
 
-        return self.render_to_json_response({'success': True})
+        return self.render_to_json_response(response)
 
     # def form_valid(self, form):
     #     if not self.kwargs.get('pk'):
@@ -268,3 +299,24 @@ class MeasurementTypeDeleteView(LoginRequiredMixin, DeleteDataMixin, AjaxableRes
 
     def get_success_url(self):
         return reverse('measurements:measurement_type_list', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
+
+
+class MeasurementHistoryRevert(LoginRequiredMixin, AjaxableResponseMixin, DataMixin, View):
+    """
+    View for getting measurement revision data
+    """
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        unit = Unit.objects.get(pk=self.kwargs.get('unit_pk'))
+        if unit and not (unit.is_member(user) or unit.is_owner(user)):
+            return self.render_to_json_response({'errors': {'non_field_error': 'Permission denied'}, 'success': False})
+
+        revision_pk = kwargs.get('revision_pk', '')
+        revision = History.objects.get(pk=revision_pk)
+
+        return self.render_to_json_response({
+            'success': True,
+            'table_data': revision.instance_data.get('table_data', ''),
+            'headers': revision.instance_data.get('headers', ''),
+            })

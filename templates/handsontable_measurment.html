@@ -46,6 +46,14 @@
     <div class="btn-group">
       <button  class="show-plot btn bg-olive"><i class="fa fa-area-chart"></i> {% trans 'Create plot' %}</button>
     </div>
+    <div class="btn-group pull-right">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">History <span class="caret"></span></button>
+        <ul class="dropdown-menu scrollable-menu revision-list" role="menu">
+            {% for revision in revisions %}
+                <li><a href="#" class="revert-revision" data-url="{% url 'measurements:measurement-revert' lab_pk=object.lab.pk unit_pk=object.id revision_pk=revision.pk %}"> {{ revision.timestamp }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}
 
 {% block content %}
@@ -139,6 +147,17 @@
             }
         });
 
+        // revert table data on revision restore
+        $('body').on('click',' .revert-revision', function (e) {
+            var url = $(this).data('url');
+            $.post(url, function (data) {
+                var table = $("#dataTable");
+                var table_data = data.table_data;
+                table_data.unshift(data.headers);
+                table.handsontable('loadData', table_data);
+            })
+
+        });
         $('.show-plot').click(function (e) {
             $('form#plot-form').toggle();
         });

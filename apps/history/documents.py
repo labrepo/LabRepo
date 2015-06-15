@@ -26,6 +26,14 @@ class HistoryDocument(ReversionedDocument):
         instance_type = ContentType.objects.get(class_name=self._class_name)
         return History.objects.filter(instance_type=instance_type, instance_id=self.pk).order_by('-timestamp')
 
+    @property
+    def latest_revision(self):
+        """
+        Return latest revision of object
+        """
+        instance_type = ContentType.objects.get(class_name=self._class_name)
+        return History.objects.filter(instance_type=instance_type, instance_id=self.pk).order_by('-timestamp').first()
+
     def save_revision(self, user, comment=''):
         """
         Save revision.

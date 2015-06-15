@@ -70,6 +70,10 @@ function firstRowRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
 
 
+function updateRevisionList(res) {
+    $('.revision-list').prepend('<li><a href="#" class="revert-revision" data-url="'+ res.revision_url + '"> '+ res.revision_timestamp + '</a></li>')
+}
+
 $(function () {
 
     var table = $("#dataTable"),
@@ -275,7 +279,11 @@ $(function () {
                 }
             }
             showMessageChild(hasError, messages);
-
+            //update revision list
+            if (res.revision_pk){
+                updateRevisionList(res);
+            }
+            
         }).fail(function (xhr) {
             showMessageChild(true, [xhr.statusText]);
         });
