@@ -40,53 +40,66 @@
 {% endblock %}
 
 {% block content %}
-  <div class="col-lg-6">
-    <div class="list-group">
-      <div class="col-sm-4 title-desc">{% trans 'experiments'|upper %}</div>
-      <div class="col-sm-8">
-        <ul class="list-group">
-          {% for expriment in object.experiments %}
-            <li class="list-group-item">{{ expriment }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% if object.parent %}
-        <div class="col-sm-4 title-desc">{% trans 'parent'|upper %}</div>
-        <div class="col-sm-8">
-          <ul class="list-group">
-            {% for unit in object.parent %}
-              <li class="list-group-item">{{ unit }}</li>
-            {% endfor %}
-          </ul>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="box box-solid box-info">
+        <div class="box-header">
+          <h3 class="box-title">Details</h3>
         </div>
-      {% endif %}
-      <div class="col-sm-4 title-desc">{% trans 'sample'|upper %}</div>
-      <div class="col-sm-8">
-        <ul class="list-group">
-          <li class="list-group-item">{{ object.sample }}</li>
-        </ul>
-      </div>
-      {% if object.tags %}
-        <div class="col-sm-4 title-desc">{% trans 'tags'|upper %}</div>
-        <div class="col-sm-8">
-          <ul class="list-group">
-            {% for tag in object.tags %}
-              <li class="list-group-item">{{ tag }}</li>
-            {% endfor %}
-          </ul>
+        <div class="box-body">
+          <div class="list-group">
+             <div class="row">
+            <div class="col-sm-4 title-desc">{% trans 'experiments'|upper %}</div>
+            <div class="col-sm-8">
+              <ul class="list-group">
+                {% for expriment in object.experiments %}
+                  <li class="list-group-item">{{ expriment }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% if object.parent %}
+              <div class="col-sm-4 title-desc">{% trans 'parent'|upper %}</div>
+              <div class="col-sm-8">
+                <ul class="list-group">
+                  {% for unit in object.parent %}
+                    <li class="list-group-item">{{ unit }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+            <div class="col-sm-4 title-desc">{% trans 'sample'|upper %}</div>
+            <div class="col-sm-8">
+              <ul class="list-group">
+                <li class="list-group-item">{{ object.sample }}</li>
+              </ul>
+            </div>
+            {% if object.tags %}
+              <div class="col-sm-4 title-desc">{% trans 'tags'|upper %}</div>
+              <div class="col-sm-8">
+                <ul class="list-group">
+                  {% for tag in object.tags %}
+                    <li class="list-group-item">{{ tag }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          </div>
+          </div>
         </div>
-      {% endif %}
+      </div>
     </div>
+    <div class="col-lg-6"> {% include 'comments/comment_form.html' %}</div>
+
+    <div class="col-lg-6"> {% include 'units/description.html' %}</div>
   </div>
-  <div class="col-lg-6"> {% include 'comments/comment_form.html' %}</div>
-
-  <div class="col-lg-6"> {% include 'units/description.html' %}</div>
-
-  <div class="col-lg-6">
+  <div class="row">
       {% if measurements %}
       <div class="col-lg-12">
-        <h3>{% trans 'Summary of measurements' %}</h3>
-        <div class="nav-tabs-custom">
+        <div class="box box-solid box-info">
+        <div class="box-header">
+          <h3 class="box-title">{% trans 'Summary of measurements' %}</h3>
+        </div>
+        <div class="box-body nav-tabs-custom">
           <div class="tab-content table-responsive">
                 <table class="table table-bordered table-striped ">
                   <tr>
@@ -103,6 +116,7 @@
                   {% endfor %}
                 </table>
           </div>
+        </div>
         </div>
       </div><!-- /.col -->
     {% endif %}
@@ -150,6 +164,6 @@
     <!--{% endif %}-->
 
   </div>
-  <!-- /.row -->
+  </div><!-- /.row -->
   {% include 'alert.html' %}
 {% endblock %}

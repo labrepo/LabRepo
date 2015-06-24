@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import dateutil
+import json
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -7,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
+from django.utils.safestring import mark_safe
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 
 from comments.documents import Comment
@@ -144,11 +146,55 @@ class ExperimentDetailView(CheckLabPermissionMixin, CheckViewPermissionMixin, La
     template_name = 'experiments/experiment_detail.html'
     paginate_by = 5
 
+    def get_unit_graph_data(self):
+        """
+        Return json data for units graph
+        """
+        units = list(self.units)
+        graph_data = dict()
+
+        graph_data['graph'] = []
+        graph_data['directed'] = False
+        graph_data['multigraph'] = False
+
+        nodes = []
+        links = []
+
+        for index, unit in enumerate(units):
+            node = {
+                "size": 1,
+                "score": 2,
+                "id": u'{}'.format(unit.pk),
+                "text": u'{}'.format(unit.sample),
+                "type": "circle",
+                'link': unit.get_absolute_url(),
+            }
+            nodes.append(node)
+            if not unit.parent:
+                continue
+            for parent in unit.parent:
+                if parent in units:
+                    link = {
+                        'source': index,
+                        'target': units.index(parent),
+                        'arrow': True
+                    }
+                    links.append(link)
+
+        graph_data['nodes'] = nodes
+        graph_data['links'] = links
+
+        return mark_safe(json.dumps(graph_data))
+
     def get_context_data(self, **kwargs):
         ctx = super(ExperimentDetailView, self).get_context_data(**kwargs)
         ctx['units'] = self.units
+
+        ctx['units_graph_json'] = self.get_unit_graph_data()
+
         ctx['tags'] = set([tag for unit in self.units for tag in unit.tags])
-        # ctx['measurements'] = [measurement for unit in self.units for measurement in unit.measurements if measurement.active]
+        # ctx['measurements'] = [measurement for unit in self.units
+        #                        for measurement in unit.measurements if measurement.active]
         ctx['measurements'] = [unit.measurements  for unit in self.units]
                               # self.units.filter(measurements__match={"active": True})
         return ctx
