@@ -155,7 +155,9 @@
                 var table_data = data.table_data;
                 table_data.unshift(data.headers);
                 table.handsontable('loadData', table_data);
-            })
+            });
+
+            reset_plot();
 
         });
         $('.show-plot').click(function (e) {
@@ -214,6 +216,14 @@
                 $('.plot-link').html('<p><a target="_blank" href="' + plot_url + '">View the plot on plot.ly</a></p>')
             });
         });
+
+        function reset_plot() {
+          $('form#plot-form').hide();
+          $('.plot-link').html('')
+          $('select[name="xasis"] option:first-child').attr("selected", "selected");
+          $('select[name="yasis"] option:first-child').attr("selected", "selected");
+
+        }
 
         function table_to_plot_data(table_data) {
             // Remove table headers
