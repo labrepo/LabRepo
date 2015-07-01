@@ -1,4 +1,4 @@
-function render_graph(graph_data, graph_area_selector) {
+function render_graph(graph_data, graph_area_selector, onclick_function) {
 
     var w = window.innerWidth;
     var h = window.innerHeight;
@@ -329,4 +329,8 @@ function render_graph(graph_data, graph_area_selector) {
             d3.event.stopPropagation();
             window.open(d.link, '_blank');
     });
+
+    node.on("click", onclick_function);
+
+
 }

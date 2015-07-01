@@ -36,12 +36,14 @@
 {% block content %}
 <div class="row">
   <div class="col-lg-6">
-    <div class="box box-solid box-info">
-      <div class="box-header">
-        <h3 class="box-title">Details</h3>
-      </div>
-      <div class="box-body">
-        <div class="list-group">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#exp-info" data-toggle="tab"><i class="fa fa-info"></i> {% trans 'Info' %}</a></li>
+        <li class=""><a href="#exp-description" data-toggle="tab"><i class="fa fa-file-text-o"></i> {% trans 'Description' %}</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="exp-info">
+          <div class="list-group">
           <div class="row">
             <div class="col-sm-3 title-desc"><br>{% trans 'title'|upper %}</div>
             <div class="col-sm-9">
@@ -101,14 +103,19 @@
             </div>
           </div>
         </div>
+        </div>
+        <div class="tab-pane" id="exp-description">
+          {{ object.description|safe }}
+        </div>
       </div>
     </div>
+
+
   </div>
   <div class="col-lg-6">
     <div class="nav-tabs-custom">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#all" data-toggle="tab">{% trans 'All' %}</a></li>
-        <li class=""><a href="#measurement" data-toggle="tab">{% trans 'Measurements' %}</a></li>
+        <li class="active"><a href="#all" data-toggle="tab"><i class="fa fa-history"></i> {% trans 'All' %}</a></li>
         <li class="">
           <a href="#comments_activities" data-toggle="tab"><i class="fa fa-comments"></i> {% trans 'Comments' %}</a>
         </li>
@@ -118,12 +125,8 @@
              data-url="{% url 'dashboard:experiment-all-activity' lab_pk=lab.pk experiment_pk=object.pk %}">
         </div>
         <!-- /.tab-pane -->
-        <div class="tab-pane" id="measurement"
-             data-url="{% url 'dashboard:experiment-measurement-activity' lab_pk=lab.pk experiment_pk=object.pk %}">
-        </div>
-        <!-- /.tab-pane -->
-        <div class="tab-pane" id="comments_activities"
-             data-url="{% url 'dashboard:experiment-comment-activity' lab_pk=lab.pk experiment_pk=object.pk %}">
+        <div class="tab-pane" id="comments_activities">
+          {% include 'comments/comment_form.html' %}
         </div>
         <!-- /.tab-pane -->
       </div>
@@ -131,38 +134,30 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-lg-12">
-    {% include 'comments/comment_form.html' %}
-  </div>
-</div>
+
 <div class="row">
   <div class="col-lg-6">
     <div class="nav-tabs-custom">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#units" data-toggle="tab">{% trans 'Units' %}</a></li>
-        <li class=""><a href="#measurements" data-toggle="tab">{% trans 'Measurements' %}</a></li>
+        <li class="active"><a href="#units-graph" data-toggle="tab"><i class="fa fa-pie-chart"></i>  {% trans 'Graph' %}</a></li>
+        <li class="">
+          <a href="#units-list" data-toggle="tab"><i class="fa fa-list"></i> {% trans 'List' %}</a>
+        </li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane active" id="units">
-          <div class="panel panel-default">
-            <ul class="list-group">
+        <div class="tab-pane active" id="units-graph">
+          <a href="{% url 'units:create' lab.pk %}" class="btn btn-primary">Add Unit</a>
+          <div class="graph-area"></div>
+        </div>
+        <!-- /.tab-pane -->
+        <div class="tab-pane" id="units-list">
+          <ul class="list-group">
               {% for unit in units %}
               <a href="{{ unit.get_absolute_url }}" class="list-group-item list-group-item-sm">{{ unit }}</a>
               {% endfor %}
-            </ul>
-          </div>
+          </ul>
         </div>
         <!-- /.tab-pane -->
-        <div class="tab-pane" id="measurements">
-          <div class="panel panel-default">
-            <ul class="list-group">
-              {% for object in measurements %}
-              <a href="{{ object.get_absolute_url }}" class="list-group-item list-group-item-sm">{{ object }}</a>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
       </div>
       <!-- /.tab-content -->
     </div>
@@ -171,38 +166,54 @@
   <div class="col-lg-6">
     <div class="nav-tabs-custom">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#description" data-toggle="tab">{% trans 'Description' %}</a></li>
-        <li class="">
-          <a href="#tags" data-toggle="tab">
-            <i class="fa fa-tags"></i> {% trans 'Tags' %}
-          </a>
-        </li>
+        <li class="active"><a href="#unit-desc" data-toggle="tab"><i class="fa fa-file-text-o"></i> {% trans 'Description' %}</a></li>
+        <li class=""><a href="#unit-measurements" data-toggle="tab"><i class="fa fa-table"></i> {% trans 'Measurements' %}</a></li>
+        <li class=""><a href="#unit-tags" data-toggle="tab"><i class="fa fa-tag"></i> {% trans 'Tags' %}</a></li>
+        <li class=""><a href="#unit-comments" data-toggle="tab"><i class="fa fa-comments"></i> {% trans 'Comments' %}</a></li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane active" id="description">
-          {{ object.description|default_if_none:''|safe }}
+        <div class="tab-pane active" id="unit-desc">
+          <div class="desc-area"></div>
+          <a style="display:none" class="btn btn-primary edit-unit">Edit</a>
         </div>
-        <div class="tab-pane" id="tags">
-          {% for tag in tags %}
-          <div class="badge white" style="background: {{ tag.color }}">
-            <a href="{{ tag.get_detail_url }}">
-              <i class="fa fa-tag"></i> {{ tag.details }}
-            </a>
+
+        <div class="tab-pane"  id="unit-measurements">
+          <div class="btn-group">
+            <button style="display:none" id="save" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Saves' %}</button>
           </div>
-          {% endfor %}
+          <div class="btn-group">
+            <button  style="display:none" class="addcolumn btn bg-olive"><i class="fa fa-plus"></i> {% trans 'Add Column' %}</button>
+          </div>
+          <!--<div class="btn-group">-->
+            <!--<button  class="show-plot btn bg-olive"><i class="fa fa-area-chart"></i> {% trans 'Create plot' %}</button>-->
+          <!--</div>-->
+          <!--<div class="btn-group pull-right">-->
+            <!--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">History <span class="caret"></span></button>-->
+            <!--<ul class="dropdown-menu scrollable-menu revision-list" role="menu">-->
+              <!--{% for revision in revisions %}-->
+              <!--<li><a href="#" class="revert-revision" data-url="{% url 'measurements:measurement-revert' lab_pk=object.lab.pk unit_pk=object.id revision_pk=revision.pk %}"> {{ revision.timestamp }}</a></li>-->
+              <!--{% endfor %}-->
+            <!--</ul>-->
+          <!--</div>-->
+          <div class="top voffset2">
+            <div class="wrap-handsontable">
+              <div id="dataTable" data-content='[[&quot;&quot;, &quot;&quot;], [&quot;&quot;, &quot;&quot;]]'
+                   data-title='[[&quot;&quot;, &quot;&quot;], [&quot;&quot;, &quot;&quot;]]'
+                   data-column='[[&quot;&quot;, &quot;&quot;], [&quot;&quot;, &quot;&quot;]]'
+                   data-url=''
+                   data-remove-url=''>
+
+               </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-lg-6">
-    <div class="box box-solid box-info">
-      <div class="box-header">
-        <h3 class="box-title">Units graph</h3>
-      </div>
-      <div class="box-body">
-        <div class="graph-area"></div>
+
+
+        <div class="tab-pane" id="unit-tags">
+        </div>
+
+        <div class="tab-pane" id="unit-comments">
+        </div>
       </div>
     </div>
   </div>
@@ -212,14 +223,63 @@
 
 {% endblock %}
 
+{% block css %}
+  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.full.css' %}">
+  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.bootstrap.css' %}">
+  {% block extra_css %}{% endblock %}
+{% endblock %}
+
 {% block script %}
   <script src="{% static 'js/recent.js' %}"></script>
   <script src="{% static 'js/d3.v3.min.js' %}"></script>
   <script src="{% static 'js/graph.js' %}"></script>
 
+  <script src="{% static 'jquery-handsontable/jquery.handsontable.full.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/selectMultipleEditor.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/select2Editor.js' %}"></script>
+  <script src="{% static 'jquery-handsontable/datetimeEditor.js' %}"></script>
+  {% block extra_script %}{% endblock %}
+  <script src="{% static 'js/handson-table-new.js' %}"></script>
+
   <script type="text/javascript">
+    var lab_pk = '{{ lab.pk }}'
+    var exp_pk = '{{ object.pk }}'
+
+    var onclick_f = function(d){
+      var url = '/{{ lab.pk }}/units/detail_json/'+ d.id + '/'
+      $.post(url, {unit_pk: d.id}, function(data){
+
+        // show hidden tab's buttons
+        $('#unit-measurements .btn').show()
+        $('#unit-desc .btn').show()
+
+        // description
+        if (data.description) {
+          $('.desc-area').html(data.description)
+        } else {
+          $('.desc-area').html('None')
+        }
+        // measurements
+        var table = $("#dataTable");
+        var table_data = JSON.parse(data.measurements);
+        var save_url = '/{{ lab.pk }}/measurements/'+ d.id + '/create/'
+        table.data('url', save_url)
+        table.handsontable('loadData', table_data);
+
+        // tags
+        $('#unit-tags').html(data.tags)
+
+        // comments
+//        $('#unit-comments').html(data.comments)
+
+        //edit button
+        var edit_url = '/{{ lab.pk }}/units/detail/'+ d.id + '/'
+        $('.edit-unit').attr('href', edit_url);
+      });
+
+    }
     $(function() {
-      render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area')
+      render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', onclick_f)
     });
   </script>
 {% endblock %}

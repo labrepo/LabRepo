@@ -20,6 +20,7 @@ from dashboard.documents import RecentActivity
 from experiments.documents import Experiment
 from experiments.forms import ExperimentForm, ExperimentUpdateForm
 from units.documents import Unit
+from units.forms import UnitForm
 
 
 class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMixin, InviteFormMixin, ActiveTabMixin,
@@ -191,12 +192,6 @@ class ExperimentDetailView(CheckLabPermissionMixin, CheckViewPermissionMixin, La
         ctx['units'] = self.units
 
         ctx['units_graph_json'] = self.get_unit_graph_data()
-
-        ctx['tags'] = set([tag for unit in self.units for tag in unit.tags])
-        # ctx['measurements'] = [measurement for unit in self.units
-        #                        for measurement in unit.measurements if measurement.active]
-        ctx['measurements'] = [unit.measurements  for unit in self.units]
-                              # self.units.filter(measurements__match={"active": True})
         return ctx
 
     def get_list_comment(self):

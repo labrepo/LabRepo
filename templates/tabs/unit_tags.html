@@ -1,0 +1,7 @@
+{% for tag in tags %}
+  <div class="badge white" style="background: {{ tag.color }}">
+   <a href="{{ tag.get_detail_url }}">
+     <i class="fa fa-tag"></i> {{ tag.details }}
+   </a>
+  </div>
+{% endfor %}

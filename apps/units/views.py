@@ -10,9 +10,11 @@ from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
-from django.views.generic import View, DeleteView, UpdateView
+from django.views.generic import View, DeleteView, UpdateView, DetailView
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.list import BaseListView, MultipleObjectTemplateResponseMixin
+from django.template import RequestContext
+from django.template.loader import render_to_string
 
 from mongoengine import Q
 
@@ -249,3 +251,57 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         # if result['result']:
         #     result['result'][0]['active'] = True
         # return result['result']
+
+
+class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMixin, RecentActivityMixin, ActiveTabMixin,
+                     CommentMixin,AjaxableResponseMixin, DetailView):
+    """
+    View for return json information about an existing unit(is used on experiment page)
+    """
+    model = Unit
+    template_name = 'units/unit_detail.html'
+    active_tab = 'units'
+
+    def get_object(self, queryset=None, *args, **kwargs):
+        unit = super(UnitDetailJSONView, self).get_object(queryset)
+        return unit
+
+    @method_decorator(login_required)
+    @method_decorator(get_obj_or_404)
+    def dispatch(self, *args, **kwargs):
+        self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
+        if not self.lab.is_assistant(self.request.user):
+            raise PermissionDenied
+        return super(UnitDetailJSONView, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if not (self.object.is_member(request.user) or self.object.is_owner(request.user)):
+            raise PermissionDenied
+
+        ctx = {}
+        ctx.update(self.kwargs)
+
+        if self.object.measurements:
+            measurements = self.object.measurements.as_table()
+        else:
+            measurements = [
+                ['', ''], ['', '']
+            ]
+        # if self.object.measurements:
+        #     ctx['revisions'] = json.dumps(list(self.object.measurements.revisions()))
+        ctx['measurements'] = json.dumps(measurements, cls=JsonDocumentEncoder, )
+
+        ctx['description'] = self.object.description
+
+        ctx['tags'] = render_to_string('tabs/unit_tags.html', {'tags': self.object.tags})
+        ctx['comments'] = render_to_string('tabs/unit_comments.html', self.get_context_data())
+
+        return self.render_to_json_response(ctx)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(UnitDetailJSONView, self).get_context_data(**kwargs)
+        ctx['lab'] = self.lab
+        ctx['measurements'] = self.object.measurements
+        return ctx
