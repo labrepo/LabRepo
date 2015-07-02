@@ -13,12 +13,13 @@ from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 
 from comments.documents import Comment
 from common.decorators import get_obj_or_404
-from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPermissionMixin,
+from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPermissionMixin, JsTreeMixin,
                            LabQueryMixin, CheckDeletePermissionMixin, RecentActivityMixin, CommentMixin,
                            AjaxableResponseMixin, InviteFormMixin, CheckLabPermissionMixin, FormInitialMixin)
 from dashboard.documents import RecentActivity
 from experiments.documents import Experiment
 from experiments.forms import ExperimentForm, ExperimentUpdateForm
+from tags.documents import Tag
 from units.documents import Unit
 from units.forms import UnitForm
 
@@ -139,7 +140,7 @@ class ExperimentDeleteView(CheckLabPermissionMixin, CheckDeletePermissionMixin, 
         return messages.add_message(self.request, messages.SUCCESS, _('Experiment was removed successfully.'))
 
 
-class ExperimentDetailView(CheckLabPermissionMixin, CheckViewPermissionMixin, LabQueryMixin, CommentMixin, DetailView):
+class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermissionMixin, LabQueryMixin, CommentMixin, DetailView):
     """
     View for display information about an existing experiment with related units
     """
@@ -190,6 +191,10 @@ class ExperimentDetailView(CheckLabPermissionMixin, CheckViewPermissionMixin, La
     def get_context_data(self, **kwargs):
         ctx = super(ExperimentDetailView, self).get_context_data(**kwargs)
         ctx['units'] = self.units
+
+        tags = Tag.objects.filter(lab=self.kwargs.get('lab_pk'))
+        tags_tree = self.get_jstree_data(tags, ('id', 'parent', 'details'), parent_id='#')
+        ctx['tags'] = json.dumps(tags_tree)
 
         ctx['units_graph_json'] = self.get_unit_graph_data()
         return ctx

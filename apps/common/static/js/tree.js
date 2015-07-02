@@ -1,5 +1,13 @@
+
 $(function () {
-    var treeElement = $('#location-tree'),
+    InitJSTree($('#location-tree'));
+});
+
+function InitJSTree(treeElement, plugins){
+
+        if (typeof(treeElement)==='undefined') treeElement = $('#location-tree');
+        if (typeof(plugins)==='undefined') plugins = ['search'];
+
         searchElement = $('#search'),
         formContainerElement = $('#location-container'),
         formElement = '#location-form',
@@ -59,9 +67,7 @@ $(function () {
                 'search': {
                     show_only_matches: true
                 },
-                'plugins': [
-                    'search'
-                ]
+                'plugins': plugins
             }),
         to = false;
 
@@ -128,4 +134,4 @@ $(function () {
             formContainerElement.html('');
         }
     });
-});
+}

@@ -7,6 +7,7 @@
 
 {% block box_footer %}
   <button type="submit" class="btn bg-olive btn-block">{% trans 'Sign in' %}</button>
+  <a href="#" class="btn bg-red btn-block demo_login">{% trans 'login as demo account'|title %}</a>
   <p><a href="{% url 'auth_reset_password' %}">{% trans 'i forgot my password'|title %}</a></p>
   <a href="{% url 'registration_register' %}">{% trans 'register a new membership'|title %}</a>
 

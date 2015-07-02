@@ -4,6 +4,7 @@
   <div class="col-xs-12">
     <!-- Success box -->
     <div class="box box-solid box-info collapsed-box">
+      {% if not not_collapse %}
       <div class="box-header">
         <h3 class="box-title"><i class="fa fa-comments-o"></i> {% trans 'Comments' %}</h3>
 
@@ -12,7 +13,12 @@
           </button>
         </div>
       </div>
-      <div class="box-body collapse">
+      {% endif %}
+      {% if not not_collapse %}
+        <div class="box-body collapse">
+      {% else %}
+        <div class="box-body">
+      {% endif %}
         <div id="comment" class="list-group comment-activities">
           {% for comment in comments %}
             {% include 'comments/comment.html' %}

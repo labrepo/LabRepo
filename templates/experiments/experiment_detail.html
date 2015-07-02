@@ -126,7 +126,7 @@
         </div>
         <!-- /.tab-pane -->
         <div class="tab-pane" id="comments_activities">
-          {% include 'comments/comment_form.html' %}
+          {% include 'comments/comment_form.html' with not_collapse="1" %}
         </div>
         <!-- /.tab-pane -->
       </div>
@@ -210,6 +210,9 @@
 
 
         <div class="tab-pane" id="unit-tags">
+          <div id="tag-tree" data-content='{{ tags }}'></div>
+          <button style="display:none" id="tag-save" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Saves' %}</button>
+
         </div>
 
         <div class="tab-pane" id="unit-comments">
@@ -226,7 +229,9 @@
 {% block css %}
   <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.full.css' %}">
   <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.bootstrap.css' %}">
+  <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
   {% block extra_css %}{% endblock %}
+
 {% endblock %}
 
 {% block script %}
@@ -240,10 +245,25 @@
   <script src="{% static 'jquery-handsontable/datetimeEditor.js' %}"></script>
   {% block extra_script %}{% endblock %}
   <script src="{% static 'js/handson-table-new.js' %}"></script>
+  <script src="{% static 'jstree/jstree.js' %}"></script>
+  <script src="{% static 'js/tree.js' %}"></script>
 
   <script type="text/javascript">
     var lab_pk = '{{ lab.pk }}'
     var exp_pk = '{{ object.pk }}'
+
+    var treeElement = $('#tag-tree');
+
+    $(function() {
+      InitJSTree(treeElement,['search', 'checkbox']);
+    });
+
+    // fix handsontable bug with tabs
+    $('a[href="#unit-measurements"]').on('shown.bs.tab', function (e) {
+      if ($('#unit-measurements .btn').is(':visible')) {
+        $('#dataTable').handsontable('render');
+      }
+    });
 
     var onclick_f = function(d){
       var url = '/{{ lab.pk }}/units/detail_json/'+ d.id + '/'
@@ -252,6 +272,7 @@
         // show hidden tab's buttons
         $('#unit-measurements .btn').show()
         $('#unit-desc .btn').show()
+        $('#unit-tags .btn').show()
 
         // description
         if (data.description) {
@@ -259,6 +280,7 @@
         } else {
           $('.desc-area').html('None')
         }
+
         // measurements
         var table = $("#dataTable");
         var table_data = JSON.parse(data.measurements);
@@ -267,7 +289,9 @@
         table.handsontable('loadData', table_data);
 
         // tags
-        $('#unit-tags').html(data.tags)
+        treeElement.jstree('deselect_all')
+        treeElement.jstree('select_node', JSON.parse(data.tags))
+        console.log(data.tags_data)
 
         // comments
 //        $('#unit-comments').html(data.comments)
@@ -276,8 +300,11 @@
         var edit_url = '/{{ lab.pk }}/units/detail/'+ d.id + '/'
         $('.edit-unit').attr('href', edit_url);
       });
-
     }
+    $("#unit-tags").on( "click", "#tag-save", function() {
+      console.log("not ready yet");
+    });
+
     $(function() {
       render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', onclick_f)
     });

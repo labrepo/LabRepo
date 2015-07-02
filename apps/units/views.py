@@ -253,7 +253,7 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         # return result['result']
 
 
-class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMixin, RecentActivityMixin, ActiveTabMixin,
+class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMixin, InitialLabMixin, RecentActivityMixin, ActiveTabMixin,
                      CommentMixin,AjaxableResponseMixin, DetailView):
     """
     View for return json information about an existing unit(is used on experiment page)
@@ -295,10 +295,16 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLa
 
         ctx['description'] = self.object.description
 
-        ctx['tags'] = render_to_string('tabs/unit_tags.html', {'tags': self.object.tags})
+        ctx['tags'] = json.dumps(self.get_tree_element(self.object))
+
         ctx['comments'] = render_to_string('tabs/unit_comments.html', self.get_context_data())
 
         return self.render_to_json_response(ctx)
+
+    def get_tree_element(self, object, fields=('id', 'parent', 'details'), parent_id='#'):
+        tags = object.tags
+        tags_tree = self.get_jstree_data(tags, fields, parent_id=parent_id)
+        return tags_tree
 
     def get_context_data(self, **kwargs):
         ctx = super(UnitDetailJSONView, self).get_context_data(**kwargs)
