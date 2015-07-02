@@ -67,6 +67,9 @@ function InitJSTree(treeElement, plugins){
                 'search': {
                     show_only_matches: true
                 },
+                'checkbox': {
+                    three_state: false,
+                },
                 'plugins': plugins
             }),
         to = false;

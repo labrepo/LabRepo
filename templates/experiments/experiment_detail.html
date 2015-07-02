@@ -251,7 +251,7 @@
   <script type="text/javascript">
     var lab_pk = '{{ lab.pk }}'
     var exp_pk = '{{ object.pk }}'
-
+    var unit_data = {}
     var treeElement = $('#tag-tree');
 
     $(function() {
@@ -268,6 +268,14 @@
     var onclick_f = function(d){
       var url = '/{{ lab.pk }}/units/detail_json/'+ d.id + '/'
       $.post(url, {unit_pk: d.id}, function(data){
+        // set global current unit
+        unit_data = {
+          'data-0-pk': data.pk,
+          'data-0-sample': data.sample,
+          'data-0-description': data.description,
+          'data-0-experiments_pk[]': exp_pk,
+          'length':1
+      }
 
         // show hidden tab's buttons
         $('#unit-measurements .btn').show()
@@ -291,7 +299,6 @@
         // tags
         treeElement.jstree('deselect_all')
         treeElement.jstree('select_node', JSON.parse(data.tags))
-        console.log(data.tags_data)
 
         // comments
 //        $('#unit-comments').html(data.comments)
@@ -301,8 +308,13 @@
         $('.edit-unit').attr('href', edit_url);
       });
     }
+
+    // save unit tags
     $("#unit-tags").on( "click", "#tag-save", function() {
-      console.log("not ready yet");
+      var selected_tags = treeElement.jstree('get_selected')
+      var save_url ='/'+ lab_pk +'/units/create/';
+      unit_data['data-0-tags_pk[]'] = selected_tags;
+      $.post(save_url, unit_data);
     });
 
     $(function() {

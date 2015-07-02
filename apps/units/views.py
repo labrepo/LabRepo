@@ -294,6 +294,7 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         ctx['measurements'] = json.dumps(measurements, cls=JsonDocumentEncoder, )
 
         ctx['description'] = self.object.description
+        ctx['sample'] = self.object.sample
 
         ctx['tags'] = json.dumps(self.get_tree_element(self.object))
 
