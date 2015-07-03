@@ -187,14 +187,10 @@
           <div class="btn-group">
             <button  style="display:none" class="show-plot btn bg-olive"><i class="fa fa-area-chart"></i> {% trans 'Create plot' %}</button>
           </div>
-          <!--<div class="btn-group pull-right">-->
-            <!--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">History <span class="caret"></span></button>-->
-            <!--<ul class="dropdown-menu scrollable-menu revision-list" role="menu">-->
-              <!--{% for revision in revisions %}-->
-              <!--<li><a href="#" class="revert-revision" data-url="{% url 'measurements:measurement-revert' lab_pk=object.lab.pk unit_pk=object.id revision_pk=revision.pk %}"> {{ revision.timestamp }}</a></li>-->
-              <!--{% endfor %}-->
-            <!--</ul>-->
-          <!--</div>-->
+          <div class="btn-group pull-right">
+            <button style="display:none" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">History <span class="caret"></span></button>
+            <ul class="dropdown-menu scrollable-menu revision-list" role="menu"></ul>
+          </div>
           <div class="plot-area">
             <div class="voffset1">
               <form id="plot-form" style="display: none">
@@ -326,6 +322,14 @@
         table.data('url', save_url)
         table.handsontable('loadData', table_data);
 
+        // revisions
+        var revisions = JSON.parse(data.revisions);
+        for (var i = 0; i < revisions.length; i++) {
+          var rev = revisions[i];
+          var h = '<li><a href="javascript:void(0);" class="revert-revision" data-url="' + rev.url +'">' +rev.timestamp +'</a></li>'
+          $('.revision-list').append(h);
+
+          }
         // tags
         treeElement.jstree('deselect_all')
         treeElement.jstree('select_node', JSON.parse(data.tags))
@@ -347,6 +351,19 @@
       $.post(save_url, unit_data);
     });
 
+    // revert table data on revision restore
+    $('body').on('click',' .revert-revision', function (e) {
+        var url = $(this).data('url');
+        $.post(url, function (data) {
+            var table = $("#dataTable");
+            var table_data = data.table_data;
+            table_data.unshift(data.headers);
+            table.handsontable('loadData', table_data);
+        });
+
+        reset_plot();
+
+    });
     $(function() {
       render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', onclick_f)
     });

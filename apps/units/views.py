@@ -15,6 +15,7 @@ from django.views.generic.edit import ModelFormMixin
 from django.views.generic.list import BaseListView, MultipleObjectTemplateResponseMixin
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.utils import formats
 
 from mongoengine import Q
 
@@ -289,9 +290,10 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
             measurements = [
                 ['', ''], ['', '']
             ]
-        # if self.object.measurements:
-        #     ctx['revisions'] = json.dumps(list(self.object.measurements.revisions()))
+
         ctx['measurements'] = json.dumps(measurements, cls=JsonDocumentEncoder, )
+        if self.object.measurements:
+            ctx['revisions'] = json.dumps([self.rev_as_json(rev) for rev in self.object.measurements.revisions()])
 
         ctx['description'] = self.object.description
         ctx['sample'] = self.object.sample
@@ -306,6 +308,13 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         tags = object.tags
         tags_tree = self.get_jstree_data(tags, fields, parent_id=parent_id)
         return tags_tree
+
+    def rev_as_json(self, revision):
+        return {
+            'timestamp': formats.date_format(revision.timestamp, 'DATETIME_FORMAT'),
+            'pk': str(revision.pk),
+            'url': reverse('measurements:measurement-revert', kwargs={'lab_pk': self.object.lab.pk, 'unit_pk': self.object.id, 'revision_pk': revision.pk}),
+        }
 
     def get_context_data(self, **kwargs):
         ctx = super(UnitDetailJSONView, self).get_context_data(**kwargs)
