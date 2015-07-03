@@ -145,6 +145,11 @@
   <script src="{% static 'adminLTE/js/AdminLTE/app.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/forms.js' %}"></script>
   <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+  <script type="text/javascript">
+    // set global user variables
+    var plot_un = '{{ user.plot_un|default:"" }}';
+    var plot_key = '{{ user.plot_key|default:"" }}';
+  </script>
   {% block script %}
     {% block extra_script %}{% endblock %}
     {% block form_script %}{% endblock %}
