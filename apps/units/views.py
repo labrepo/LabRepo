@@ -255,7 +255,7 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
 
 
 class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMixin, InitialLabMixin, RecentActivityMixin, ActiveTabMixin,
-                     CommentMixin,AjaxableResponseMixin, DetailView):
+                     CommentMixin, AjaxableResponseMixin, DetailView):
     """
     View for return json information about an existing unit(is used on experiment page)
     """
@@ -319,5 +319,6 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
     def get_context_data(self, **kwargs):
         ctx = super(UnitDetailJSONView, self).get_context_data(**kwargs)
         ctx['lab'] = self.lab
+        ctx['user'] = self.request.user
         ctx['measurements'] = self.object.measurements
         return ctx

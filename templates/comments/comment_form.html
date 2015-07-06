@@ -3,7 +3,7 @@
 <div class="row">
   <div class="col-xs-12">
     <!-- Success box -->
-    <div class="box box-solid box-info collapsed-box">
+    <div class="box box-solid box-info collapsed-box comments-block">
       {% if not not_collapse %}
       <div class="box-header">
         <h3 class="box-title"><i class="fa fa-comments-o"></i> {% trans 'Comments' %}</h3>
@@ -34,7 +34,7 @@
               <button class="btn btn-info btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>
           </div>
-          <form action="{% url 'comment:comment' lab_pk=lab.pk %}" method="post" id="comment-form">
+          <form action="{% url 'comment:comment' lab_pk=lab.pk %}" method="post" id="comment-form" class="comment-form">
             <div class="box-body">
               {% csrf_token %}
               {{ comment_form_create|as_bootstrap }}
@@ -53,8 +53,8 @@
 </div>
 
 <!-- /.col-md -->
-
+{% if not not_modal %}
 {% block modal %}
   {% include 'modal.html' with modal_id="comment-modal" action="" extra_form=comment_form_update modal_title='update  comment' %}
 {% endblock %}
-
+{% endif %}

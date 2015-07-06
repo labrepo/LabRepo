@@ -323,19 +323,21 @@
         table.handsontable('loadData', table_data);
 
         // revisions
-        var revisions = JSON.parse(data.revisions);
-        for (var i = 0; i < revisions.length; i++) {
-          var rev = revisions[i];
-          var h = '<li><a href="javascript:void(0);" class="revert-revision" data-url="' + rev.url +'">' +rev.timestamp +'</a></li>'
-          $('.revision-list').append(h);
-
+        $('.revision-list').html('');
+        if (data.revisions){
+          var revisions = JSON.parse(data.revisions);
+          for (var i = 0; i < revisions.length; i++) {
+            var rev = revisions[i];
+            var h = '<li><a href="javascript:void(0);" class="revert-revision" data-url="' + rev.url +'">' +rev.timestamp +'</a></li>'
+            $('.revision-list').append(h);
           }
+        }
         // tags
         treeElement.jstree('deselect_all')
         treeElement.jstree('select_node', JSON.parse(data.tags))
 
         // comments
-//        $('#unit-comments').html(data.comments)
+        $('#unit-comments').html(data.comments)
 
         //edit button
         var edit_url = '/{{ lab.pk }}/units/detail/'+ d.id + '/'

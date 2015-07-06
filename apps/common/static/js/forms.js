@@ -1,21 +1,24 @@
 $(document).ready(function () {
     addSelect2();
 
-    submitForm($('#comment-form'), function (response, form) {
-        $('div#comment').append(response.data);
+    submitForm($('.comment-form'), function (response, form) {
+        form.closest('.comments-block').find('div#comment').append(response.data);
         $('div#all div.resent-activities ul:not(.pager), div#comments_activities div.resent-activities ul:not(.pager)').prepend(response.resent_activity);
         form.trigger('reset').find('.has-error').removeClass('has-error');
-        CKEDITOR.instances['id_create-text'].setData('');
+        var comment_field_id = form.find('textarea[name="create-text"]').attr('id');
+        CKEDITOR.instances[comment_field_id].setData('');
     });
 
     invite();
 
-    $('#comment')
-        .on('click', '.comment-edit', function () {
+    $('body')
+        .on('click', '.comment-edit', function (e) {
             var that = $(this),
-                value = that.closest('.input-group.margin').find('.comment-context').html();
+                value = that.closest('.comment-block').find('.comment-context').html();
             $('div#comment-modal form').attr('action', that.data('url')).find('[name="update-text"]').val(value);
-            CKEDITOR.instances['id_update-text'].setData(value);
+            var comment_field_id = $('textarea[name="update-text"]').attr('id');
+            CKEDITOR.instances[comment_field_id].setData(value);
+
         })
         .on('click', '.comment-remove', function () {
             submitForm($(this).closest('form'), function (response) {
@@ -58,9 +61,12 @@ $('#confirm-delete,#confirm-delete-comment').on('show.bs.modal', function (e) {
 });
 
 function submitForm(el, callback, error_callback) {
-    el.submit(function (e) {
+    $('body').on('submit', el.selector, function (e) {
         e.preventDefault();
-        var $form = $(this);
+        e.stopPropagation();
+
+        var $form = $(e.target);
+
         if (typeof CKEDITOR !== "undefined") {
             for (var instance in CKEDITOR.instances) {
                 if (CKEDITOR.instances.hasOwnProperty(instance)) {
