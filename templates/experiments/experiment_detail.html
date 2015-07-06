@@ -153,7 +153,7 @@
         <div class="tab-pane" id="units-list">
           <ul class="list-group">
               {% for unit in units %}
-              <a href="{{ unit.get_absolute_url }}" class="list-group-item list-group-item-sm">{{ unit }}</a>
+                <a href="#" data-unit-pk="{{ unit.pk }}" onclick="return false;" class="list-group-item list-group-item-sm unit-item">{{ unit }}</a>
               {% endfor %}
           </ul>
         </div>
@@ -291,9 +291,13 @@
       }
     });
 
-    var onclick_f = function(d){
-      var url = '/{{ lab.pk }}/units/detail_json/'+ d.id + '/'
-      $.post(url, {unit_pk: d.id}, function(data){
+    function update_unit_info(unit){
+      /**
+      * Update unit info tabs.
+      * @param unit - object {id: unit_id} For the the compatibility with d3 function call.
+      */
+      var url = '/{{ lab.pk }}/units/detail_json/'+ unit.id + '/'
+      $.post(url, {unit_pk: unit.id}, function(data){
         // set global current unit
         unit_data = {
           'data-0-pk': data.pk,
@@ -301,7 +305,7 @@
           'data-0-description': data.description,
           'data-0-experiments_pk[]': exp_pk,
           'length':1
-      }
+        }
 
         // show hidden tab's buttons
         $('#unit-measurements .btn').show()
@@ -318,7 +322,7 @@
         // measurements
         var table = $("#dataTable");
         var table_data = JSON.parse(data.measurements);
-        var save_url = '/{{ lab.pk }}/measurements/'+ d.id + '/create/'
+        var save_url = '/{{ lab.pk }}/measurements/'+ unit.id + '/create/'
         table.data('url', save_url)
         table.handsontable('loadData', table_data);
 
@@ -332,6 +336,7 @@
             $('.revision-list').append(h);
           }
         }
+
         // tags
         treeElement.jstree('deselect_all')
         treeElement.jstree('select_node', JSON.parse(data.tags))
@@ -340,8 +345,17 @@
         $('#unit-comments').html(data.comments)
 
         //edit button
-        var edit_url = '/{{ lab.pk }}/units/detail/'+ d.id + '/'
+        var edit_url = '/{{ lab.pk }}/units/detail/'+ unit.id + '/'
         $('.edit-unit').attr('href', edit_url);
+
+        // set active unit in list
+        $('.unit-item').removeClass('active')
+        $('.unit-item').each(function(e){
+          if($(this).data('unit-pk') == unit.id){
+            $(this).addClass('active')
+            return false
+          }
+        })
       });
     }
 
@@ -365,9 +379,16 @@
 
         reset_plot();
 
+        return false
     });
+
     $(function() {
-      render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', onclick_f)
+      render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', update_unit_info)
+
+      $('.unit-item').click(function(e){
+        var unit_id = $(this).data('unit-pk')
+        update_unit_info({id: unit_id})
+      })
     });
   </script>
 {% endblock %}
