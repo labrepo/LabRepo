@@ -174,7 +174,7 @@
       <div class="tab-content">
         <div class="tab-pane active" id="unit-desc">
           <div class="desc-area"></div>
-          <a style="display:none" class="btn btn-primary edit-unit">Edit</a>
+          <!--<a style="display:none" class="btn btn-primary edit-unit">Edit</a>-->
         </div>
 
         <div class="tab-pane"  id="unit-measurements">
@@ -275,9 +275,9 @@
   <script src="{% static 'js/plot.js' %}"></script>
 
   <script type="text/javascript">
-    var lab_pk = '{{ lab.pk }}'
-    var exp_pk = '{{ object.pk }}'
-    var unit_data = {}
+    var lab_pk = '{{ lab.pk }}';
+    var exp_pk = '{{ object.pk }}';
+    window.unit_data = {}
     var treeElement = $('#tag-tree');
 
     $(function() {
@@ -299,13 +299,14 @@
       var url = '/{{ lab.pk }}/units/detail_json/'+ unit.id + '/'
       $.post(url, {unit_pk: unit.id}, function(data){
         // set global current unit
-        unit_data = {
+        window.unit_data = {
           'data-0-pk': data.pk,
           'data-0-sample': data.sample,
           'data-0-description': data.description,
           'data-0-experiments_pk[]': exp_pk,
           'length':1
         }
+        unit_data = window.unit_data
 
         // show hidden tab's buttons
         $('#unit-measurements .btn').show()
@@ -313,11 +314,7 @@
         $('#unit-tags .btn').show()
 
         // description
-        if (data.description) {
-          $('.desc-area').html(data.description)
-        } else {
-          $('.desc-area').html('None')
-        }
+        $('.desc-area').html(data.description)
 
         // measurements
         var table = $("#dataTable");
@@ -345,8 +342,8 @@
         $('#unit-comments').html(data.comments)
 
         //edit button
-        var edit_url = '/{{ lab.pk }}/units/detail/'+ unit.id + '/'
-        $('.edit-unit').attr('href', edit_url);
+//        var edit_url = '/{{ lab.pk }}/units/detail/'+ unit.id + '/'
+//        $('.edit-unit').attr('href', edit_url);
 
         // set active unit in list
         $('.unit-item').removeClass('active')
@@ -381,6 +378,50 @@
 
         return false
     });
+
+     $('body').on('submit','.description-unit-form', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $form = $(e.target);
+        var unit_data = window.unit_data
+        unit_data['data-0-description'] = $form.find('textarea[name="description"]').val();
+
+        if (typeof CKEDITOR !== "undefined") {
+            for (var instance in CKEDITOR.instances) {
+                if (CKEDITOR.instances.hasOwnProperty(instance)) {
+                    CKEDITOR.instances[instance].updateElement();
+                }
+            }
+        }
+
+        $.post($form.attr('action'), unit_data)
+            .fail(function (xhr) {
+                var data = xhr.responseJSON;
+                $form.find('.has-error').removeClass('has-error').removeAttr('title');
+                for (var name in data) {
+                    if (data.hasOwnProperty(name)) {
+                        var icon = $('<i>', {'class': 'fa fa-warning'}),
+                            error_message = $('span', {
+                                'class': 'text-red error-msg',
+                                'id': 'error_' + $form.find('[name="' + name + '"]').id
+                            }).text(data[name].join(', ')).append(icon);
+
+                        $form.find('[name="' + name + '"]')
+                            .after(error_message);
+                        $form.find('[name="' + name + '"]')
+                            .parents('.form-group')
+                            .addClass('has-error')
+                            .attr('title', data[name].join(', '));
+                    }
+                }
+            }).done(function (response) {
+               var desc_value = $form.find('textarea[name="description"]').val()
+               $form.parents('.description-editor').hide().parents('#description').find('.description-show').show();
+               $form.parents('.description-editor').hide().parents('#description').find('.description-text').html(desc_value);
+
+            });
+    });
+
 
     $(function() {
       render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', update_unit_info)

@@ -1,0 +1,55 @@
+{% load i18n %}
+
+<div id="description">
+  <div class="description-show">
+    {% if is_owner or is_member %}
+      <button class="description-edit fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+    {% endif %}
+    <div class="description-text">
+      {{ object.description|default:'No description '|safe }}
+    </div>
+  </div>
+  <div class="description-editor" style="display: none">
+    <form action="{% url 'units:create' lab_pk=lab_pk%}" method="post" class="description-unit-form">
+      {% with label_width=label_width|default:2 field_width=field_width|default:-2 %}
+
+        {% if form.non_field_errors %}
+          <span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg" role="alert">
+              <span class="k-icon k-warning"></span>
+              {{ form.non_field_errors.0 }}
+          </span>
+        {% endif %}
+
+        {% for field in form.visible_fields %}
+          <div class="form-group{% if field.errors %} has-error{% endif %}">
+            {% include 'field.html' %}
+          </div>
+        {% endfor %}
+
+        {% for field in form.hidden_fields %}
+          {% if field.name == 'params' %}
+            <div class="form-group{% if field.errors %} has-error{% endif %}">
+              <label for="{{ field.name }}" class="col-sm-{{ label_width }} control-label">{{ field.label|title }}</label>
+
+              <div class="col-sm-{{ 12|add:field_width }}">
+                {{ field }}
+                {% if field.errors %}
+                  <span class="has-error" data-for="{{ field.auto_id }}" role="alert">
+                              {{ field.errors.0 }}
+                          </span>
+                {% endif %}
+              </div>
+            </div>
+          {% else %}
+            {{ field }}
+          {% endif %}
+        {% endfor %}
+
+        {{ form.media }}
+
+      {% endwith %}
+      <button type="submit" class="btn btn-info unit-description-send">{% trans 'Save' %}</button>
+      <button class="btn btn-info cancel-edit">{% trans 'cancel'|title %}</button>
+    </form>
+  </div>
+</div>

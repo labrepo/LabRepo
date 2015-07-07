@@ -46,7 +46,7 @@ class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, Ajaxabl
     active_tab = 'units'
     title = {
         'pk': 'pk', 'sample': 'sample', 'experiments_pk': 'experiments', 'parent_pk': 'parent', 'tags_pk': 'tags',
-        'change reasons': 'comment'
+        'change reasons': 'comment', 'description': 'description',
     }
     title_fields = ['pk', 'sample', 'experiments', 'parent', 'tags', 'readonly']
     extra_title = ['change reasons', 'experiments_pk', 'parent_pk', 'tags_pk']
@@ -295,11 +295,11 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         if self.object.measurements:
             ctx['revisions'] = json.dumps([self.rev_as_json(rev) for rev in self.object.measurements.revisions()])
 
-        ctx['description'] = self.object.description
         ctx['sample'] = self.object.sample
 
         ctx['tags'] = json.dumps(self.get_tree_element(self.object))
 
+        ctx['description'] = render_to_string('tabs/unit_description.html', self.get_context_data())
         ctx['comments'] = render_to_string('tabs/unit_comments.html', self.get_context_data())
 
         return self.render_to_json_response(ctx)
@@ -319,6 +319,9 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
     def get_context_data(self, **kwargs):
         ctx = super(UnitDetailJSONView, self).get_context_data(**kwargs)
         ctx['lab'] = self.lab
+        ctx['lab_pk'] = self.lab.pk
         ctx['user'] = self.request.user
         ctx['measurements'] = self.object.measurements
+        ctx['form'] = UnitDescriptionForm(lab_pk=self.lab.pk, initial={'description': self.object.description})
+
         return ctx

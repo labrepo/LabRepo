@@ -32,13 +32,15 @@ $(document).ready(function () {
         $('#comment-modal').modal('hide');
     });
 
-    $('.description-edit').click(function (e) {
+    $('body').on('click','.description-edit', function (e) {
         e.preventDefault();
-        $(this).parents('.description-show').hide().parents('#description').find('.description-editor').show();
+        e.stopPropagation();
+        $(e.target).parents('.description-show').hide().parents('#description').find('.description-editor').show();
     });
-    $('.cancel-edit').click(function (e) {
+    $('body').on('click','.cancel-edit', function (e) {
         e.preventDefault();
-        $(this).parents('.description-editor').hide().parents('#description').find('.description-show').show();
+        e.stopPropagation();
+        $(e.target).parents('.description-editor').hide().parents('#description').find('.description-show').show();
     });
 
 });
