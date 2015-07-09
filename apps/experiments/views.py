@@ -177,8 +177,8 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
             for parent in unit.parent:
                 if parent in units:
                     link = {
-                        'source': index,
-                        'target': units.index(parent),
+                        'target': index,
+                        'source': units.index(parent),
                         'arrow': True
                     }
                     links.append(link)
