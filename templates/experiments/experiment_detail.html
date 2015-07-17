@@ -156,7 +156,11 @@
                 </ul>
                 <div class="tab-content">
                   <div class="tab-pane active" id="units-graph">
-                    <a href="{% url 'units:create' lab.pk %}" class="btn btn-primary">Add Unit</a>
+                    <!--<a href="{% url 'units:create' lab.pk %}" class="btn btn-primary">Add Unit</a>-->
+                    <a class="btn btn-danger btn-sm btn-flat"
+                     data-toggle="modal" data-target="#add_unit" href="#">
+                    <i class="fa fa-trash-o"></i> Add Unit</a>
+                    {% include "units/unit_add_modal.html" %}
                     <div class="graph-area"></div>
                   </div>
                   <!-- /.tab-pane -->
@@ -434,6 +438,46 @@
             });
     });
 
+    $('body').on('submit','.add-unit-form', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $form = $(e.target);
+
+        var unit_data = {
+          'length':1,
+          'data-0-experiments_pk[]': exp_pk,
+        }
+        unit_data['data-0-parent'] = $form.find('textarea[name="parent"]').val();
+        unit_data['data-0-description'] = $form.find('textarea[name="description"]').val();
+        unit_data['data-0-sample'] = $form.find('textarea[name="sample"]').val();
+        unit_data['data-0-tags'] = $form.find('textarea[name="tags"]').val();
+
+        $.post($form.attr('action'), unit_data)
+            .fail(function (xhr) {
+                var data = xhr.responseJSON;
+                $form.find('.has-error').removeClass('has-error').removeAttr('title');
+                for (var name in data) {
+                    if (data.hasOwnProperty(name)) {
+                        var icon = $('<i>', {'class': 'fa fa-warning'}),
+                            error_message = $('span', {
+                                'class': 'text-red error-msg',
+                                'id': 'error_' + $form.find('[name="' + name + '"]').id
+                            }).text(data[name].join(', ')).append(icon);
+
+                        $form.find('[name="' + name + '"]')
+                            .after(error_message);
+                        $form.find('[name="' + name + '"]')
+                            .parents('.form-group')
+                            .addClass('has-error')
+                            .attr('title', data[name].join(', '));
+                    }
+                }
+            }).done(function (response) {
+               //todo: update graph and list
+               location.reload();
+
+            });
+      });
 
     $(function() {
       render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', update_unit_info)

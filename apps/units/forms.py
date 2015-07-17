@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 from mongodbforms import CharField, embeddedformset_factory, EmbeddedDocumentFormSet
 
+from django import forms
 from common.forms import BaseForm
 from common.widgets import CKEditorUploadWidget
 from .documents import Unit
 from measurements.documents import Measurement
+from experiments.documents import Experiment
+from labs.documents import Lab
+from tags.documents import Tag
 from measurements.forms import MeasurementAdminForm
 
 
@@ -12,6 +16,28 @@ class UnitForm(BaseForm):
     def __init__(self, *args, **kwargs):
         kwargs.pop('lab_pk')
         super(UnitForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        document = Unit
+        exclude = ('lab', 'active', 'measurements')
+
+
+class UnitPopupForm(BaseForm):
+    """
+    Handle pop up unit form
+    """
+    def __init__(self, *args, **kwargs):
+        lab_pk = kwargs.pop('lab_pk')
+        exp_pk = kwargs.pop('exp_pk')
+        lab = Lab.objects.get(pk=lab_pk)
+        experiment = Experiment.objects.get(pk=exp_pk)
+
+        super(UnitPopupForm, self).__init__(*args, **kwargs)
+
+        self.fields['experiments'].widget = forms.HiddenInput()
+        self.fields['experiments'].initial = experiment
+        self.fields['parent'].queryset = Unit.objects.filter(lab=lab, active=True)
+        self.fields['tags'].queryset = Tag.objects.filter(lab=lab)
 
     class Meta:
         document = Unit

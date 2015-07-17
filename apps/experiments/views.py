@@ -21,7 +21,7 @@ from experiments.documents import Experiment
 from experiments.forms import ExperimentForm, ExperimentUpdateForm
 from tags.documents import Tag
 from units.documents import Unit
-from units.forms import UnitForm
+from units.forms import UnitForm, UnitPopupForm
 
 
 class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMixin, InviteFormMixin, ActiveTabMixin,
@@ -147,6 +147,7 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
     model = Experiment
     template_name = 'experiments/experiment_detail.html'
     paginate_by = 5
+    form = UnitPopupForm
 
     def get_unit_graph_data(self):
         """
@@ -197,6 +198,8 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
         ctx['tags'] = json.dumps(tags_tree)
 
         ctx['units_graph_json'] = self.get_unit_graph_data()
+
+        ctx['unit_form'] = UnitPopupForm(lab_pk=self.lab.pk, exp_pk=self.object.pk)
         return ctx
 
     def get_list_comment(self):

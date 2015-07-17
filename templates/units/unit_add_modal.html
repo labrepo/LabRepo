@@ -1,0 +1,29 @@
+{% load i18n bootstrap_tags %}
+
+<!-- Modal -->
+<div class="modal fade" id="add_unit" tabindex="-1" role="dialog" aria-labelledby="Modal"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" title="{% trans 'Close' %}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" id="Modal">{% trans 'Add unit' %}</h3>
+      </div>
+      <form method="post" class="modal-form add-unit-form {{ class }}" action="{% url 'units:create' lab_pk=lab.pk %}" data-field="{{ fields }}">
+        <div class="modal-body">
+          {% csrf_token %}
+          {{ unit_form }}
+          {% if extra_form %}{{ extra_form|as_bootstrap }}{{ extra_form.media }}{% endif %}
+        </div>
+        <div class="modal-footer form-actions">
+          <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+          {% with btn=button_name|default:'Save' %}
+            <button type="submit" class="btn btn-flat bg-olive">{% trans btn|title %}</button>
+          {% endwith %}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
