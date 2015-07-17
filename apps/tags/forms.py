@@ -65,17 +65,18 @@ class TagForm(TagBaseForm):
         if kwargs.get('instance'):
             self.fields['parent'].queryset = self.fields['parent'].queryset.filter(
                 pk__nin=[child.pk for child in kwargs.get('instance').get_children()])
-        self.fields['params'].initial = {"": ""}
-        self.fields['params'].label = _(u'params')
+        # self.fields['params'].initial = {"": ""}
+        # self.fields['params'].label = _(u'params')
 
     class Meta:
         document = Tag
         widgets = {
             'details': Textarea(attrs={'rows': 1}),
-            'params': DictWidget(),
+            # 'params': DictWidget(),
             'color': ColorWidget()
         }
-        fields = ('details', 'parent', 'color', 'params',)
+        # fields = ('details', 'parent', 'color', 'params',)
+        fields = ('details', 'parent', 'color', )
 
     def clean(self):
         data = super(TagBaseForm, self).clean()

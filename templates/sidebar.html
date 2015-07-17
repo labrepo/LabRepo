@@ -61,29 +61,34 @@
           {% endif %}
         </ul>
       </li>
-      <li class="treeview{% if active_tab in 'tags,measurement types,collections' %} active{% endif %}">
-        <a href="">
-          <i class="fa fa-folder{% if active_tab in 'tags,measurement types,collections' %}-open{% endif %}-o"></i>
-          {% trans 'Definitions' %}
+      <li class="{% if active_tab == 'tags' %}active{% endif %}">
+        <a href="{% url 'tags:list' lab_pk=lab.pk %}">
+          <i class="fa fa-tags"></i> <span>{% trans 'Tags' %}</span>
         </a>
-        <ul class="treeview-menu">
-          <li class="{% if active_tab == 'tags' %}active{% endif %}">
-            <a href="{% url 'tags:list' lab_pk=lab.pk %}">
-              <i class="fa fa-tags"></i> {% trans 'Tags' %}
-            </a>
-          </li>
-          <li class="{% if active_tab == 'collections' %}active{% endif %}">
-            <a href="{% url 'collections:list' lab_pk=lab.pk %}">
-              <i class="fa fa-cubes"></i> {% trans 'collections'|title %}
-            </a>
-          </li>
-          <li class="{% if active_tab == 'measurement types' %}active{% endif %}">
-            <a href="{% url 'measurements:measurement_type_list' lab_pk=lab.pk %}">
-              {% trans 'Measurement type' %}
-            </a>
-          </li>
-        </ul>
       </li>
+      <!--<li class="treeview{% if active_tab in 'tags,measurement types,collections' %} active{% endif %}">-->
+        <!--<a href="">-->
+          <!--<i class="fa fa-folder{% if active_tab in 'tags,measurement types,collections' %}-open{% endif %}-o"></i>-->
+          <!--{% trans 'Definitions' %}-->
+        <!--</a>-->
+        <!--<ul class="treeview-menu">-->
+          <!--<li class="{% if active_tab == 'tags' %}active{% endif %}">-->
+            <!--<a href="{% url 'tags:list' lab_pk=lab.pk %}">-->
+              <!--<i class="fa fa-tags"></i> {% trans 'Tags' %}-->
+            <!--</a>-->
+          <!--</li>-->
+          <!--<li class="{% if active_tab == 'collections' %}active{% endif %}">-->
+            <!--<a href="{% url 'collections:list' lab_pk=lab.pk %}">-->
+              <!--<i class="fa fa-cubes"></i> {% trans 'collections'|title %}-->
+            <!--</a>-->
+          <!--</li>-->
+          <!--<li class="{% if active_tab == 'measurement types' %}active{% endif %}">-->
+            <!--<a href="{% url 'measurements:measurement_type_list' lab_pk=lab.pk %}">-->
+              <!--{% trans 'Measurement type' %}-->
+            <!--</a>-->
+          <!--</li>-->
+        <!--</ul>-->
+      <!--</li>-->
       <li class="{% if not active_tab and not object %} active{% endif %}">
         <a href="{% url 'filemanager' lab_pk=lab.pk %}">
           <i class="fa fa-folder{% if not active_tab and not object %}-open{% endif %}"></i>{% trans 'Filemanager' %}
