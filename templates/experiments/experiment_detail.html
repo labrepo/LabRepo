@@ -8,31 +8,6 @@
 
 {% block content_header %}{{ object }}{% endblock %}
 
-{% block manage_buttons %}
-  {% if is_member or is_owner %}
-    <div class="btn-group">
-      <a href="{% url 'experiments:update' pk=object.pk lab_pk=object.lab.pk %}" class="btn btn-info btn-sm btn-flat">
-        <i class="fa fa-edit"></i> {% trans 'edit'|upper %}
-      </a>
-    </div>
-  {% endif %}
-  <div class="btn-group">
-    <a href="{% url 'units:experiment_unit_list' lab_pk=object.lab.pk experiment_pk=object.pk %}"
-       class="btn bg-yellow btn-sm btn-flat">
-      <i class="fa fa-list"></i> {% trans 'units list'|upper %}
-    </a>
-  </div>
-  {% if is_owner %}
-    <div class="btn-group pull-right">
-      <a class="btn btn-danger btn-sm btn-flat"
-         data-href="{% url 'experiments:delete' pk=object.pk lab_pk=object.lab.pk %}"
-         data-toggle="modal" data-target="#confirm-delete" href="#">
-        <i class="fa fa-trash-o"></i> {% trans 'delete'|upper %}</a>
-    </div>
-  {% endif %}
-{% endblock %}
-
-
 {% block content %}
 
 <div class="row">
@@ -111,6 +86,23 @@
                           {% endif %}
                         </ul>
                       </div>
+                      <div class="col-sm-9">
+                        {% if is_member or is_owner %}
+                          <div class="btn-group">
+                            <a href="{% url 'experiments:update' pk=object.pk lab_pk=object.lab.pk %}" class="btn btn-info btn-sm btn-flat">
+                              <i class="fa fa-edit"></i> {% trans 'edit'|upper %}
+                            </a>
+                          </div>
+                        {% endif %}
+                        {% if is_owner %}
+                          <div class="btn-group">
+                            <a class="btn btn-danger btn-sm btn-flat"
+                               data-href="{% url 'experiments:delete' pk=object.pk lab_pk=object.lab.pk %}"
+                               data-toggle="modal" data-target="#confirm-delete" href="#">
+                              <i class="fa fa-trash-o"></i> {% trans 'delete'|upper %}</a>
+                          </div>
+                        {% endif %}
+                      </div>
                     </div>
                   </div>
                   </div>
@@ -170,6 +162,12 @@
                           <a href="#" data-unit-pk="{{ unit.pk }}" onclick="return false;" class="list-group-item list-group-item-sm unit-item">{{ unit }}</a>
                         {% endfor %}
                     </ul>
+                    <div class="btn-group">
+                      <a href="{% url 'units:experiment_unit_list' lab_pk=object.lab.pk experiment_pk=object.pk %}"
+                         class="btn bg-yellow btn-sm">
+                        <i class="fa fa-list"></i> {% trans 'edit units list'|upper %}
+                      </a>
+                    </div>
                   </div>
                   <!-- /.tab-pane -->
                 </div>
