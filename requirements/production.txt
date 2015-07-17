@@ -3,3 +3,4 @@ gunicorn
 django-dotenv>=1.2
 fabtools
 factory
+raven==5.3.1
