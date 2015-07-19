@@ -1,6 +1,8 @@
 from django.conf import settings
-from django.contrib.sites.models import RequestSite
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import RequestSite, Site
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
+from django.views.generic import View
 
 from .forms import RegistrationEmailForm
 from .documents import RegistrationProfile
@@ -134,3 +136,15 @@ class ActivationView(BaseActivationView):
 
     def get_success_url(self, request, user):
         return ('registration_activation_complete', (), {})
+
+
+class DemoLogin(View):
+    """
+    Process login as demo account('demo@demo.demo'/'demo')
+    """
+    def get(self, request):
+        user = authenticate(username='demo@demo.demo', password='demo')
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+        return HttpResponseRedirect('/')

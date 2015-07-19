@@ -7,17 +7,7 @@
 
 {% block box_footer %}
   <button type="submit" class="btn bg-olive btn-block">{% trans 'Sign in' %}</button>
-  <a href="#" class="btn bg-red btn-block demo_login">{% trans 'login as demo account'|title %}</a>
+  <a href="{% url 'demo_login' %}" class="btn bg-red btn-block">{% trans 'login as demo account'|title %}</a>
   <p><a href="{% url 'auth_reset_password' %}">{% trans 'i forgot my password'|title %}</a></p>
   <a href="{% url 'registration_register' %}">{% trans 'register a new membership'|title %}</a>
-
-<script>
-  $('.demo_login').click(function(e){
-     $('<form action=\"{% url "login_auth" %}\" method="POST">' +
-        '<input type="hidden" name="username" value="' + 'demo@demo.demo' + '">' +
-        '<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token}}">' +
-        '<input type="password" name="password" value="' + 'demo' + '">' +
-        '</form>').submit();
-  });
-</script>
 {% endblock %}

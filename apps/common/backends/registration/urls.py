@@ -25,7 +25,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth import views as auth_views
 from common.backends.registration.forms import ResetPasswordForm, EmailAuthenticationForm, PasswordSetForm
 
-from .views import ActivationView, RegistrationView
+from .views import ActivationView, RegistrationView, DemoLogin
 
 
 urlpatterns = patterns('',
@@ -62,4 +62,6 @@ urlpatterns = patterns('',
                            name='auth_logout_then_login'),
                        (r'', include('registration.auth_urls')),
                        (r'', include('django.contrib.auth.urls')),
+
+                       url(r'^demo_login/$', DemoLogin.as_view(), name='demo_login'),
                        )
