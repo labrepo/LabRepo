@@ -29,16 +29,6 @@ from .views import ActivationView, RegistrationView, DemoLogin
 
 
 urlpatterns = patterns('',
-                       url(r'^activate/complete/$',
-                           TemplateView.as_view(template_name='registration/activation_complete.html'),
-                           name='registration_activation_complete'),
-                       # Activation keys get matched by \w+ instead of the more specific
-                       # [a-fA-F0-9]{40} because a bad activation key should still get to the view;
-                       # that way it can return a sensible "invalid key" message instead of a
-                       # confusing 404.
-                       url(r'^activate/(?P<activation_key>\w+)/$',
-                           ActivationView.as_view(),
-                           name='registration_activate'),
                        url(r'^register/$',
                            RegistrationView.as_view(),
                            name='registration_register'),
@@ -55,11 +45,27 @@ urlpatterns = patterns('',
                            'django.contrib.auth.views.password_reset',
                            {'password_reset_form': ResetPasswordForm},
                            name='auth_reset_password'),
+
+                       url(r'^activate/complete/$', 'django.contrib.auth.views.login',
+                           {'template_name': 'registration/login.html', 'authentication_form': EmailAuthenticationForm, 'extra_context':{'activate':True}},
+                           name='login_auth'),
                        url(r'^login/$', 'django.contrib.auth.views.login',
                            {'template_name': 'registration/login.html', 'authentication_form': EmailAuthenticationForm},
                            name='login_auth'),
                        url(r'^logout/$', 'django.contrib.auth.views.logout_then_login',
                            name='auth_logout_then_login'),
+
+                       # url(r'^activate/complete/$',
+                       #     TemplateView.as_view(template_name='registration/activation_complete.html'),
+                       #     name='registration_activation_complete'),
+                       # Activation keys get matched by \w+ instead of the more specific
+                       # [a-fA-F0-9]{40} because a bad activation key should still get to the view;
+                       # that way it can return a sensible "invalid key" message instead of a
+                       # confusing 404.
+                       url(r'^activate/(?P<activation_key>\w+)/$',
+                           ActivationView.as_view(),
+                           name='registration_activate'),
+
                        (r'', include('registration.auth_urls')),
                        (r'', include('django.contrib.auth.urls')),
 

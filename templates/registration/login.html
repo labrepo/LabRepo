@@ -5,6 +5,16 @@
 
 {% block box_header %}{% trans 'Sign in' %}{% endblock %}
 
+{% block alert_area %}
+  {% if activate %}
+    <div style=";" class="alert alert-activation alert-success alert-dismissable">
+      <a href="/" class="close">×</a>
+      <b>{% block alert_header %}{% trans "Activation complete" %}{% endblock %}</b>
+      <p>{% block alert_message %}{% trans "Your account is activated" %}.{% endblock %}</p>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block box_footer %}
   <button type="submit" class="btn bg-olive btn-block">{% trans 'Sign in' %}</button>
   <a href="{% url 'demo_login' %}" class="btn bg-red btn-block">{% trans 'login as demo account'|title %}</a>

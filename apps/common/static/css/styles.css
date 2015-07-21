@@ -279,3 +279,8 @@ span.has-error {
 }
 
 /*forms end*/
+
+.alert-activation {
+    margin-left: 0px !important;
+
+}
