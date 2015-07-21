@@ -81,7 +81,7 @@ EMAIL_PORT = get_env_setting('EMAIL_PORT')
 EMAIL_HOST_USER = get_env_setting('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = get_env_setting('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = get_env_setting('EMAIL_USE_TLS')
-
+SERVER_EMAIL = DEFAULT_FROM_EMAIL = get_env_setting('SERVER_EMAIL')
 
 INSTALLED_APPS += (
     'raven.contrib.django.raven_compat',

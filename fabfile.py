@@ -227,7 +227,7 @@ def prepare_configuration_files():
 @task
 def populate_dotenv():
     config = ConfigParser.ConfigParser()
-    config.readfp(open('fabricrc'))
+    config.readfp(open(env.get('rcfile')))
     django_settings = config._sections['Django']
     django_settings['domain'] = env.domain
     require.files.template_file(
