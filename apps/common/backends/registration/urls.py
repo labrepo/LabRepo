@@ -48,7 +48,7 @@ urlpatterns = patterns('',
 
                        url(r'^activate/complete/$', 'django.contrib.auth.views.login',
                            {'template_name': 'registration/login.html', 'authentication_form': EmailAuthenticationForm, 'extra_context':{'activate':True}},
-                           name='login_auth'),
+                           name='registration_activation_complete'),
                        url(r'^login/$', 'django.contrib.auth.views.login',
                            {'template_name': 'registration/login.html', 'authentication_form': EmailAuthenticationForm},
                            name='login_auth'),
