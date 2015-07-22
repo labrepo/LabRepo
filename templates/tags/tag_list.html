@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load i18n static %}
+{% load i18n static bootstrap_tags %}
 
 {% block breadcrumb %}
   <li class="active"><i class="fa fa-tags"></i> {% trans 'Tags' %}</li>
@@ -9,20 +9,7 @@
 {% block modal %}{% include 'alert.html' with btn_id="location-remove" modal_id="confirm-delete" %}{% endblock %}
 
 {% block content_header %}{% trans 'tags tree'|title %}{% endblock %}
-{% block manage_buttons %}
-  <div class="btn-group">
-    <a href="#location-tree" class="btn btn-sm bg-olive btn-flat" id="location-create"
-       data-url="{% url 'tags:create' lab_pk=lab.pk %}">
-      <i class="fa fa-tag"></i> {% trans 'create tag'|upper %}
-    </a>
-  </div>
-  <div class="btn-group pull-right">
-    <button class="btn btn-sm bg-red btn-flat" data-href="{% url 'tags:delete' lab_pk=lab.pk %}"
-            data-toggle="modal" data-target="#confirm-delete">
-      <i class="fa fa-trash-o"></i> {% trans 'remove tags'|upper %}
-    </button>
-  </div>
-{% endblock %}
+{% block manage_buttons %}{% endblock %}
 
 
 {% block content %}
@@ -34,11 +21,17 @@
       <div class="box-footer">
         <div id="location-tree" data-content='{{ tags }}'></div>
       </div>
+      <div class="btn-group">
+        <button class="btn btn-sm bg-red btn-flat" data-href="{% url 'tags:delete' lab_pk=lab.pk %}"
+                data-toggle="modal" data-target="#confirm-delete">
+          <i class="fa fa-trash-o"></i> {% trans 'remove tags'|upper %}
+        </button>
+      </div>
     </div>
 
   </section>
   <section class="col-sm-5">
-    <div class="box box-solid" id="location-container"></div>
+    <div class="box box-solid" id="location-container">{% include "tags/tag_form.html" %}</div>
   </section>
 {% endblock %}
 
@@ -75,7 +68,7 @@
     //   }
     // });
   </script>
-  {% block form_script %}{% endblock %}
+  {% block form_script %}{{ form.media }}{% endblock %}
 {% endblock %}
 {% block css %}
   <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">

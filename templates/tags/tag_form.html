@@ -2,8 +2,16 @@
 
 {% if object.pk %}
   {% url 'tags:update' pk=object.pk lab_pk=lab.pk as action %}
+  <div class="btn-group pull-right">
+    <a href="#location-tree" class="btn btn-sm bg-olive btn-flat" id="location-create"
+       data-url="{% url 'tags:create' lab_pk=lab.pk %}">
+      <i class="fa fa-tag"></i> {% trans 'create tag'|upper %}
+    </a>
+  </div>
+  <h3>Update tag</h3>
 {% else %}
   {% url 'tags:create' lab_pk=lab.pk as action %}
+  <h3>Create tag</h3>
 {% endif %}
 
 <form method="post" id="location-form" action="{{ action }}">
@@ -15,5 +23,3 @@
     <button type="submit" class="btn btn-info btn-sm" id="btn-form">{% trans 'Save'|upper %}</button>
   </div>
 </form>
-
-{% block form_script %}{{ form.media }}{% endblock %}

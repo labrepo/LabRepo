@@ -132,10 +132,12 @@ class TagListView(LoginRequiredMixin, CheckLabPermissionMixin, LabQueryMixin, Js
     model = Tag
     template_name = 'tags/tag_list.html'
     active_tab = 'tags'
+    form = TagForm
 
     def get_context_data(self, **kwargs):
         ctx = super(TagListView, self).get_context_data(**kwargs)
         ctx['tags'] = json.dumps(self.get_tree_element(self.model))
+        ctx['form'] = TagForm(initial={'lab_pk': self.lab.pk, 'user': self.request.user})
         return ctx
 
     def get_tree_element(self, model, fields=('id', 'parent', 'details'), parent_id='#'):

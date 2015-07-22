@@ -84,7 +84,7 @@ function InitJSTree(treeElement, plugins){
         }, 250);
     });
 
-    $('#location-create').click(function (e) {
+    $('body').on('click', '#location-create', function (e) {
         var selected_node = tree.jstree(true).get_selected(),
             parent_node = $('#' + selected_node).closest('[data-create-url]'),
             url = parent_node.data('create-url');
