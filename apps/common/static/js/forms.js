@@ -1,5 +1,8 @@
 $(document).ready(function () {
+
+
     addSelect2();
+
 
     submitForm($('.comment-form'), function (response, form) {
         form.closest('.comments-block').find('div#comment').append(response.data);
@@ -65,7 +68,7 @@ $('#confirm-delete,#confirm-delete-comment').on('show.bs.modal', function (e) {
 function submitForm(el, callback, error_callback) {
     $('body').on('submit', el.selector, function (e) {
         e.preventDefault();
-        e.stopPropagation();
+        e.stopImmediatePropagation();
 
         var $form = $(e.target);
 

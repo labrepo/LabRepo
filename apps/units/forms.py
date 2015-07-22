@@ -53,7 +53,9 @@ class UnitDescriptionForm(BaseForm):
     def __init__(self, *args, **kwargs):
         lab_pk = kwargs.pop('lab_pk')
         super(UnitDescriptionForm, self).__init__(*args, **kwargs)
-        self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk)
+        self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk,
+                                                                 attrs={'id': 'unit_description_field'})
+                                                                 # FIX CKEDITOR MULTIPLE INSTANCES
         self.fields['description'].label = ''
 
     class Meta:
