@@ -34,16 +34,21 @@ $(function(){
     });
 
 
-    $('#unit').on('ifChanged', 'input[type="checkbox"]', function(){
-        $('form #id_units').select2("val", $.map($('#unit').find('input:checked'), function(value){return $(value).val();}));
+    $('#unit').on('ifChanged', 'input[type="checkbox"]', function() {
+        if ($(this).prop('checked')) {
+            $('form #id_units').find('option[value="' + $(this).val() + '"]').attr("selected", true);
+        } else {
+            $('form #id_units').find('option[value="' + $(this).val() + '"]').attr("selected", false);
+        }
+//        $('form #id_units').select2("val", $.map($('#unit').find('input:checked'), function(value){return $(value).val();}));
     });
 
     submitForm($('.create-collection-form'), function(response, form){
         showMessage(false, response.message);
         $('#modal').modal('hide');
-        $('.update-collection-form').html(response.update_collection_form);
+        $('.update-experiment-form').html(response.update_collection_form);
     });
-    submitForm($('.update-collection-form'),
+    submitForm($('.update-experiment-form'),
         function(response, form){
             showMessage(false, response.message);
             form.find('.non-field-error').empty();

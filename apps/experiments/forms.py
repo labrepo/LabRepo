@@ -2,9 +2,12 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from mongoengine import Q
+
 from common.forms import BaseForm, SelectFormMixin, CheckOwnerEditMixin
 from common.widgets import DateTimeWidget, CKEditorUploadWidget
 from experiments.documents import Experiment
+from units.documents import Unit
 
 
 class ExperimentForm(SelectFormMixin, CheckOwnerEditMixin, BaseForm):
@@ -37,3 +40,34 @@ class ExperimentUpdateForm(BaseForm):
     class Meta:
         document = Experiment
         fields = ('start', 'end')
+
+
+class UpdateUnitsForm(BaseForm):
+    """
+    Used to add units to a experiment. TODO: remove model form?
+    """
+    experiment = forms.ModelChoiceField(queryset=Experiment.objects.none())
+    units = forms.ModelMultipleChoiceField(queryset=Unit.objects.none())
+
+    class Meta:
+        document = Experiment
+        fields = ('',)
+
+    def __init__(self, *args, **kwargs):
+        self.lab = kwargs['initial']['lab']
+        self.user = kwargs['initial']['user']
+
+        super(UpdateUnitsForm, self).__init__(*args, **kwargs)
+        del self.initial['user']
+        del self.initial['lab']
+        experiment = Experiment.objects.filter(lab=self.lab.pk)
+        if not self.lab.is_owner(self.user):
+            experiment = experiment.filter((Q(owners__in=[self.user]) | Q(editors__in=[self.user]) |
+                                              Q(viewers__in=[self.user]) | Q(units__in=self.fields['units'].queryset)))
+        self.fields['experiment'].queryset = experiment
+
+        self.fields['units'].queryset = Unit.objects.filter(lab=self.lab, active=True)
+
+        self.fields['units'].widget.attrs['class'] += ' hidden-field'
+        self.fields['units'].label = ''
+        self.fields['units'].error_messages['required'] = _('You didn\'t select any units.')

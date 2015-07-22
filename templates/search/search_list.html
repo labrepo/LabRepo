@@ -69,17 +69,17 @@
                 {% endfor %}
               </ul>
               <div class="col-sm-12">
-                {% if update_collection_form.fields.collection.queryset %}
-                  <form class="form-inline update-collection-form col-sm-4" role="form" method="post"
-                        action="{% url 'collections:unit-update' lab_pk=lab.pk %}">{% csrf_token %}
-                    {% include 'search/collection_form.html' %}
+                {% if update_experiment_form.fields.experiment.queryset %}
+                  <form class="form-inline update-experiment-form col-sm-4" role="form" method="post"
+                        action="{% url 'experiments:add-units' lab_pk=lab.pk %}">{% csrf_token %}
+                    {% include 'search/experiment_form.html' %}
                   </form>
                 {% endif %}
 
-                <button class="btn btn-sm btn-info pull-left" data-toggle="modal"
-                        data-target="#modal">{% trans 'create new collection'|title %}</button>
-                {% url 'collections:create' lab_pk=lab.pk as create_collection_url %}
-                {% include 'modal.html' with extra_form=create_collection_form action=create_collection_url class='create-collection-form' %}
+               {# <button class="btn btn-sm btn-info pull-left" data-toggle="modal" #}
+               {#        data-target="#modal">{% trans 'create new collection'|title %}</button>#}
+               {# {% url 'collections:create' lab_pk=lab.pk as create_collection_url %}#}
+               {# {% include 'modal.html' with extra_form=create_collection_form action=create_collection_url class='create-collection-form' %} #}
               </div>
             </div>
           </div><!-- /.tab-pane -->

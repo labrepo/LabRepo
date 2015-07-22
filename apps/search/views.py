@@ -13,6 +13,7 @@ from labs.documents import Lab
 from measurements.search_indexes import MeasurementMappingType
 from profiles import ProfileMappingType
 from unit_collections.forms import CollectionForm, UpdateUnitsCollectionForm
+from experiments.forms import UpdateUnitsForm
 from units.search_indexes import UnitMappingType
 
 
@@ -103,9 +104,9 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                     profiles = [user for user in profiles_query if User.objects.filter(pk=user['id']) and self.lab.is_assistant(User.objects.get(pk=user['id']))]
 
                 if elastic_type == '_all':
-                    comments_query.append({"wildcard": search_data})
-                    units_query.append({"wildcard": search_data})
-                    measurement_query.append({"wildcard": search_data})
+                    comments_query.append({"match": search_data})
+                    units_query.append({"match": search_data})
+                    measurement_query.append({"match": search_data})
                     query.extend([
                         {
                             "filtered": {
@@ -113,7 +114,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                                     'or': [
                                         {
                                             "query": {
-                                                "query_string" : {
+                                                "query_string": {
                                                     "query": search_data.values()[0]
                                                 }
                                             }
@@ -123,7 +124,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                                                 'type': UnitMappingType.get_mapping_type_name(),
                                                 "query": {
                                                     "filtered": {
-                                                        "query": {"wildcard": search_data}
+                                                        "query": {"match": search_data}
                                                     }
                                                 }
                                             }
@@ -133,7 +134,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                                                 'type': CommentMappingType.get_mapping_type_name(),
                                                 "query": {
                                                     "filtered": {
-                                                        "query": {"wildcard": search_data}
+                                                        "query": {"match": search_data}
                                                     }
                                                 }
                                             }
@@ -203,7 +204,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
     def get_context_data(self, **kwargs):
         ctx = kwargs.copy()
         ctx['form'] = self.form_class(self.request.GET)
-        ctx['create_collection_form'] = CollectionForm(initial={'lab': self.lab, 'user': self.request.user})
-        ctx['update_collection_form'] = UpdateUnitsCollectionForm(initial={'lab': self.lab, 'user': self.request.user})
+        # ctx['create_collection_form'] = CollectionForm(initial={'lab': self.lab, 'user': self.request.user})
+        ctx['update_experiment_form'] = UpdateUnitsForm(initial={'lab': self.lab, 'user': self.request.user})
         return ctx
 

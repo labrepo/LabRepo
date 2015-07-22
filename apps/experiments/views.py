@@ -7,18 +7,21 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, ugettext
 from django.utils.safestring import mark_safe
-from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View
+from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
 from comments.documents import Comment
 from common.decorators import get_obj_or_404
+
 from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPermissionMixin, JsTreeMixin,
                            LabQueryMixin, CheckDeletePermissionMixin, RecentActivityMixin, CommentMixin,
-                           AjaxableResponseMixin, InviteFormMixin, CheckLabPermissionMixin, FormInitialMixin)
+                           AjaxableResponseMixin, InviteFormMixin, CheckLabPermissionMixin,
+                           FormInitialMixin, LoginRequiredMixin)
 from dashboard.documents import RecentActivity
 from experiments.documents import Experiment
-from experiments.forms import ExperimentForm, ExperimentUpdateForm
+from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm
 from tags.documents import Tag
 from units.documents import Unit
 from units.forms import UnitForm, UnitPopupForm
@@ -207,3 +210,31 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
         queryset = list(super(ExperimentDetailView, self).get_list_comment())
         queryset += list(Comment.objects.filter(instance_type='Unit', object_id__in=self.units.values_list('pk')))
         return queryset
+
+
+class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitialMixin, AjaxableResponseMixin,
+                          RecentActivityMixin, ModelFormMixin, ProcessFormView, View):
+    """
+    Add units to experimetn
+    """
+    model = Experiment
+    form_class = UpdateUnitsForm
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        return super(ExperimentAddUnits, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+
+        self.object = form.cleaned_data['experiment']
+        for unit in form.cleaned_data['units']:
+            unit.update(
+                add_to_set__experiments=self.object)
+            unit.save(user=self.request.user)
+
+        self.save_recent_activity(RecentActivity.UPDATE)
+        self.get_success_message()
+        return self.render_to_json_response({'message': self.get_success_message()})
+
+    def get_success_message(self):
+        return ugettext(u'Experiment was changed successfully.')
