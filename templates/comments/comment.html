@@ -8,7 +8,7 @@
       {% if user == comment.init_user or user in lab.investigator %}
         <!--  <span class="input-group-btn"> -->
         <button class="btn btn-default btn-flat btn-xs comment-edit" type="button" data-toggle="modal"
-                data-target="#comment-modal" data-url="{% url 'comment:update' lab_pk=lab.pk pk=comment.pk %}">
+                data-target="#{{ modal_id|default:'comment-modal' }}" data-url="{% url 'comment:update' lab_pk=lab.pk pk=comment.pk %}">
           <i class="fa fa-edit" title='{% trans "Edit" %}'></i>
         </button>
         <button class="btn btn-default btn-flat btn-xs" type="button" data-target="#confirm-delete-comment"

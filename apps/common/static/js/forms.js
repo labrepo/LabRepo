@@ -18,10 +18,10 @@ $(document).ready(function () {
         .on('click', '.comment-edit', function (e) {
             var that = $(this),
                 value = that.closest('.comment-block').find('.comment-context').html();
-            $('div#comment-modal form').attr('action', that.data('url')).find('[name="update-text"]').val(value);
-            var comment_field_id = $('textarea[name="update-text"]').attr('id');
-            CKEDITOR.instances[comment_field_id].setData(value);
 
+            $('div.comment-modal form').attr('action', that.data('url')).find('[name="update-text"]').val(value);
+            var comment_field_id = that.closest('.comment-area').find('div.comment-modal textarea[name="update-text"]').attr('id');
+            CKEDITOR.instances[comment_field_id].setData(value);
         })
         .on('click', '.comment-remove', function () {
             submitForm($(this).closest('form'), function (response) {
