@@ -11,7 +11,7 @@
                 data-target="#{{ modal_id|default:'comment-modal' }}" data-url="{% url 'comment:update' lab_pk=lab.pk pk=comment.pk %}">
           <i class="fa fa-edit" title='{% trans "Edit" %}'></i>
         </button>
-        <button class="btn btn-default btn-flat btn-xs" type="button" data-target="#confirm-delete-comment"
+        <button class="btn btn-default btn-flat btn-xs comment-delete" type="button" data-target="#{{ delete_modal_id|default:'confirm-delete-comment' }}"
                 data-toggle="modal"
                 data-href="{% url 'comment:delete' lab_pk=lab.pk pk=comment.pk %}">
           <i class="fa fa-trash-o" title='{% trans "Remove" %}'></i></button>

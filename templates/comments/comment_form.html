@@ -23,7 +23,7 @@
             {% for comment in comments %}
               {% include 'comments/comment.html' %}
             {% endfor %}
-            {% include 'alert.html' with modal_id="confirm-delete-comment" class="comment-remove" %}
+            {% include 'alert.html' with modal_id=delete_modal_id|default:'confirm-delete-comment' class="comment-remove" modal_class="confirm-delete-comment" %}
           </div>
           <!-- Primary box -->
           <div class="box box-solid box-default">

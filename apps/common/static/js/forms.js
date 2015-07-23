@@ -26,7 +26,7 @@ $(document).ready(function () {
         .on('click', '.comment-remove', function () {
             submitForm($(this).closest('form'), function (response) {
                 $('div[data-pk="' + response.pk + '"]').remove();
-                $('#confirm-delete-comment').modal('hide');
+                $('.confirm-delete-comment').modal('hide');
             });
         });
 
@@ -61,8 +61,12 @@ function invite() {
     });
 }
 
-$('#confirm-delete,#confirm-delete-comment').on('show.bs.modal', function (e) {
-    $(this).find('#formConfirmDelete').attr('action', $(e.relatedTarget).data('href'));
+//$('#confirm-delete,#confirm-delete-comment').on('show.bs.modal', function (e) {
+//    $(this).find('#formConfirmDelete').attr('action', $(e.relatedTarget).data('href'));
+//});
+
+$('body').on('click', '.comment-delete', function (e) {
+    $('.formConfirmDelete').attr('action', $(e.target).closest('button').data('href'));
 });
 
 function submitForm(el, callback, error_callback) {

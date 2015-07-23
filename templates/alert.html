@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="modal fade" id="{{ modal_id|default:"confirm-delete" }}" tabindex="-1" role="dialog"
+<div class="modal fade {{ modal_class }}" id="{{ modal_id|default:'confirm-delete' }}" tabindex="-1" role="dialog"
      aria-labelledby="ModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="alert box box-warning">
@@ -17,7 +17,7 @@
       </div>
 
       <div class="box-body text-center">
-        <form method="post" action="" role="form" id="formConfirmDelete">
+        <form method="post" action="" role="form" id="formConfirmDelete" class="formConfirmDelete">
           {% csrf_token %}
           <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">
             {% trans 'cancel'|title %}
