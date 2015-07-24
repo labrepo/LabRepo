@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="description-editor" style="display: none">
-    <form action="{% url 'units:create' lab_pk=lab_pk%}" method="post" class="description-unit-form">
+    <form action="{% url 'units:update' lab_pk=lab_pk%}" method="post" class="description-unit-form">
       {% with label_width=label_width|default:2 field_width=field_width|default:-2 %}
 
         {% if form.non_field_errors %}

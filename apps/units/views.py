@@ -46,7 +46,7 @@ class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, Ajaxabl
     active_tab = 'units'
     title = {
         'pk': 'pk', 'sample': 'sample', 'experiments_pk': 'experiments', 'parent_pk': 'parent', 'tags_pk': 'tags',
-        'change reasons': 'comment', 'description': 'description',
+        'change reasons': 'comment',
     }
     title_fields = ['pk', 'sample', 'experiments', 'parent', 'tags', 'readonly']
     extra_title = ['change reasons', 'experiments_pk', 'parent_pk', 'tags_pk']
@@ -133,6 +133,16 @@ class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, Ajaxabl
         ctx['headers'] = json.dumps(self.headers)
         ctx['is_member'] = bool(filter(lambda x: x[self.headers.index('readonly')], units_list) or len(experiments))
         return ctx
+
+
+class UnitUpdateView(UnitCreateView):
+    """
+     View for update unit. Same as create,but is added description
+     """
+    title = {
+        'pk': 'pk', 'sample': 'sample', 'experiments_pk': 'experiments', 'parent_pk': 'parent', 'tags_pk': 'tags',
+        'change reasons': 'comment', 'description': 'description',
+    }
 
 
 class UnitDeleteView(LoginRequiredMixin, RecentActivityMixin, ActiveTabMixin, AjaxableResponseMixin, View):
@@ -296,6 +306,7 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
             ctx['revisions'] = json.dumps([self.rev_as_json(rev) for rev in self.object.measurements.revisions()])
 
         ctx['sample'] = self.object.sample
+        ctx['unit_data'] = self.object.to_json()
 
         ctx['tags'] = json.dumps(self.get_tree_element(self.object))
 

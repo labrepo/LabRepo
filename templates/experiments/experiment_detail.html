@@ -313,10 +313,26 @@
       var url = '/{{ lab.pk }}/units/detail_json/'+ unit.id + '/'
       $.post(url, {unit_pk: unit.id}, function(data){
         // set global current unit
+
+        function get_parents(unit_data) {
+          /**
+           * Return array of unit parents ids
+           * @param unit_data - (string) serialized unit object
+           */
+          var unit_json = JSON.parse(unit_data)
+          var parents = []
+          for (var i=0; i< unit_json.parent.length; i++) {
+            console.log(unit_json.parent[i]['$oid'])
+            parents.push(unit_json.parent[i]['$oid'])
+          }
+          return parents
+        }
+
         window.unit_data = {
           'data-0-pk': data.pk,
           'data-0-sample': data.sample,
           'data-0-description': data.description,
+          'data-0-parent_pk[]': get_parents(data.unit_data),
           'data-0-experiments_pk[]': exp_pk,
           'length':1
         }

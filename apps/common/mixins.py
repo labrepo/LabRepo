@@ -222,6 +222,11 @@ class DataMixin(object):
             if data:
                 self.kwargs['pk'] = data.get('pk', None)
                 self.object = self.get_object()
+
+                #TODO: remove description fix
+                if self.object.description:
+                    data['description'] = self.object.description
+
                 form = self.form(data=data, instance=self.object, lab_pk=self.kwargs.get('lab_pk'))
                 if self.is_changed(data):
                     user = request.user
