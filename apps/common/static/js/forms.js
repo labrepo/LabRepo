@@ -30,9 +30,9 @@ $(document).ready(function () {
             });
         });
 
-    submitForm($('div#comment-modal form'), function (response) {
+    submitForm($('div.comment-modal form'), function (response) {
         $('div[data-pk="' + response.pk + '"]').replaceWith(response.data);
-        $('#comment-modal').modal('hide');
+        $('.comment-modal').modal('hide');
     });
 
     $('body').on('click','.description-edit', function (e) {

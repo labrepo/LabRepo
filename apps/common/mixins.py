@@ -223,8 +223,8 @@ class DataMixin(object):
                 self.kwargs['pk'] = data.get('pk', None)
                 self.object = self.get_object()
 
-                #TODO: remove description fix
-                if self.object.description:
+                #TODO: remove descriptio
+                if self.object.description and not 'description' in self.title:
                     data['description'] = self.object.description
 
                 form = self.form(data=data, instance=self.object, lab_pk=self.kwargs.get('lab_pk'))
