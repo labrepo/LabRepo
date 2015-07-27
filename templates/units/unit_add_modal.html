@@ -11,7 +11,7 @@
         </button>
         <h3 class="modal-title" id="Modal">{% trans 'Add unit' %}</h3>
       </div>
-      <form method="post" class="modal-form add-unit-form {{ class }}" action="{% url 'units:create' lab_pk=lab.pk %}" data-field="{{ fields }}">
+      <form method="post" class="modal-form add-unit-form {{ class }}" action="{% url 'units:update' lab_pk=lab.pk %}" data-field="{{ fields }}">
         <div class="modal-body">
           {% csrf_token %}
           {{ unit_form }}

@@ -299,8 +299,10 @@ $(function () {
 
     submitForm($('.modal-form'), function (response, form) {
         var col = column[parseInt(form.data('column'))];
-        col.selectOptions.push([response.pk, response.name]);
-        col.validator = new RegExp((col.validator_string + '|' + response.name));
+        if (col) {
+            col.selectOptions.push([response.pk, response.name]);
+            col.validator = new RegExp((col.validator_string + '|' + response.name));
+        }
         $('.modal').modal('hide');
     });
 

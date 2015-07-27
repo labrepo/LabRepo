@@ -38,6 +38,8 @@ class UnitPopupForm(BaseForm):
         self.fields['experiments'].initial = experiment
         self.fields['parent'].queryset = Unit.objects.filter(lab=lab, active=True)
         self.fields['tags'].queryset = Tag.objects.filter(lab=lab)
+        self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk,
+                                                                 attrs={'id': 'unit_create_description_field'})
 
     class Meta:
         document = Unit
