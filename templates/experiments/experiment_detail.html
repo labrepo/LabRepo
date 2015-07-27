@@ -322,7 +322,6 @@
           var unit_json = JSON.parse(unit_data)
           var parents = []
           for (var i=0; i< unit_json.parent.length; i++) {
-            console.log(unit_json.parent[i]['$oid'])
             parents.push(unit_json.parent[i]['$oid'])
           }
           return parents

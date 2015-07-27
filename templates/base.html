@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   {% block head %}
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-    <link href="{% static 'adminLTE/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'adminLTE/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'select2/select2.css' %}" rel="stylesheet">
     <link href="{% static 'select2/select2-bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'adminLTE/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
@@ -16,6 +16,8 @@
     <link href="{% static 'css/styles.css' %}" rel="stylesheet">
     <!-- Theme style -->
     <link href='{% static "adminLTE/css/AdminLTE.css" %}' rel="stylesheet" type="text/css"/>
+
+    <link href='{% static "adminLTE/css/skins/skin-black.min.css" %}' rel="stylesheet" type="text/css" />
   {% endblock %}
   {% block css %}{% endblock %}
 
@@ -26,13 +28,14 @@
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
   <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
   <![endif]-->
-  <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+  <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
   {% block top_scripts %}{% endblock %}
 </head>
 <body class="{% block body_classes %}wysihtml5-supported pace-done skin-black fixed{% endblock %}">
 {% block body %}
+<div class="wrapper">
   {% block menu %}
-    <header class="header">
+    <header class="main-header">
       <a href="{% url 'labs:list' %}" class="logo">
         <!-- Add the class icon to your logo image or logo icon to add the margining -->
         LabRepo.org
@@ -55,7 +58,7 @@
           </ul>
         </div>
 
-        <div class="navbar-right">
+        <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
             {% if labs_list %}
               <li class="dropdown notifications-menu">
@@ -102,13 +105,13 @@
       </nav>
     </header>
 
-    <div class="wrapper row-offcanvas row-offcanvas-left">
-    <aside class="left-side sidebar-offcanvas">
+    <div class="row-offcanvas row-offcanvas-left">
+    <aside class="main-sidebar sidebar-offcanvas">
       {% include 'sidebar.html' %}
     </aside>
   {% endblock menu %}
 
-<aside class="right-side">
+<aside class="content-wrapper">
   <section class="content-header">
     <h1>{% block content_header %}{% endblock %}</h1>
     {% if lab %}
@@ -139,10 +142,11 @@
 
   {% block modal %}{% endblock %}
   <!-- jQuery UI 1.10.3 -->
-  <script src="{% static 'adminLTE/js/jquery-ui-1.10.3.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'adminLTE/plugins/jQueryUI/jquery-ui.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'adminLTE/plugins/slimScroll/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
   <script src="{% static 'select2/select2.min.js' %}"></script>
   <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-  <script src="{% static 'adminLTE/js/AdminLTE/app.js' %}" type="text/javascript"></script>
+  <script src="{% static 'adminLTE/js/app.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/forms.js' %}"></script>
   <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
   <script type="text/javascript">
@@ -154,7 +158,7 @@
     {% block extra_script %}{% endblock %}
     {% block form_script %}{% endblock %}
   {% endblock %}
-
+</div>
 {% endblock body %}
 </body>
 </html>

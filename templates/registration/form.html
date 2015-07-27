@@ -3,18 +3,18 @@
 
 {% block content %}
 {% block alert_area %}{% endblock %}
+  <div class="register-logo">
+    {% block box_header %}{% endblock %}
+  </div>
+  <div class="register-box-body">
+    <form action="" method="post">
+        {% block alert %}{% endblock %}
+        {% block box_body %}
+          {% csrf_token %}
+          {{ form|as_bootstrap_inline }}
+        {% endblock %}
 
-  <div class="header">{% block box_header %}{% endblock %}</div>
-  <form action="" method="post">
-    <div class="body bg-gray">
-      {% block alert %}{% endblock %}
-      {% block box_body %}
-        {% csrf_token %}
-        {{ form|as_bootstrap_inline }}
-      {% endblock %}
-    </div>
-    <div class="footer">
-      {% block box_footer %}{% endblock %}
-    </div>
-  </form>
+        {% block box_footer %}{% endblock %}
+    </form>
+  </div>
 {% endblock %}

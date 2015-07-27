@@ -31,8 +31,8 @@ class DictWidget(HiddenInput):
 
 class ColorWidget(TextInput):
     class Media:
-        css = {'all': ('adminLTE/css/colorpicker/bootstrap-colorpicker.min.css',)}
-        js = ('adminLTE/js/plugins/colorpicker/bootstrap-colorpicker.min.js', 'js/color_widget.js')
+        css = {'all': ('adminLTE/plugins/colorpicker/bootstrap-colorpicker.min.css',)}
+        js = ('adminLTE/plugins/colorpicker/bootstrap-colorpicker.min.js', 'js/color_widget.js')
 
     def render(self, name, value, attrs=None):
         html = u"""

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% load i18n static %}
 
-{% block html_classes %}bg-black{% endblock %}
-{% block body_classes %}bg-black{% endblock %}
+{% block html_classes %}{% endblock %}
+{% block body_classes %}register-page{% endblock %}
 {% block body %}
-  <div class="form-box" id="login-box">
+  <div class="form-box register-box" id="login-box">
 
     {% block content %}{% endblock %}
 
@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <script src="{% static 'adminLTE/js/jquery-ui-1.10.3.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'adminLTE/plugins/jQueryUI/jquery-ui.min.js' %}" type="text/javascript"></script>
   <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
   <script src="{% static 'js/forms.js' %}"></script>
 {% endblock %}
