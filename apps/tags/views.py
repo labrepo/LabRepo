@@ -140,7 +140,7 @@ class TagListView(LoginRequiredMixin, CheckLabPermissionMixin, LabQueryMixin, Js
         ctx['form'] = TagForm(initial={'lab_pk': self.lab.pk, 'user': self.request.user})
         return ctx
 
-    def get_tree_element(self, model, fields=('id', 'parent', 'details'), parent_id='#'):
+    def get_tree_element(self, model):
         tags = model.objects.filter(lab=self.kwargs.get('lab_pk'))
-        tags_tree = self.get_jstree_data(tags, fields, parent_id=parent_id)
+        tags_tree = self.get_fancytree_data(tags)
         return tags_tree

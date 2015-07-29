@@ -14,30 +14,37 @@
 
 {% block content %}
   <section class="col-sm-7">
-    <div class="box box-solid">
+    <div class="box">
       <div class="box-body">
         <input id="search" placeholder="{% trans 'Search' %}..." class="form-control">
       </div>
+      <div id="location-tree" data-lab="{{ lab.pk }}" data-content='{{ tags }}'></div>
       <div class="box-footer">
-        <div id="location-tree" data-content='{{ tags }}'></div>
-      </div>
-      <div class="btn-group">
-        <button class="btn btn-sm bg-red btn-flat" data-href="{% url 'tags:delete' lab_pk=lab.pk %}"
-                data-toggle="modal" data-target="#confirm-delete">
-          <i class="fa fa-trash-o"></i> {% trans 'remove tags'|upper %}
-        </button>
+        <div class="btn-group">
+          <button class="btn btn-sm bg-red btn-flat" data-href="{% url 'tags:delete' lab_pk=lab.pk %}"
+                  data-toggle="modal" data-target="#confirm-delete">
+            <i class="fa fa-trash-o"></i> {% trans 'remove tags'|upper %}
+          </button>
+        </div>
       </div>
     </div>
 
   </section>
   <section class="col-sm-5">
-    <div class="box box-solid" id="location-container">{% include "tags/tag_form.html" %}</div>
+    <div class="box" id="location-container">{% include "tags/tag_form.html" %}</div>
   </section>
 {% endblock %}
 
 {% block script %}
   <script src="{% static 'jstree/jstree.js' %}"></script>
-  <script src="{% static 'js/tree.js' %}"></script>
+  <script src="{% static 'fancytree/js/jquery.fancytree.js' %}"></script>
+  <script src="{% static 'fancytree/js/jquery.fancytree.dnd.js' %}"></script>
+  <script src="{% static 'fancytree/js/jquery.fancytree.edit.js' %}"></script>
+  <script src="{% static 'fancytree/js/jquery.fancytree.glyph.js' %}"></script>
+  <script src="{% static 'fancytree/js/jquery.fancytree.table.js' %}"></script>
+  <script src="{% static 'fancytree/js/jquery.fancytree.wide.js' %}"></script>
+  <script src="{% static 'fancytree/js/jquery.fancytree.filter.js' %}"></script>
+  <script src="{% static 'js/ftree.js' %}"></script>
   <script>
     // $('.hideSection').click(function (el) {
     //   el = $(el.currentTarget);
@@ -72,4 +79,5 @@
 {% endblock %}
 {% block css %}
   <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
+  <link rel="stylesheet" media="screen" href="{% static 'fancytree/css/ui.fancytree.css' %}">
 {% endblock %}

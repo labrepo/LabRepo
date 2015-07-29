@@ -1,18 +1,10 @@
 {% load i18n bootstrap_tags %}
 
-{% if object.pk %}
-  {% url 'tags:update' pk=object.pk lab_pk=lab.pk as action %}
-  <div class="btn-group pull-right">
-    <a href="#location-tree" class="btn btn-sm bg-olive btn-flat" id="location-create"
-       data-url="{% url 'tags:create' lab_pk=lab.pk %}">
-      <i class="fa fa-tag"></i> {% trans 'create tag'|upper %}
-    </a>
-  </div>
-  <h3>Update tag</h3>
-{% else %}
-  {% url 'tags:create' lab_pk=lab.pk as action %}
-  <h3>Create tag</h3>
-{% endif %}
+{% url 'tags:create' lab_pk=lab.pk as action %}
+<div class="box-header with-border">
+  <i class="fa fa-tag"></i>
+  <h3 class="box-title">Create tag</h3>
+</div>
 
 <form method="post" id="location-form" action="{{ action }}">
   <div class="box-body">
@@ -20,6 +12,6 @@
     {{ form|as_bootstrap }}
   </div>
   <div class="box-footer form-actions">
-    <button type="submit" class="btn btn-info btn-sm" id="btn-form">{% trans 'Save'|upper %}</button>
+    <button type="submit" class="btn btn-success btn-flat btn-sm id="btn-form">{% trans 'Save'|upper %}</button>
   </div>
 </form>

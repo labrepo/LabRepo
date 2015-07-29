@@ -76,7 +76,7 @@ class TagForm(TagBaseForm):
             'color': ColorWidget()
         }
         # fields = ('details', 'parent', 'color', 'params',)
-        fields = ('details', 'parent', 'color', )
+        fields = ('details', 'parent', )
 
     def clean(self):
         data = super(TagBaseForm, self).clean()

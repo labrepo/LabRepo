@@ -286,3 +286,32 @@ class JsTreeMixin(object):
             data['icon'] = False
             result.append(data.copy())
         return result
+
+    def get_fancytree_data(self, object_list):
+        result = []
+
+        def get_tag_data(tag, tags):
+            data = {'key': unicode(tag.id), 'title': tag.details}
+            children = [get_tag_data(t, tags) for t in tags if t.parent == tag]
+            if children:
+                data['children'] = children
+            return data
+
+        for obj in object_list:
+            if not obj.parent:
+                result.append(get_tag_data(obj, object_list))
+        return result
+
+
+
+
+        #         data = dict(zip(['id', 'parent', 'text'], map(lambda x: getattr(obj, x), fields)))
+        #     data = dict(zip(['id', 'parent', 'text'], map(lambda x: getattr(obj, x), fields)))
+        #     data['parent'] = unicode(getattr(data['parent'], 'id', parent_id))
+        #     data['id'] = unicode(data['id'])
+        #     data['a_attr'] = {'href': obj.get_absolute_url()}
+        #     if hasattr(obj, 'color'):
+        #         data['a_attr']['style'] = 'color: {}'.format(obj.color or '#000000')
+        #     data['icon'] = False
+        #     result.append(data.copy())
+        # return result
