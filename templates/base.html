@@ -31,13 +31,14 @@
   <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
   {% block top_scripts %}{% endblock %}
 </head>
-<body class="{% block body_classes %}wysihtml5-supported pace-done skin-black fixed{% endblock %}">
+<body class="sidebar-mini {% block body_classes %}skin-black {% endblock %}">
 {% block body %}
 <div class="wrapper">
   {% block menu %}
     <header class="main-header">
       <a href="{% url 'labs:list' %}" class="logo">
         <!-- logo for regular state and mobile devices -->
+        <span class="logo-mini"><b>L</b>R</span>
         <span class="logo-lg"><b>LabRepo</b>.org</span>
       </a>
 
