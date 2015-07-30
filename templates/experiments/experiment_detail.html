@@ -145,13 +145,19 @@
                   <li class="">
                     <a href="#units-list" data-toggle="tab"><i class="fa fa-list"></i> {% trans 'List' %}</a>
                   </li>
+                  <li class="pull-right">
+                    <a class="btn btn-danger "
+                       data-toggle="modal" data-target="#add_unit" href="#">
+                      <i class="fa fa-plus"></i> Add Unit</a>
+                  </li>
                 </ul>
+
                 <div class="tab-content">
                   <div class="tab-pane active" id="units-graph">
                     <!--<a href="{% url 'units:create' lab.pk %}" class="btn btn-primary">Add Unit</a>-->
-                    <a class="btn btn-danger btn-sm btn-flat"
+                    <a class="btn btn-info btn-sm btn-flat"
                      data-toggle="modal" data-target="#add_unit" href="#">
-                    <i class="fa fa-trash-o"></i> Add Unit</a>
+                    <i class="fa fa-plus"></i> Add Unit</a>
                     {% include "units/unit_add_modal.html" %}
                     <div class="graph-area"></div>
                   </div>
@@ -303,6 +309,17 @@
       if ($('#unit-measurements .btn').is(':visible')) {
         $('#dataTable').handsontable('render');
       }
+    });
+
+    // fix bootstrap tabs urls
+    var hash = window.location.hash;
+    hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+
+    $('.nav-tabs a').click(function (e) {
+      $(this).tab('show');
+      var scrollmem = $('body').scrollTop();
+      window.location.hash = this.hash;
+      $('html,body').scrollTop(scrollmem);
     });
 
     function update_unit_info(unit){
@@ -459,11 +476,11 @@
         var unit_data = {
           'length':1,
           'data-0-experiments_pk[]': exp_pk,
+          'data-0-parent_pk[]': $form.find('select[name="parent"]').val(),
+          'data-0-description': $form.find('textarea[name="description"]').val(),
+          'data-0-sample': $form.find('textarea[name="sample"]').val(),
+          'data-0-tags': $form.find('textarea[name="tags"]').val(),
         }
-        unit_data['data-0-parent'] = $form.find('textarea[name="parent"]').val();
-        unit_data['data-0-description'] = $form.find('textarea[name="description"]').val();
-        unit_data['data-0-sample'] = $form.find('textarea[name="sample"]').val();
-        unit_data['data-0-tags'] = $form.find('textarea[name="tags"]').val();
 
         $.post($form.attr('action'), unit_data)
             .fail(function (xhr) {
