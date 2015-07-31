@@ -329,7 +329,7 @@
       * @param unit - object {id: unit_id} For the the compatibility with d3 function call.
       */
       var url = '/{{ lab.pk }}/units/detail_json/'+ unit.id + '/'
-      $.post(url, {unit_pk: unit.id}, function(data){
+      $.get(url, {unit_pk: unit.id}, function(data){
         // set global current unit
 
         function get_parents(unit_data) {

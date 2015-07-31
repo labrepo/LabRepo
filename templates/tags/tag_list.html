@@ -21,7 +21,7 @@
       <div id="location-tree" data-lab="{{ lab.pk }}" data-content='{{ tags }}'></div>
       <div class="box-footer">
         <div class="btn-group">
-          <button class="btn btn-sm bg-red btn-flat" data-href="{% url 'tags:delete' lab_pk=lab.pk %}"
+          <button class="btn btn-sm bg-red btn-flat tags-remove" data-href="{% url 'tags:delete' lab_pk=lab.pk %}"
                   data-toggle="modal" data-target="#confirm-delete">
             <i class="fa fa-trash-o"></i> {% trans 'remove tags'|upper %}
           </button>

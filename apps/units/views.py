@@ -285,7 +285,7 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
             raise PermissionDenied
         return super(UnitDetailJSONView, self).dispatch(*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
         if not (self.object.is_member(request.user) or self.object.is_owner(request.user)):
