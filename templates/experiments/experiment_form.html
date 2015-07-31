@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load i18n bootstrap_tags %}
+{% load i18n static bootstrap_tags %}
 
 {% block content_header %}{% trans object.title|default:'Create Experiment' %}{% endblock %}
 
@@ -14,6 +14,7 @@
 
 
 {% block content %}
+        <div class="row">
     <div class="col-md-offset-2 col-md-8 col-sm-12">
   <div class="box box-solid">
     <form method="post">
@@ -28,7 +29,15 @@
       </div>
     </form>
   </div>
-  </div>
+  </div></div>
 {% endblock %}
 
-{% block form_script %}{{ form.media }}{% endblock %}
+{% block form_script %}
+<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+<link href="{% static 'datetimepicker/css/bootstrap-datetimepicker.min.css' %}" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datetimepicker/js/moment.js' %}"></script>
+<script type="text/javascript" src="{% static 'datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/datetimepicker.js' %}"></script>
+{% endblock %}
+
