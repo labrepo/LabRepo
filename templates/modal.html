@@ -1,7 +1,7 @@
 {% load i18n bootstrap_tags %}
 
 <!-- Modal -->
-<div class="modal fade {{ class }}" id="{{ modal_id|default:'modal' }}" tabindex="-1" role="dialog" aria-labelledby="Modal"
+<div class="modal fade {{ modal_class }}" id="{{ modal_id|default:'modal' }}" tabindex="-1" role="dialog" aria-labelledby="Modal"
      aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -14,7 +14,7 @@
       <form method="post" class="modal-form {{ class }}" action="{{ action }}" data-field="{{ fields }}">
         <div class="modal-body">
           {% csrf_token %}
-          {% if extra_form %}{{ extra_form|as_bootstrap }}{{ extra_form.media }}{% endif %}
+          {% if extra_form %}{{ extra_form|as_bootstrap }}{% endif %}
         </div>
         <div class="modal-footer form-actions">
           <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">{% trans 'Close' %}</button>

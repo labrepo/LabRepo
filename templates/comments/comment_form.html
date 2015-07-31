@@ -38,7 +38,7 @@
               <div class="box-body">
                 {% csrf_token %}
                 {{ comment_form_create|as_bootstrap }}
-                {{ comment_form_create.media }}
+                <!--{{ comment_form_create.media }}-->
               </div>
               <div class="box-footer text-right">
                 <button type="submit" class="btn btn-info btn-sm btn-flat">{% trans 'Submit comment'|upper %}</button>
