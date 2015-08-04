@@ -6,7 +6,6 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
     var focus_node = null, highlight_node = null;
 
     var text_center = false;
-    var outline = false;
 
     var min_score = 0;
     var max_score = 1;
@@ -27,16 +26,21 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
       .charge(-300)
       .size([w,h]);
 
+    var selected_node = null;
 
-    var default_node_color = "green";
-    var answered_node_color = "red";
-    var bookmark_node_color = "blue";
-    //var default_node_color = "rgb(3,190,100)";
+    var default_node_color = "green"
+    var default_node_border_color = "black"
+    var selected_node_color = "red"
+    var selected_node_border_color = "black"
+    var highlighted_node_color = "blue"
+    var highlighted_node_border_color = "black"
+
     var default_link_color = "#333";
+    var selected_link_color = "red";
     var nominal_base_node_size = 8;
     var nominal_text_size = 10;
     var max_text_size = 24;
-    var nominal_stroke = 1.5;
+    var nominal_stroke = 1;
     var max_stroke = 4.5;
     var max_base_node_size = 36;
     var min_zoom = 0.1;
@@ -59,6 +63,9 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
         linkedByIndex[d.source + "," + d.target] = true;
     });
 
+    function isSelected(a, b) {
+        return a.index == b.index;
+    }
     function isConnected(a, b) {
         return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index == b.index;
     }
@@ -78,14 +85,14 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
 
 
     // build arrows.
-    svg.selectAll("marker")
+    var arrows = svg.selectAll("marker")
         .data(["end"])      // Different link/path types can be defined here
         .enter().append("svg:marker")    // This section adds in the arrows
         .attr("id", String)
         .attr("viewBox", "0 -5 10 10")
-        .attr("refX", 19)
+        .attr("refX", 22)
         .attr("refY", -0.0)
-        .attr("color", "#333")
+        .attr("color", default_link_color)
         .attr("markerWidth", 6)
         .attr("markerHeight", 6)
         .attr("orient", "auto")
@@ -118,14 +125,6 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
                 .attr("class", "node")
                 .call(force.drag);
 
-
-    var tocolor = "fill";
-    var towhite = "stroke";
-    if (outline) {
-        tocolor = "stroke";
-        towhite = "fill"
-    }
-
     var circle = node.append("path")
         .attr("d", d3.svg.symbol()
                 .size(function (d) {
@@ -134,15 +133,21 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
                 .type(function (d) {
                     return d.type;
                 }))
+        .attr("r", function(d) { return size(d.size)||nominal_base_node_size; })
+            .style("stroke-width", nominal_stroke)
+            .style('stroke', default_node_border_color)
+            .style('fill', default_node_color)
 
-        .style(tocolor, function (d) {
-            return '#3d9970';
-        })
-    //.attr("r", function(d) { return size(d.size)||nominal_base_node_size; })
-        .style("stroke-width", nominal_stroke)
-        .style(towhite, "white");
+    // Add fa icons
+    var icons  = g.selectAll(".text").data(graph.nodes)
+        .enter().append("text")
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'central')
+        .style("font-family", 'FontAwesome')
+        .style("font-size", '17px')
+        .text(function(d) { return window.FONT_AWESOME[d.icon]; });
 
-    // Text
+    // Labels text
     var text = g.selectAll(".text")
             .data(graph.nodes)
             .enter().append("text")
@@ -158,7 +163,7 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
     }
     else {
         text.attr("dx", function (d) {
-            return (size(d.size) || nominal_base_node_size);
+            return (10 || size(d.size) || 10);
         })
     }
 
@@ -196,7 +201,12 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
         if (focus_node === null) {
             svg.style("cursor", "move");
             if (highlight_color != "white") {
-                circle.style(towhite, "white");
+                circle.style('fill', function (o) {
+                if (selected_node && isSelected(selected_node, o)){
+                    return selected_node_color
+                }
+                return default_node_color
+            });
                 text.style("font-weight", "normal");
                 link.style("stroke", function (o) {
                     return (isNumber(o.score) && o.score >= 0) ? color(o.score) : default_link_color
@@ -228,15 +238,28 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
         highlight_node = d;
 
         if (highlight_color != "white") {
-            circle.style(towhite, function (o) {
-                return isConnected(d, o) ? highlight_color : "white";
+            circle.style('fill', function (o) {
+                if (selected_node && isSelected(selected_node, o)){
+                    return selected_node_color
+                }
+                if (isConnected(d, o)){
+                    return highlighted_node_color
+                }
+                return default_node_color
             });
             text.style("font-weight", function (o) {
                 return isConnected(d, o) ? "bold" : "normal";
             });
             link.style("stroke", function (o) {
-                return o.source.index == d.index || o.target.index == d.index ? highlight_color : ((isNumber(o.score) && o.score >= 0) ? color(o.score) : default_link_color);
+                return o.source.index == d.index || o.target.index == d.index ? default_link_color : ((isNumber(o.score) && o.score >= 0) ? color(o.score) : default_link_color);
+            });
+        }
+    }
 
+    function highlight_selected() {
+        if (selected_node){
+            circle.style('fill', function (o) {
+                    return isSelected(selected_node, o) ? selected_node_color : default_node_color;
             });
         }
     }
@@ -260,7 +283,8 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
 
         //circle.attr("r", function(d) { return (size(d.size)*base_radius/nominal_base_node_size||base_radius); })
         if (!text_center) text.attr("dx", function (d) {
-            return (size(d.size) * base_radius / nominal_base_node_size || base_radius);
+//            return (size(d.size) * base_radius / nominal_base_node_size || base_radius);
+            return (10 * base_radius / nominal_base_node_size || base_radius);
         });
 
         var text_size = nominal_text_size;
@@ -281,6 +305,9 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
             return "translate(" + d.x + "," + d.y + ")";
         });
         text.attr("transform", function (d) {
+            return "translate(" + d.x + "," + d.y + ")";
+        });
+        icons.attr("transform", function (d) {
             return "translate(" + d.x + "," + d.y + ")";
         });
 
@@ -330,7 +357,10 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
             window.open(d.link, '_blank');
     });
 
-    node.on("click", onclick_function);
+    node.on("click", function (d) {
+        selected_node = d;
+        highlight_selected(d)
+        onclick_function(d)
 
-
+    });
 }
