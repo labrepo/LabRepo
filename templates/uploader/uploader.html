@@ -1,0 +1,67 @@
+{% load upload_tags %}
+{% load i18n %}
+
+<!-- The file upload form used as target for the file upload widget -->
+<div id="fileupload" class="uploader-dropzone">
+    <fieldset class="blueimp-uploader"
+                  {% if upload_url %}
+                    data-upload-url="{{ upload_url }}"
+                  {% else %}
+                    data-upload-url="upload/"
+                  {% endif %}
+
+                  {% if show_uploaded %}
+                    data-show-uploaded=true
+                  {% endif %}
+                    data-show-uploaded=true
+                  {% if max_files %}
+                    data-maxfiles="{{ max_files }}"
+                  {% else %}
+                    data-maxfiles=10
+                  {% endif %}
+                  {% if file_types %}
+                    data-mimetypes="{{ file_types }}"
+                  {% else %}
+{#                    #data-mimetypes=10#}
+                  {% endif %}
+    >
+        {% if title %}
+            <legend>{{ title }} {% if help_text %}<a style="float:none;" href="#" onClick="return false" class="tooltip_tool order_tooltip" data-toggle="tooltip" title="{{ help_text }}" ><i class="icon-tooltip fa fa-question-circle"></i></a>{% endif %}</legend>
+        {% else %}
+            <legend>{% trans "Files" %} {% if help_text %}<a style="float:none;" href="#" onClick="return false" class="tooltip_tool order_tooltip" data-toggle="tooltip" title="{{ help_text }}" ><i class="icon-tooltip fa fa-question-circle"></i></a>{% endif %}</legend>
+        {% endif %}
+        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+        <div class="row fileupload-buttonbar">
+                                    <div class="col-lg-7">
+                                        <!-- The fileinput-button span is used to style the file input field as button -->
+                                        <span class="btn btn-info bg-olive btn-flat fileinput-button">
+                                            <i class="glyphicon glyphicon-plus"></i>
+                                            <span>{% trans "Upload"%}</span>
+                                            {% if max_files > 1 %}
+                                                <input type="file" name="expirience_files">
+                                            {% else %}
+                                                <input type="file" name="expirience_files" multiple>
+                                            {% endif %}
+                                        </span>
+                                        <span id="dropbox"></span>
+                                        <!-- The global file processing state -->
+                                        <span class="fileupload-process"></span>
+                                    </div>
+                                    <!-- The global progress state -->
+                                    <div class="col-lg-5 fileupload-progress fade">
+                                        <!-- The global progress bar -->
+                                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="progress-bar progress-bar-success" style="width:0;"></div>
+                                        </div>
+                                        <!-- The extended global progress state -->
+                                        <div class="progress-extended">&nbsp;</div>
+                                    </div>
+                                </div>
+
+                                <!-- The table listing the files available for upload/download -->
+                                <table role="presentation" class="table table-striped">
+                                    <tbody class="files file_table"></tbody>
+                                </table>
+    </fieldset>
+</div>
+

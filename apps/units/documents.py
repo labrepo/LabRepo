@@ -10,6 +10,7 @@ from experiments.documents import Experiment
 from history.documents import HistoryDocument
 from measurements.documents import Measurement
 from tags.documents import Tag
+from uploader.documents import BaseFile
 
 
 class Unit(HistoryDocument):
@@ -31,6 +32,7 @@ class Unit(HistoryDocument):
     tags = me.ListField(me.ReferenceField(Tag), required=False, verbose_name=_('tags'))
     active = me.BooleanField(default=True, verbose_name=_('active'))
     # measurements = me.ListField(me.EmbeddedDocumentField(Measurement), verbose_name=_('measurements'))
+    # files = me.ListField(me.FileField(), verbose_name=_('files'))
     measurements = me.EmbeddedDocumentField(Measurement)
     description = me.StringField(required=False, verbose_name=_('description'))
 
@@ -87,3 +89,13 @@ class Unit(HistoryDocument):
 
 
 Unit._default_manager = Unit.objects
+
+
+class UnitFile(BaseFile):
+    """
+    The model is for storing Unit files in GridFS
+
+    :parent: reference on unit
+    """
+    parent = me.ReferenceField('Unit', reverse_delete_rule=CASCADE, required=True, verbose_name=_('unit'))
+

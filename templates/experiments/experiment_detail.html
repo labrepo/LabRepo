@@ -272,6 +272,7 @@
 {% endblock %}
 
 {% block css %}
+  {% include 'uploader/styles.html' %}
   <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.full.css' %}">
   <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.bootstrap.css' %}">
   <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
@@ -334,6 +335,7 @@
 {% endblock %}
 
 {% block script %}
+  {% include 'uploader/scripts.html' %}
   <script src="{% static 'ckeditor/ckeditor.js' %}"></script>
   <script src="{% static 'js/font-awesome-unicode-map.js' %}"></script>
   <script src="{% static 'js/recent.js' %}"></script>
@@ -350,7 +352,24 @@
   <script src="{% static 'js/tree.js' %}"></script>
   <script src="{% static 'js/plot.js' %}"></script>
 
+  <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="mw4uj2q482bd8w0"></script>
+
   <script type="text/javascript">
+  options = {
+    success: function(files) {
+      var url = '/{{ object.lab.pk }}/units/'+ window.unit_data['data-0-pk'] +'/dropxbox-upload/'
+      $.post(url,{'files[]': JSON.stringify(files)}, function(data){
+        $('.blueimp-uploader').fileupload('destroy');
+        $('.blueimp-uploader').find('.file_table').html("");
+        update_uploaders()
+      })
+    },
+    cancel: function() {},
+    linkType: "direct",
+    multiselect: false,
+//    extensions: ['.pdf', '.doc', '.docx'],
+};
+
     var lab_pk = '{{ lab.pk }}';
     var exp_pk = '{{ object.pk }}';
     window.unit_data = {}
@@ -417,6 +436,12 @@
 
         // description
         $('.desc-area').html(data.description)
+
+        //files
+        $('.desc-area').append(data.files)
+        update_uploaders()
+        var button = Dropbox.createChooseButton(options);
+        document.getElementById("dropbox").appendChild(button);
 
         // measurements
         var table = $("#dataTable");

@@ -24,8 +24,9 @@ from common.mixins import (ActiveTabMixin, LoginRequiredMixin, AjaxableResponseM
                            RecentActivityMixin, CheckViewPermissionMixin, CommentMixin, DataMixin, JsTreeMixin,
                            InitialLabMixin)
 from common.serializer import JsonDocumentEncoder
+from uploader.views import FileUploadMixinView, DropboxFileUploadMixinView
 from dashboard.documents import RecentActivity
-from .documents import Unit
+from .documents import Unit, UnitFile
 from experiments.documents import Experiment
 from .forms import UnitForm, UnitUpdateForm, UnitDescriptionForm
 from labs.documents import Lab
@@ -264,8 +265,8 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         # return result['result']
 
 
-class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMixin, InitialLabMixin, RecentActivityMixin, ActiveTabMixin,
-                     CommentMixin, AjaxableResponseMixin, DetailView):
+class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMixin, InitialLabMixin,
+                         RecentActivityMixin, ActiveTabMixin, CommentMixin, AjaxableResponseMixin, DetailView):
     """
     View for return json information about an existing unit(is used on experiment page)
     """
@@ -312,6 +313,8 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
 
         ctx['description'] = render_to_string('tabs/unit_description.html', self.get_context_data())
         ctx['comments'] = render_to_string('tabs/unit_comments.html', self.get_context_data())
+        ctx['files'] = render_to_string('tabs/unit_files.html', self.get_context_data())
+
 
         return self.render_to_json_response(ctx)
 
@@ -336,3 +339,13 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         ctx['form'] = UnitDescriptionForm(lab_pk=self.lab.pk, initial={'description': self.object.description})
 
         return ctx
+
+
+class UnitFileUploadView(FileUploadMixinView):
+    model = UnitFile
+    parent_model= Unit
+
+
+class UnitFileDropboxUploadView(DropboxFileUploadMixinView):
+    model = UnitFile
+    parent_model = Unit

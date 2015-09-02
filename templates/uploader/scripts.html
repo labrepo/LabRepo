@@ -1,0 +1,89 @@
+<script src="{{ STATIC_URL }}blueimp-uploader/tmpl.min.js"></script>
+<script src="{{ STATIC_URL }}blueimp-uploader/load-image.all.min.js"></script>
+<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<script src="{{ STATIC_URL }}blueimp-uploader/canvas-to-blob.min.js"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+
+<!-- The basic File Upload plugin -->
+<script src="{{ STATIC_URL }}blueimp-uploader/js/jquery.blueimp-gallery.min.js"></script>
+<script src="{{ STATIC_URL }}blueimp-uploader/jquery.iframe-transport.js"></script>
+<script src="{{ STATIC_URL }}blueimp-uploader/js/jquery.fileupload.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="{{ STATIC_URL }}blueimp-uploader/js/jquery.fileupload-ui.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="{{ STATIC_URL }}blueimp-uploader/js/jquery.fileupload-process.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="{{ STATIC_URL }}blueimp-uploader/js/jquery.fileupload-image.js"></script>
+<!-- The File Upload audio preview plugin -->
+<script src="{{ STATIC_URL }}blueimp-uploader/js/jquery.fileupload-audio.js"></script>
+<!-- The File Upload video preview plugin -->
+<script src="{{ STATIC_URL }}blueimp-uploader/js/jquery.fileupload-video.js"></script>
+<!-- The File Upload validation plugin -->
+<script src="{{ STATIC_URL }}blueimp-uploader/js/jquery.fileupload-validate.js"></script>
+<script src="{{ STATIC_URL }}blueimp-uploader/js/locale.js"></script>
+
+
+<script>
+
+    $(function () {
+      update_uploaders()
+
+    });
+
+    function update_uploaders() {
+
+        //disable default browser drop & dragover actions
+        $(document).bind('drop dragover', function (e) {
+            e.preventDefault();
+        });
+
+        //UPLOADER
+
+        'use strict';
+        // Initialize the jQuery File Uploud
+        var $uploaders = $('.blueimp-uploader');
+            if ($uploaders.length) {
+                $uploaders.each(function () {
+                    var $uploader = $(this);
+                    var uploadUrl = $uploader.data('upload-url');
+                    if ($uploader.data('mimetypes')) {
+                        var acceptFileTypes = $uploader.data('mimetypes');
+                    } else {
+                        var acceptFileTypes =  /.*$/i; //TODO: this
+                    }
+                    var maxNumberOfFiles = $uploader.data('maxfiles');
+                    var showUploaded = $uploader.data('show-uploaded');
+
+                    $uploader.fileupload({
+                        url: uploadUrl,
+                        paramName: 'file',
+                        autoUpload: true,
+                        acceptFileTypes: acceptFileTypes,
+                        dropZone: $uploader,
+//                        maxFileSize: 50000000, // 50MB
+                        maxNumberOfFiles: maxNumberOfFiles,
+
+                        messages: {
+                            maxNumberOfFiles: 'Превышен лимит числа файлов',
+                            acceptFileTypes: 'Запрещённый тип файла',
+                            maxFileSize: 'Размер файла больше разрешённого',
+                            minFileSize: 'Размер файла меньше разрешённого'
+                        }
+                    });
+                    $uploader.addClass('fileupload-processing');
+                    $.ajax({
+                        url: $uploader.fileupload('option', 'url'),
+                        dataType: 'json',
+                        context: $uploader[0]
+                    }).always(function () {
+                        $(this).removeClass('fileupload-processing');
+                    }).done(function (result) {
+                        $(this).fileupload('option', 'done')
+                                .call(this, $.Event('done'), {result: result});
+                    });
+                });
+            }
+            }
+
+
+</script>

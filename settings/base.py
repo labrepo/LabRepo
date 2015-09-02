@@ -88,6 +88,7 @@ LOCAL_APPS = (
     'tags',
     'unit_collections',
     'units',
+    'uploader',
 )
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
