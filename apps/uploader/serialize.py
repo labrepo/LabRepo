@@ -21,10 +21,13 @@ def serialize(instance, lab_pk):
 
     instance -- File doc instance
     """
-    url = reverse('upload:file-download', kwargs={  #TODO: add app label
-        'lab_pk': lab_pk,
-        'document_name': instance._class_name,
-        'pk': instance.pk})
+    if instance.file:
+        url = reverse('upload:file-download', kwargs={  #TODO: add app label
+            'lab_pk': lab_pk,
+            'document_name': instance._class_name,
+            'pk': instance.pk})
+    else:
+        url = instance.outer_url
 
     delete_url = reverse('upload:file-delete', kwargs={  #TODO: add app label
         'lab_pk': lab_pk,

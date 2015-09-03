@@ -86,15 +86,17 @@ class DropboxFileUploadMixinView(View, SingleObjectMixin):
 
         parent = self.get_object()
         files = json.loads(request.POST.get('files[]'))
+        need_upload = request.POST.get('need_upload') == 'true'
 
         for f in files:
             obj = self.model(parent=parent)
-            r = requests.get(f.get('link'), stream=True)
 
-            obj.file.new_file()
-            for chunk in r.iter_content(8192):
-                obj.file.write(chunk)
-            obj.file.close()
+            if need_upload:
+                r = requests.get(f.get('link'), stream=True)
+                obj.file.new_file()
+                for chunk in r.iter_content(8192):
+                    obj.file.write(chunk)
+                obj.file.close()
             obj.size = f.get('bytes')  # May be wrong, get it from mongo
             obj.content_type = mimetypes.guess_type(f.get('name'))[0]# or 'image/png',
             obj.name = f.get('name')

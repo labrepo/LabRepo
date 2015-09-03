@@ -43,9 +43,10 @@
                                                 <input type="file" name="expirience_files" multiple>
                                             {% endif %}
                                         </span>
-                                        <span id="dropbox"></span>
+                                        <span id="dropbox"></span><div class="checkbox">
+                                      <label style="padding-left: 110px"><input type="checkbox" name="upload-file" checked class="upload-file" value="value">{% trans "Upload file to the server" %}</label>
                                         <!-- The global file processing state -->
-                                        <span class="fileupload-process"></span>
+                                        <span class="fileupload-process"></span></div>
                                     </div>
                                     <!-- The global progress state -->
                                     <div class="col-lg-5 fileupload-progress fade">

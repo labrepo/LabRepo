@@ -358,7 +358,8 @@
   options = {
     success: function(files) {
       var url = '/{{ object.lab.pk }}/units/'+ window.unit_data['data-0-pk'] +'/dropxbox-upload/'
-      $.post(url,{'files[]': JSON.stringify(files)}, function(data){
+      var need_upload = $('.upload-file').is(":checked")
+      $.post(url,{'files[]': JSON.stringify(files), 'need_upload': need_upload}, function(data){
         $('.blueimp-uploader').fileupload('destroy');
         $('.blueimp-uploader').find('.file_table').html("");
         update_uploaders()
@@ -366,7 +367,7 @@
     },
     cancel: function() {},
     linkType: "direct",
-    multiselect: false,
+    multiselect: true,
 //    extensions: ['.pdf', '.doc', '.docx'],
 };
 
