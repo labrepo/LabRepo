@@ -13,5 +13,8 @@ urlpatterns = patterns(
     url(r'^uploader/download/(?P<document_name>\w+)/(?P<pk>[\d\w]+)/$',
         views.DownloadFileView.as_view(),
         name='file-download'),
+    url(r'^uploader/thumb/(?P<document_name>\w+)/(?P<pk>[\d\w]+)/(?P<file_name>.+)$',
+        views.ThumbFileView.as_view(),
+        name='file-thumb'),
 
 )

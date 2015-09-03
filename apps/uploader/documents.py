@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import urlparse
+from urllib import urlencode
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 import mongoengine as me
@@ -21,8 +23,20 @@ class BaseFile(me.Document):
     size = me.IntField()
     content_type = me.StringField()
     outer_url = me.StringField()
-
+    thumbnail = me.FileField()
+    outer_thumbnail_url = me.StringField()
     meta = {'abstract': True}
+
+    def get_outer_thumb(self, size=256):
+        if self.outer_thumbnail_url:
+            if self.outer_thumbnail_url.startswith('https://api-content.dropbox.com'):
+                parsed_url = urlparse.urlparse(self.outer_thumbnail_url)
+                query = urlparse.parse_qs(parsed_url.query)
+                query['bounding_box'] = size
+                parsed_url = parsed_url._replace(query=urlencode(query, True))
+                return parsed_url.geturl()
+
+            return self.outer_thumbnail_url
 
     def delete(self):
         """

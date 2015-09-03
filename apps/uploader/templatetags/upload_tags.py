@@ -10,7 +10,15 @@ def upload_js():
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-upload fade">
-
+        <td>
+                    <span class="preview">
+                        {% if (file.thumbnailUrl) { %}
+                            <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery>
+                                <img src="{%=file.thumbnailUrl%}" width="170">
+                            </a>
+                        {% } %}
+                    </span>
+                </td>
         <td>
             <p class="name">{%=file.name%}</p>
             {% if (file.error) { %}
@@ -44,7 +52,15 @@ def upload_js():
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-download fade">
-
+        <td>
+                    <span class="preview">
+                        {% if (file.thumbnailUrl) { %}
+                            <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery>
+                                <img src="{%=file.thumbnailUrl%}" width="170">
+                            </a>
+                        {% } %}
+                    </span>
+                </td>
         <td style="width:70%; word-wrap:break-word;">
             <p style="width:30%; word-wrap:break-word;" class="name" >
                 <a  style="max-width:30%; word-wrap:break-word;" href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
