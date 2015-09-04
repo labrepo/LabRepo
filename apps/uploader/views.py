@@ -182,7 +182,6 @@ class ThumbFileView(View):
         obj = get_document(kwargs['document_name']).objects.get(pk=kwargs['pk'])
 
         chunk_size = 8192
-        print(obj.content_type)
         response = StreamingHttpResponse(FileWrapper(obj.thumbnail.get(), chunk_size),
                                         content_type=obj.content_type)
         # response['Content-Length'] = obj.size

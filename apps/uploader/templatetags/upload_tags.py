@@ -13,7 +13,7 @@ def upload_js():
         <td>
                     <span class="preview">
                         {% if (file.thumbnailUrl) { %}
-                            <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery>
+                            <a href="{%=file.url%}" title="{%=file.name%}"  rel="lightbox">
                                 <img src="{%=file.thumbnailUrl%}" width="170">
                             </a>
                         {% } %}
@@ -55,7 +55,7 @@ def upload_js():
         <td>
                     <span class="preview">
                         {% if (file.thumbnailUrl) { %}
-                            <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery>
+                            <a href="{%=file.url%}" title="{%=file.name%}" data-lightbox="lightbox" >
                                 <img src="{%=file.thumbnailUrl%}" width="170">
                             </a>
                         {% } %}
