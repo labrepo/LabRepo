@@ -2,6 +2,7 @@ from mongoengine import Q
 
 from experiments.documents import Experiment
 from labs.documents import Lab
+from django.http import HttpResponse
 
 
 def menu_processor(request):
@@ -19,4 +20,13 @@ def menu_processor(request):
                 'labs_list': Lab.objects.filter((Q(investigator=user) | Q(members=user) | Q(guests=user)),
                                                 pk__not__in=[lab_pk])
                 }
+    return {}
+
+
+def sidebar_processor(request):
+    """
+    Collapse sidebar(add AdminLTE class)
+    """
+    if request.COOKIES.get('sidebarcollapse'):
+        return {'SIDEBAR_COLLAPSED': True}
     return {}
