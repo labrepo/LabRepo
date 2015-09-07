@@ -75,7 +75,7 @@ def upload_js():
         <td>
             <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                 <i class="glyphicon glyphicon-trash"></i>
-                <span>Удалить</span>
+                <span>Delete</span>
             </button>
         </td>
     </tr>

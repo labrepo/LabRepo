@@ -57,7 +57,7 @@
 
 
 <div id="urls-area" class="voffset4">
-  <legend>Links </legend>
+  <legend>{% trans "Links" %}</legend>
   <ul class="link-list">
     {% for unit_url in object.links %}
       <li><a href="{{ unit_url.link }}">{{ unit_url.link }}</a><button data-delete-url="{% url 'units:unit-remove-url' lab_pk=lab_pk pk=unit_url.pk %}" class="close link-delete" type="button">x</button></li>
@@ -66,7 +66,7 @@
   <form class="links-unit-form form-inline" action="{% url 'units:unit-add-url' lab_pk=lab_pk pk=object.pk %}" method="post">
     <div class="form-group">
     <input class="form-control" required type="url" name="link">
-    <button class="btn btn-info bg-olive btn-flat" type="submit"><i class="glyphicon glyphicon-plus"></i> Add link</button>
+    <button class="btn btn-info bg-olive btn-flat" type="submit"><i class="glyphicon glyphicon-plus"></i> {% trans "Add link" %}</button>
       </div>
   </form>
 </div>
