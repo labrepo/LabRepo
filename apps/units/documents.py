@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _, ugettext
@@ -114,6 +115,7 @@ class UnitLink(me.Document):
     """
     parent = me.ReferenceField('Unit', reverse_delete_rule=CASCADE, required=True, verbose_name=_('unit'))
     link = me.URLField(verbose_name=_('url'))
+    timestamp = me.DateTimeField(default=datetime.now, required=True)
 
     def is_assistant(self, user):
         """

@@ -60,7 +60,10 @@
   <legend>{% trans "Links" %}</legend>
   <ul class="link-list">
     {% for unit_url in object.links %}
-      <li><a href="{{ unit_url.link }}">{{ unit_url.link }}</a><button data-delete-url="{% url 'units:unit-remove-url' lab_pk=lab_pk pk=unit_url.pk %}" class="close link-delete" type="button">x</button></li>
+      <li>
+        <a href="{{ unit_url.link }}">{{ unit_url.link }}</a><button data-delete-url="{% url 'units:unit-remove-url' lab_pk=lab_pk pk=unit_url.pk %}" class="close link-delete" type="button">x</button>
+        <br><span class="">{{ unit_url.timestamp|date:"DATE_FORMAT" }}</span>
+      </li>
     {% endfor %}
     </ul>
   <form class="links-unit-form form-inline" action="{% url 'units:unit-add-url' lab_pk=lab_pk pk=object.pk %}" method="post">

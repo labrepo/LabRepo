@@ -62,8 +62,9 @@ def upload_js():
                     </span>
                 </td>
         <td style="width:70%; word-wrap:break-word;">
-            <p style="width:30%; word-wrap:break-word;" class="name" >
+            <p style=" word-wrap:break-word;" class="name" >
                 <a  style="max-width:30%; word-wrap:break-word;" href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
+                <br><span class="">{%=file.timestamp%}</span>
             </p>
             {% if (file.error) { %}
                 <div><span class="label label-important">{%=locale.fileupload.error%}</span> {%=file.error%}</div>
@@ -82,9 +83,3 @@ def upload_js():
 {% } %}
 </script>
 """
-
-
-
-
-
-

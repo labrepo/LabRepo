@@ -287,5 +287,5 @@ span.has-error {
 
 .link-delete {
     float: none;
-    padding-left: 10px;
+    padding-left: 5px !important;
 }

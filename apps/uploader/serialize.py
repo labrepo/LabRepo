@@ -1,6 +1,7 @@
 # encoding: utf-8
 import re
 from django.core.urlresolvers import reverse
+from django.utils import formats
 
 
 def order_name(name):
@@ -49,6 +50,7 @@ def serialize(instance, lab_pk):
         'type': instance.content_type,
         'thumbnailUrl': thumbnail_url,
         'size': instance.size,
+        'timestamp': formats.date_format(instance.timestamp, "DATE_FORMAT"),
         'deleteUrl': delete_url,
         'deleteType': 'DELETE',
     }

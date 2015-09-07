@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import urlparse
+from datetime import datetime
 from urllib import urlencode
+
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 import mongoengine as me
@@ -15,7 +17,10 @@ class BaseFile(me.Document):
     :name: (string) name of the file
     :size: (int) size of file, bytes
     :content_type: (string) file content type, ex 'image/jpeg'
+    :thumbnail: reference on GridFsProxy object with file thumbnail, if file is image.
+    :outer_thumbnail_url: (string) store outer url to thumbnail for dropbox or gdrive object
     :outer_url: (string) store outer url for dropbox or gdrive object
+    :timestamp: (datetime) when object is created
     """
     # parent = me.ReferenceField('Unit', reverse_delete_rule=CASCADE, required=True, verbose_name=_('unit'))
     file = me.FileField()
@@ -25,6 +30,7 @@ class BaseFile(me.Document):
     outer_url = me.StringField()
     thumbnail = me.FileField()
     outer_thumbnail_url = me.StringField()
+    timestamp = me.DateTimeField(default=datetime.now, required=True)
     meta = {'abstract': True}
 
     def get_outer_thumb(self, size=256):

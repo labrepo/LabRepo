@@ -360,7 +360,13 @@ class CreateLinkView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         link = UnitLink.objects.create(parent=self.get_object(), link=link_text)
         lab_pk = kwargs.get('lab_pk')
         delete_link = reverse('units:unit-remove-url', kwargs={'lab_pk': lab_pk, 'pk': link.pk})
-        return self.render_to_json_response({'pk': unicode(link.pk), 'success': True, 'delete_link': delete_link})
+        date = formats.date_format(link.timestamp, "DATE_FORMAT"),
+        return self.render_to_json_response({
+            'pk': unicode(link.pk),
+            'success': True,
+            'delete_link': delete_link,
+            'date': date,
+        })
 
 
 class DeleteLinkView(LoginRequiredMixin, CheckViewPermissionMixin, AjaxableResponseMixin, DeleteView):
