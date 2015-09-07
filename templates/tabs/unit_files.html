@@ -1,9 +1,0 @@
-{% load i18n %}
-{% load upload_tags %}
-<div id="file-area" class="voffset4">
-  <div>
-    {% upload_js %}
-    {% url 'units:unit-upload' lab_pk=object.lab.pk pk=object.pk as the_url %}
-    {% include "uploader/uploader.html" with upload_url=the_url %}
-  </div>
-</div>

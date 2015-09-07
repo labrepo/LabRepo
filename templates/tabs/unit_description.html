@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load upload_tags %}
 
 <div id="description">
   <div class="description-show">
@@ -51,5 +52,29 @@
       <button type="submit" class="btn btn-info unit-description-send">{% trans 'Save' %}</button>
       <button class="btn btn-info cancel-edit">{% trans 'cancel'|title %}</button>
     </form>
+  </div>
+</div>
+
+
+<div id="urls-area" class="voffset4">
+  <legend>Links </legend>
+  <ul class="link-list">
+    {% for unit_url in object.links %}
+      <li><a href="{{ unit_url.link }}">{{ unit_url.link }}</a><button data-delete-url="{% url 'units:unit-remove-url' lab_pk=lab_pk pk=unit_url.pk %}" class="close link-delete" type="button">x</button></li>
+    {% endfor %}
+    </ul>
+  <form class="links-unit-form form-inline" action="{% url 'units:unit-add-url' lab_pk=lab_pk pk=object.pk %}" method="post">
+    <div class="form-group">
+    <input class="form-control" required type="url" name="link">
+    <button class="btn btn-info bg-olive btn-flat" type="submit"><i class="glyphicon glyphicon-plus"></i> Add link</button>
+      </div>
+  </form>
+</div>
+
+<div id="file-area" class="voffset4">
+  <div>
+    {% upload_js %}
+    {% url 'units:unit-upload' lab_pk=object.lab.pk pk=object.pk as the_url %}
+    {% include "uploader/uploader.html" with upload_url=the_url %}
   </div>
 </div>

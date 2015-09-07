@@ -284,3 +284,8 @@ span.has-error {
     margin-left: 0px !important;
 
 }
+
+.link-delete {
+    float: none;
+    padding-left: 10px;
+}

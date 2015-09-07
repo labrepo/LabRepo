@@ -7,12 +7,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.views.generic import View, DeleteView, UpdateView, DetailView
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.list import BaseListView, MultipleObjectTemplateResponseMixin
+from django.views.generic.detail import SingleObjectMixin
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import formats
@@ -26,7 +28,7 @@ from common.mixins import (ActiveTabMixin, LoginRequiredMixin, AjaxableResponseM
 from common.serializer import JsonDocumentEncoder
 from uploader.views import FileUploadMixinView, DropboxFileUploadMixinView
 from dashboard.documents import RecentActivity
-from .documents import Unit, UnitFile
+from .documents import Unit, UnitFile, UnitLink
 from experiments.documents import Experiment
 from .forms import UnitForm, UnitUpdateForm, UnitDescriptionForm
 from labs.documents import Lab
@@ -313,8 +315,6 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
 
         ctx['description'] = render_to_string('tabs/unit_description.html', self.get_context_data())
         ctx['comments'] = render_to_string('tabs/unit_comments.html', self.get_context_data())
-        ctx['files'] = render_to_string('tabs/unit_files.html', self.get_context_data())
-
 
         return self.render_to_json_response(ctx)
 
@@ -349,3 +349,24 @@ class UnitFileUploadView(FileUploadMixinView):
 class UnitFileDropboxUploadView(DropboxFileUploadMixinView):
     model = UnitFile
     parent_model = Unit
+
+
+class CreateLinkView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMixin,
+                     AjaxableResponseMixin, SingleObjectMixin, View):
+    model = Unit
+
+    def post(self, request, *args, **kwargs):
+        link_text = request.POST.get('link')
+        link = UnitLink.objects.create(parent=self.get_object(), link=link_text)
+        lab_pk = kwargs.get('lab_pk')
+        delete_link = reverse('units:unit-remove-url', kwargs={'lab_pk': lab_pk, 'pk': link.pk})
+        return self.render_to_json_response({'pk': unicode(link.pk), 'success': True, 'delete_link': delete_link})
+
+
+class DeleteLinkView(LoginRequiredMixin, CheckViewPermissionMixin, AjaxableResponseMixin, DeleteView):
+    model = UnitLink
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return self.render_to_json_response({'success': True})

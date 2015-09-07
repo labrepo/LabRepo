@@ -87,6 +87,9 @@ class Unit(HistoryDocument):
         """
         return self.is_owner(user) or self.is_viewer(user) or self.is_member(user)
 
+    @property
+    def links(self):
+        return UnitLink.objects.filter(parent=self)
 
 Unit._default_manager = Unit.objects
 
@@ -99,3 +102,25 @@ class UnitFile(BaseFile):
     """
     parent = me.ReferenceField('Unit', reverse_delete_rule=CASCADE, required=True, verbose_name=_('unit'))
 
+
+UnitFile._default_manager = UnitFile.objects
+
+
+class UnitLink(me.Document):
+    """
+    The model is for storing Unit links
+
+    :parent: reference on unit
+    """
+    parent = me.ReferenceField('Unit', reverse_delete_rule=CASCADE, required=True, verbose_name=_('unit'))
+    link = me.URLField(verbose_name=_('url'))
+
+    def is_assistant(self, user):
+        """
+        :param user: User instance
+        :return: Checks whether the user is a assistant of laboratory
+        :rtype: bool
+        """
+        return self.parent.is_owner(user) or self.parent.is_viewer(user) or self.parent.is_member(user)
+
+UnitLink._default_manager = UnitLink.objects
