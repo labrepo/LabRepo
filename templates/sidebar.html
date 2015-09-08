@@ -35,7 +35,7 @@
       {% if experiments_list %}
         <li class="treeview{% if object in experiments_list %} active{% endif %}">
           <a href=""><i class="fa fa-eyedropper"></i> <span>{% trans 'Experiments' %}</span></a>
-          <ul class="treeview-menu">
+          <ul class="treeview-menu menu-open" style="display: block;">
             {% for experiment in experiments_list %}
               <li class="{% if object == experiment %}active{% endif %}">
                 <a href="{{ experiment.get_absolute_url }}">

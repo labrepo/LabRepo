@@ -23,11 +23,11 @@
             <div class="col-lg-6">
               <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                  <li class="active"><a href="#exp-info" data-toggle="tab"><i class="fa fa-info"></i> {% trans 'Info' %}</a></li>
-                  <li class=""><a href="#exp-description" data-toggle="tab"><i class="fa fa-file-text-o"></i> {% trans 'Description' %}</a></li>
+                  <li class=""><a href="#exp-info" data-toggle="tab"><i class="fa fa-info"></i> {% trans 'Info' %}</a></li>
+                  <li class="active"><a href="#exp-description" data-toggle="tab"><i class="fa fa-file-text-o"></i> {% trans 'Description' %}</a></li>
                 </ul>
                 <div class="tab-content">
-                  <div class="tab-pane active" id="exp-info">
+                  <div class="tab-pane" id="exp-info">
                     <div class="list-group">
                     <div class="row">
                       <div class="col-sm-3 title-desc"><br>{% trans 'title'|upper %}</div>
@@ -106,7 +106,7 @@
                     </div>
                   </div>
                   </div>
-                  <div class="tab-pane" id="exp-description">
+                  <div class="tab-pane active" id="exp-description">
                     {{ object.description|safe }}
                   </div>
                 </div>
@@ -115,17 +115,17 @@
             <div class="col-lg-6">
               <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                  <li class="active"><a href="#all" data-toggle="tab"><i class="fa fa-history"></i> {% trans 'All' %}</a></li>
-                  <li class="">
+                  <li class=""><a href="#all" data-toggle="tab"><i class="fa fa-history"></i> {% trans 'All' %}</a></li>
+                  <li class="active">
                     <a href="#comments_activities" data-toggle="tab"><i class="fa fa-comments"></i> {% trans 'Comments' %}</a>
                   </li>
                 </ul>
                 <div class="tab-content">
-                  <div class="tab-pane active" id="all"
+                  <div class="tab-pane" id="all"
                        data-url="{% url 'dashboard:experiment-all-activity' lab_pk=lab.pk experiment_pk=object.pk %}">
                   </div>
                   <!-- /.tab-pane -->
-                  <div class="tab-pane" id="comments_activities">
+                  <div class="tab-pane active" id="comments_activities">
                     {% include 'comments/comment_form.html' with not_collapse="1" %}
                   </div>
                   <!-- /.tab-pane -->

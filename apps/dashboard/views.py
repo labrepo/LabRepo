@@ -37,7 +37,7 @@ class DashboardView(ActiveTabMixin, LoginRequiredMixin, ListView):
         experiments = []
         for experiment in Experiment.objects.filter(lab=self.kwargs['lab_pk'], active=True):
             experiments.append({
-                'url': reverse('experiments:update', kwargs={'lab_pk': self.kwargs.get('lab_pk'), 'pk': experiment.pk}),
+                'url': reverse('experiments:detail', kwargs={'lab_pk': self.kwargs.get('lab_pk'), 'pk': experiment.pk}),
                 'edit_url': reverse('experiments:update-date',
                                     kwargs={'lab_pk': self.kwargs.get('lab_pk'), 'pk': experiment.pk}),
                 'title': experiment.title,
