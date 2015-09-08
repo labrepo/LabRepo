@@ -25,6 +25,7 @@ from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsF
 from tags.documents import Tag
 from units.documents import Unit
 from units.forms import UnitForm, UnitPopupForm
+from filemanager.views import get_upload
 
 
 class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMixin, InviteFormMixin, ActiveTabMixin,
@@ -192,7 +193,7 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
 
         return mark_safe(json.dumps(graph_data))
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         ctx = super(ExperimentDetailView, self).get_context_data(**kwargs)
         ctx['units'] = self.units
 
@@ -203,6 +204,9 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
         ctx['units_graph_json'] = self.get_unit_graph_data()
 
         ctx['unit_form'] = UnitPopupForm(lab_pk=self.lab.pk, exp_pk=self.object.pk)
+
+        UPLOAD_URL, UPLOAD_ROOT = get_upload(self.request, *args, **kwargs)
+        ctx['UPLOAD_URL'] = UPLOAD_URL
         return ctx
 
     def get_list_comment(self):

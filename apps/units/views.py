@@ -26,7 +26,7 @@ from common.mixins import (ActiveTabMixin, LoginRequiredMixin, AjaxableResponseM
                            RecentActivityMixin, CheckViewPermissionMixin, CommentMixin, DataMixin, JsTreeMixin,
                            InitialLabMixin)
 from common.serializer import JsonDocumentEncoder
-from uploader.views import FileUploadMixinView, DropboxFileUploadMixinView
+from uploader.views import FileUploadMixinView, DropboxFileUploadMixinView, LocalFileUploadMixinView
 from dashboard.documents import RecentActivity
 from .documents import Unit, UnitFile, UnitLink
 from experiments.documents import Experiment
@@ -347,6 +347,10 @@ class UnitFileUploadView(FileUploadMixinView):
 
 
 class UnitFileDropboxUploadView(DropboxFileUploadMixinView):
+    model = UnitFile
+    parent_model = Unit
+
+class UnitFileLocalUploadView(LocalFileUploadMixinView):
     model = UnitFile
     parent_model = Unit
 

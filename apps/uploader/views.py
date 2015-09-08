@@ -13,6 +13,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import StreamingHttpResponse, HttpResponse
 from django.core.servers.basehttp import FileWrapper
+from django.core.exceptions import PermissionDenied
 
 from mongoengine.base.common import get_document
 
@@ -142,6 +143,69 @@ class DropboxFileUploadMixinView(View, SingleObjectMixin):
         return response
 
 
+class LocalFileUploadMixinView(View, SingleObjectMixin):
+
+    bind = True
+    parent_model = None
+    #field = 'files'
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get(self.pk_url_kwarg, None)
+        try:
+            parent = self.parent_model.objects.get(pk=pk)
+            return parent
+        except ObjectDoesNotExist:
+            return None
+
+    def post(self, request,  *args, **kwargs):
+
+        parent = self.get_object()
+        files = json.loads(request.POST.get('files[]'))
+        need_upload = request.POST.get('need_upload') == 'true'
+
+        for f in files:
+            obj = self.model(parent=parent)
+
+            if need_upload:
+                r = requests.get(f.get('link'), stream=True)
+                obj.file.new_file()
+                for chunk in r.iter_content(8192):
+                    obj.file.write(chunk)
+                obj.file.close()
+                obj.size = obj.file.get().length
+                obj.name = f.get('name')
+                obj.content_type = mimetypes.guess_type(f.get('name'))[0]# or 'image/png',
+
+                #generate thumb
+                try:
+                    img = Image.open(obj.file)
+                    img.thumbnail((256, 256))
+                    thumb_io = StringIO.StringIO()
+                    image_format = obj.name.split('.')[-1].upper()
+                    if image_format == 'JPG':
+                        image_format = 'JPEG'
+                    img.save(thumb_io, format=image_format)
+
+                    thumb_file = InMemoryUploadedFile(thumb_io, None, 'thumb_{}'.format(obj.name), obj.content_type,
+                                                      thumb_io.len, None)
+                    obj.thumbnail.new_file()
+                    for chunk in thumb_file.chunks():
+                        obj.thumbnail.write(chunk)
+                    obj.thumbnail.close()
+                except IOError:
+                    pass  # file isn't a image
+
+            if f.get('thumbnailLink'):
+                obj.outer_thumbnail_url = f.get('thumbnailLink')
+
+            obj.outer_url = f.get('link')
+            obj.save(user=request.user)
+
+        response = JSONResponse({'status': 'ok'}, mimetype=response_mimetype(self.request))
+        response['Content-Disposition'] = 'inline; filename=files.json'
+        return response
+
+
 class FileDeleteView(View):
     """
     Delete instance
@@ -150,6 +214,8 @@ class FileDeleteView(View):
     def delete(self, request, *args, **kwargs):
 
         obj = get_document(kwargs['document_name']).objects.get(pk=kwargs['pk'])
+        if not obj.parent.is_owner(request.user):
+            raise PermissionDenied
         obj.delete()
 
         response = JSONResponse(True, mimetype=response_mimetype(request))
