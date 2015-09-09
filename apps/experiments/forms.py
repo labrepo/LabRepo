@@ -62,8 +62,7 @@ class UpdateUnitsForm(BaseForm):
         del self.initial['lab']
         experiment = Experiment.objects.filter(lab=self.lab.pk)
         if not self.lab.is_owner(self.user):
-            experiment = experiment.filter((Q(owners__in=[self.user]) | Q(editors__in=[self.user]) |
-                                              Q(viewers__in=[self.user]) | Q(units__in=self.fields['units'].queryset)))
+            experiment = experiment.filter((Q(owners__in=[self.user]) | Q(editors__in=[self.user]) | Q(viewers__in=[self.user])))
         self.fields['experiment'].queryset = experiment
 
         self.fields['units'].queryset = Unit.objects.filter(lab=self.lab, active=True)

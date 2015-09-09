@@ -34,7 +34,7 @@ $(function(){
     });
 
 
-    $('#unit').on('ifChanged', 'input[type="checkbox"]', function() {
+    $('body').on('click', '.unit-checkbox', function() {
         if ($(this).prop('checked')) {
             $('form #id_units').find('option[value="' + $(this).val() + '"]').attr("selected", true);
         } else {

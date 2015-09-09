@@ -63,7 +63,7 @@
               <ul class="list-group">
                 {% for result in units %}
                   <li class="list-group-item">
-                    <label><input type="checkbox" value="{{ result.id }}" name="{{ result.sample }}"></label>
+                    <label><input type="checkbox" class="unit-checkbox" value="{{ result.id }}" name="{{ result.sample }}"></label>
                     <a href="{{ result.url }}">{{ result.sample }}</a>
                   </li>
                 {% endfor %}
