@@ -33,21 +33,30 @@
         <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
         <div class="row fileupload-buttonbar">
                                     <div class="col-lg-7">
-                                        <!-- The fileinput-button span is used to style the file input field as button -->
-                                        <span class="btn btn-info bg-olive btn-flat fileinput-button">
-                                            <i class="glyphicon glyphicon-plus"></i>
+                                        <div class="btn-group">
+                                          <button type="button" class="btn btn-info bg-olive btn-flat fileinput-button"><i class="glyphicon glyphicon-plus"></i>
                                             <span>{% trans "Upload"%}</span>
-                                            {% if max_files > 1 %}
+                                             {% if max_files > 1 %}
                                                 <input type="file" name="expirience_files">
                                             {% else %}
                                                 <input type="file" name="expirience_files" multiple>
                                             {% endif %}
-                                        </span>
-                                          <span type="button" class="btn btn-info bg-olive btn-flat" data-toggle="modal" data-target="#fm">from server</span>
-                                        <span id="dropbox"></span><div class="checkbox">
-                                      <label style="padding-left: 110px"><input type="checkbox" name="upload-file" checked class="upload-file" value="value">{% trans "Upload file to the server" %}</label>
-                                        <!-- The global file processing state -->
-                                        <span class="fileupload-process"></span></div>
+                                          </button>
+
+                                          <button type="button" class="btn btn-info bg-olive btn-flat dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="caret"></span>
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                          </button>
+
+                                          <ul class="dropdown-menu">
+                                            <li><a href="#" data-toggle="modal" data-target="#fm">{% trans "From server" %}</a></li>
+                                            <li><span id="dropbox"></span></li>
+                                            <li role="separator" class="divider"></li>
+                                            <li><input type="checkbox" name="upload-file" checked class="upload-file" value="value">{% trans "Upload file to the server" %}</li>
+                                          </ul>
+                                        </div>
+
+                                        <span class="fileupload-process"></span>
                                     </div>
                                     <!-- The global progress state -->
                                     <div class="col-lg-5 fileupload-progress fade">
