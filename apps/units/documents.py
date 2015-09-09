@@ -117,6 +117,12 @@ class UnitLink(me.Document):
     link = me.URLField(verbose_name=_('url'))
     timestamp = me.DateTimeField(default=datetime.now, required=True)
 
+    @property
+    def truncated_title(self):
+        if len(self.link) > 50:
+            return self.link[:45]+'...' + self.link[-5:]
+        return self.link
+
     def is_assistant(self, user):
         """
         :param user: User instance

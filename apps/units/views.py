@@ -370,6 +370,7 @@ class CreateLinkView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
             'success': True,
             'delete_link': delete_link,
             'date': date,
+            'title': link.truncated_title,
         })
 
 

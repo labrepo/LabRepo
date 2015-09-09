@@ -580,7 +580,7 @@
             }).done(function (response) {
                 var delete_link = '<button data-delete-url="'+ response.delete_link + '" class="close link-delete" type="button">x</button>';
                 var date = '<br><span class="">' + response.date + '</span>'
-                $('.link-list').append('<li><a href="' + link + '">'+ link + '</a>'+ delete_link  + date + '</li>');
+                $('.link-list').append('<li><a href="' + link + '">'+ response.title + '</a>'+ delete_link  + date + '</li>');
                 $form.find('input[name="link"]').val('');
             });
     });
