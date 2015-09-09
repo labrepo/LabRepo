@@ -61,7 +61,7 @@
   <ul class="link-list">
     {% for unit_url in object.links %}
       <li>
-        <a href="{{ unit_url.link }}">{{ unit_url.link }}</a><button data-delete-url="{% url 'units:unit-remove-url' lab_pk=lab_pk pk=unit_url.pk %}" class="close link-delete" type="button">x</button>
+        <a href="{{ unit_url.link }}">{{ unit_url.truncated_title }}</a><button data-delete-url="{% url 'units:unit-remove-url' lab_pk=lab_pk pk=unit_url.pk %}" class="close link-delete" type="button">x</button>
         <br><span class="">{{ unit_url.timestamp|date:"DATE_FORMAT" }}</span>
       </li>
     {% endfor %}

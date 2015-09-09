@@ -36,7 +36,7 @@
 <div class="modal fade {{ modal_class }}" id="fm" tabindex="-1" role="dialog" aria-labelledby="Modal"
      aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content" style="min-width: 900px !important;">
       <button type="button" class="close" data-dismiss="modal" title="{% trans 'Close' %}">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -45,8 +45,8 @@
 
         <div class="filemanager-content">
           <div id="splitter">
-            <div id="filetree" style="width: 200x;"></div>
-            <div id="fileinfo" style="left: 120px;width: 100%;min-width: 450px !important;">
+            <div id="filetree" style="width: 200px;min-width: 200px !important;"></div>
+            <div id="fileinfo" style="left: 220px;width: 100%;min-width: 650px !important;">
               <h1></h1>
             </div>
           </div>
