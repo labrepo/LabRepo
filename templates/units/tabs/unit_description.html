@@ -1,76 +1,115 @@
 {% load i18n %}
 {% load upload_tags %}
 
-<div id="description">
-  <div class="description-show">
-    {% if is_owner or is_member %}
-      <button class="description-edit fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
-    {% endif %}
-    <div class="description-text">
-      {{ object.description|default:'No description '|safe }}
+<div class="sample field-container">
+  <h4>{% trans "Sample" %}</h4>
+  <form action="{% url 'units:update' lab_pk=lab_pk%}" method="post" class="sample-unit-form">
+    <div class="field-show">
+      {% if is_owner or is_member %}
+      <button class="field-edit fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+      {% endif %}
+
+      {% if form.non_field_errors %}
+      <span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg" role="alert">
+          <span class="k-icon k-warning"></span>
+          {{ form.non_field_errors.0 }}
+      </span>
+      {% endif %}
+      <div class="field-text">
+        {{ object.sample }}
+      </div>
     </div>
-  </div>
-  <div class="description-editor" style="display: none">
-    <form action="{% url 'units:update' lab_pk=lab_pk%}" method="post" class="description-unit-form">
-      {% with label_width=label_width|default:2 field_width=field_width|default:-2 %}
-
-        {% if form.non_field_errors %}
-          <span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg" role="alert">
-              <span class="k-icon k-warning"></span>
-              {{ form.non_field_errors.0 }}
-          </span>
-        {% endif %}
-
-        {% for field in form.visible_fields %}
-          <div class="form-group{% if field.errors %} has-error{% endif %}">
-            {% include 'field.html' %}
-          </div>
-        {% endfor %}
-
-        {% for field in form.hidden_fields %}
-          {% if field.name == 'params' %}
-            <div class="form-group{% if field.errors %} has-error{% endif %}">
-              <label for="{{ field.name }}" class="col-sm-{{ label_width }} control-label">{{ field.label|title }}</label>
-
-              <div class="col-sm-{{ 12|add:field_width }}">
-                {{ field }}
-                {% if field.errors %}
-                  <span class="has-error" data-for="{{ field.auto_id }}" role="alert">
-                              {{ field.errors.0 }}
-                          </span>
-                {% endif %}
-              </div>
-            </div>
-          {% else %}
-            {{ field }}
-          {% endif %}
-        {% endfor %}
-
-        <!--{{ form.media }}-->
-
+    <div class="field-editor" style="display: none">
+      {% with field=form.sample label_width=label_width|default:2 field_width=field_width|default:-2%}
+      <div class="form-group{% if field.errors %} has-error{% endif %}">
+        {% include 'field.html' %}
+      </div>
       {% endwith %}
       <button type="submit" class="btn btn-info unit-description-send">{% trans 'Save' %}</button>
       <button class="btn btn-info cancel-edit">{% trans 'cancel'|title %}</button>
-    </form>
-  </div>
+    </div>
+  </form>
+</div>
+
+<div class="description field-container">
+  <h4>{% trans "Description" %}</h4>
+  <form action="{% url 'units:update' lab_pk=lab_pk%}" method="post" class="description-unit-form">
+    {% if form.non_field_errors %}
+      <span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg" role="alert">
+          <span class="k-icon k-warning"></span>
+          {{ form.non_field_errors.0 }}
+      </span>
+    {% endif %}
+
+    <div class="field-show">
+      {% if is_owner or is_member %}
+      <button class="field-edit fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+      {% endif %}
+      <div class="field-text">
+        {{ object.description|default:'No description '|safe }}
+      </div>
+    </div>
+    <div class="field-editor" style="display: none">
+      <!--<form action="{% url 'units:update' lab_pk=lab_pk%}" method="post" class="description-unit-form">-->
+      {% with field=form.description label_width=label_width|default:2 field_width=field_width|default:-2 %}
+
+      <div class="form-group{% if field.errors %} has-error{% endif %}">
+        {% include 'field.html' %}
+      </div>
+      {% endwith %}
+      <button type="submit" class="btn btn-info unit-description-send">{% trans 'Save' %}</button>
+      <button class="btn btn-info cancel-edit">{% trans 'cancel'|title %}</button>
+    </div>
+  </form>
+</div>
+
+<div class="parents field-container">
+  <h4>{% trans "Parents" %}</h4>
+  <form action="{% url 'units:update' lab_pk=lab_pk%}" method="post" class="parent-unit-form">
+    <div class="field-show">
+      {% if is_owner or is_member %}
+      <button class="field-edit fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+      {% endif %}
+
+      {% if form.non_field_errors %}
+      <span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg" role="alert">
+          <span class="k-icon k-warning"></span>
+          {{ form.non_field_errors.0 }}
+      </span>
+      {% endif %}
+      <div class="field-text">
+        {{ object.parent }}
+      </div>
+    </div>
+    <div class="field-editor" style="display: none">
+      <!--<form action="{% url 'units:update' lab_pk=lab_pk%}" method="post" class="description-unit-form">-->
+      {% with field=form.parent label_width=label_width|default:2 field_width=field_width|default:-2%}
+      <div class="form-group{% if field.errors %} has-error{% endif %}">
+        {% include 'field.html' %}
+      </div>
+      {% endwith %}
+      <button type="submit" class="btn btn-info unit-description-send">{% trans 'Save' %}</button>
+      <button class="btn btn-info cancel-edit">{% trans 'cancel'|title %}</button>
+    </div>
+  </form>
 </div>
 
 
 <div id="urls-area" class="voffset4">
-  <legend>{% trans "Links" %}</legend>
+  <h4>{% trans "Links" %}</h4>
   <ul class="link-list">
     {% for unit_url in object.links %}
-      <li>
-        <a href="{{ unit_url.link }}">{{ unit_url.truncated_title }}</a><button data-delete-url="{% url 'units:unit-remove-url' lab_pk=lab_pk pk=unit_url.pk %}" class="close link-delete" type="button">x</button>
-        <br><span class="">{{ unit_url.timestamp|date:"DATE_FORMAT" }}</span>
-      </li>
+    <li>
+      <a href="{{ unit_url.link }}">{{ unit_url.truncated_title }}</a><button data-delete-url="{% url 'units:unit-remove-url' lab_pk=lab_pk pk=unit_url.pk %}" class="close link-delete" type="button">x</button>
+      <br><span class="">{{ unit_url.timestamp|date:"DATE_FORMAT" }}</span>
+    </li>
     {% endfor %}
-    </ul>
+  </ul>
   <form class="links-unit-form form-inline" action="{% url 'units:unit-add-url' lab_pk=lab_pk pk=object.pk %}" method="post">
     <div class="form-group">
-    <input class="form-control" required type="url" name="link">
-    <button class="btn btn-info bg-olive btn-flat" type="submit"><i class="glyphicon glyphicon-plus"></i> {% trans "Add link" %}</button>
-      </div>
+      <input class="form-control" required type="url" name="link">
+      <button class="btn btn-info bg-olive btn-flat" type="submit"><i class="glyphicon glyphicon-plus"></i> {% trans "Add link" %}</button>
+    </div>
   </form>
 </div>
 

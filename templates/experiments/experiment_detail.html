@@ -145,11 +145,9 @@
                   <li class="">
                     <a href="#units-list" data-toggle="tab"><i class="fa fa-list"></i> {% trans 'List' %}</a>
                   </li>
-                  <li class="pull-right">
-                    <a class="btn btn-danger "
-                       data-toggle="modal" data-target="#add_unit" href="#">
-                      <i class="fa fa-plus"></i> Add Unit</a>
-                  </li>
+                    <a class="pull-right create-unit" style="color: #444;" data-url="{% url 'units:create' lab.pk %}" href="#"><i class="fa fa-plus"></i> {% trans "Create Unit" %}</a>
+                    <a class="pull-right" style="padding-right:10px; color: #444;" data-toggle="modal" data-target="#add_unit" href="#"><i class="fa fa-plus"></i> {% trans "Add Unit" %}</a>
+                    {% include "units/unit_add_modal.html" %}
                 </ul>
 
                 <div class="tab-content">
@@ -158,7 +156,7 @@
                     <a class="btn btn-info btn-sm btn-flat"
                      data-toggle="modal" data-target="#add_unit" href="#">
                     <i class="fa fa-plus"></i> Add Unit</a>
-                    {% include "units/unit_add_modal.html" %}
+
                     <div class="graph-area"></div>
                   </div>
                   <!-- /.tab-pane -->
@@ -444,6 +442,7 @@
         update_uploaders()
         var button = Dropbox.createChooseButton(options);
         document.getElementById("dropbox").appendChild(button);
+        addSelect2();
 
         // measurements
         var table = $("#dataTable");
@@ -525,24 +524,7 @@
 
         $.post($form.attr('action'), unit_data)
             .fail(function (xhr) {
-                var data = xhr.responseJSON;
-                $form.find('.has-error').removeClass('has-error').removeAttr('title');
-                for (var name in data) {
-                    if (data.hasOwnProperty(name)) {
-                        var icon = $('<i>', {'class': 'fa fa-warning'}),
-                            error_message = $('span', {
-                                'class': 'text-red error-msg',
-                                'id': 'error_' + $form.find('[name="' + name + '"]').id
-                            }).text(data[name].join(', ')).append(icon);
-
-                        $form.find('[name="' + name + '"]')
-                            .after(error_message);
-                        $form.find('[name="' + name + '"]')
-                            .parents('.form-group')
-                            .addClass('has-error')
-                            .attr('title', data[name].join(', '));
-                    }
-                }
+                form_fail($form, xhr)
             }).done(function (response) {
                var desc_value = $form.find('textarea[name="description"]').val()
                $form.parents('.description-editor').hide().parents('#description').find('.description-show').show();
@@ -550,6 +532,44 @@
 
             });
     });
+
+  $('body').on('submit','.sample-unit-form', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var $form = $(e.target);
+    var unit_data = window.unit_data
+    unit_data['data-0-sample'] = $form.find('input[name="sample"]').val();
+
+
+    $.post($form.attr('action'), unit_data)
+            .fail(function (xhr) {
+              form_fail($form, xhr)
+            }).done(function (response) {
+              var sample_value = $form.find('input[name="sample"]').val()
+              $form.parents('.field-editor').hide().parents('div').find('.field-show').show();
+              $form.parents('.field-editor').hide().parents('div').find('.field-text').html(sample_value);
+
+            });
+  });
+
+  $('body').on('submit','.parent-unit-form', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var $form = $(e.target);
+    var unit_data = window.unit_data
+    unit_data['data-0-parent_pk[]'] = $form.find('input[name="parent"]').val();
+
+
+    $.post($form.attr('action'), unit_data)
+            .fail(function (xhr) {
+              form_fail($form, xhr)
+            }).done(function (response) {
+              var sample_value = $form.find('input[name="sample"]').val()
+              $form.parents('.field-editor').hide().parents('div').find('.field-show').show();
+              $form.parents('.field-editor').hide().parents('div').find('.field-text').html(sample_value);
+
+            });
+  });
 
   $('body').on('submit','.links-unit-form', function (e) {
         e.preventDefault();
@@ -617,24 +637,7 @@
 
         $.post($form.attr('action'), unit_data)
             .fail(function (xhr) {
-                var data = xhr.responseJSON;
-                $form.find('.has-error').removeClass('has-error').removeAttr('title');
-                for (var name in data) {
-                    if (data.hasOwnProperty(name)) {
-                        var icon = $('<i>', {'class': 'fa fa-warning'}),
-                            error_message = $('span', {
-                                'class': 'text-red error-msg',
-                                'id': 'error_' + $form.find('[name="' + name + '"]').id
-                            }).text(data[name].join(', ')).append(icon);
-
-                        $form.find('[name="' + name + '"]')
-                            .after(error_message);
-                        $form.find('[name="' + name + '"]')
-                            .parents('.form-group')
-                            .addClass('has-error')
-                            .attr('title', data[name].join(', '));
-                    }
-                }
+                form_fail($form, xhr)
             }).done(function (response) {
                //todo: update graph and list
                location.reload();
@@ -662,8 +665,38 @@
     })
 
 
-    $(function() {
-      render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', update_unit_info)
+  $(function() {
+    var graph  = new render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', update_unit_info)
+    //graph.addLink("Cause", "Effect");
+
+    $('.create-unit').click(function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var sample = 'New Unit #'
+      var unit_data = {
+        'length':1,
+        'data-0-experiments_pk[]': exp_pk,
+        'data-0-sample': sample,
+
+      }
+
+      $.post($(this).data('url'), unit_data, function (response) {
+
+        graph.addNode({
+          id: response[0][1]['pk'],
+          index: 0,
+          link: "#",
+          score: 2,
+          size: 1,
+          text: sample,
+          type: "circle",
+          weight: 1,
+
+        });
+
+      });
+    })
+
 
       $('.unit-item').click(function(e){
         var unit_id = $(this).data('unit-pk')

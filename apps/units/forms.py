@@ -50,19 +50,24 @@ class UnitUpdateForm(UnitForm):
     comment = CharField(label='Change reasons', max_length=255, required=False)
 
 
-class UnitDescriptionForm(BaseForm):
-
+class UnitTabForm(BaseForm):
+    """
+    Form is used on the unit tab on the experiment detail page
+    """
     def __init__(self, *args, **kwargs):
         lab_pk = kwargs.pop('lab_pk')
-        super(UnitDescriptionForm, self).__init__(*args, **kwargs)
+        lab = Lab.objects.get(pk=lab_pk)
+        super(UnitTabForm, self).__init__(*args, **kwargs)
         self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk,
                                                                  attrs={'id': 'unit_description_field'})
                                                                  # FIX CKEDITOR MULTIPLE INSTANCES
         self.fields['description'].label = ''
+        self.fields['sample'].widget = forms.TextInput()
+        self.fields['parent'].queryset = Unit.objects.filter(lab=lab, active=True)
 
     class Meta:
         document = Unit
-        fields = ('description', )
+        fields = ('description', 'sample', 'parent')
 
 
 class UnitEmbeddedDocumentFormSet(EmbeddedDocumentFormSet):

@@ -30,7 +30,7 @@ from uploader.views import FileUploadMixinView, DropboxFileUploadMixinView, Loca
 from dashboard.documents import RecentActivity
 from .documents import Unit, UnitFile, UnitLink
 from experiments.documents import Experiment
-from .forms import UnitForm, UnitUpdateForm, UnitDescriptionForm
+from .forms import UnitForm, UnitUpdateForm, UnitTabForm
 from labs.documents import Lab
 from measurements.documents import MeasurementType
 from tags.documents import Tag
@@ -207,7 +207,7 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
     View for display information about an existing unit
     """
     model = Unit
-    form_class = UnitDescriptionForm
+    form_class = UnitTabForm
     template_name = 'units/unit_detail.html'
     active_tab = 'units'
 
@@ -294,6 +294,7 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         if not (self.object.is_member(request.user) or self.object.is_owner(request.user)):
             raise PermissionDenied
 
+        context = self.get_context_data()
         ctx = {}
         ctx.update(self.kwargs)
 
@@ -313,8 +314,8 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
 
         ctx['tags'] = json.dumps(self.get_tree_element(self.object))
 
-        ctx['description'] = render_to_string('units/tabs/unit_description.html', self.get_context_data())
-        ctx['comments'] = render_to_string('units/tabs/unit_comments.html', self.get_context_data())
+        ctx['description'] = render_to_string('units/tabs/unit_description.html', context)
+        ctx['comments'] = render_to_string('units/tabs/unit_comments.html', context)
 
         return self.render_to_json_response(ctx)
 
@@ -335,8 +336,8 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         ctx['lab'] = self.lab
         ctx['lab_pk'] = self.lab.pk
         ctx['user'] = self.request.user
-        ctx['measurements'] = self.object.measurements
-        ctx['form'] = UnitDescriptionForm(lab_pk=self.lab.pk, initial={'description': self.object.description})
+        # ctx['measurements'] = self.object.measurements
+        ctx['form'] = UnitTabForm(lab_pk=self.lab.pk, instance=self.object)
 
         return ctx
 

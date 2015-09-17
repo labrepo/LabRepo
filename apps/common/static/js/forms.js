@@ -46,6 +46,16 @@ $(document).ready(function () {
         $(e.target).parents('.description-editor').hide().parents('#description').find('.description-show').show();
     });
 
+    $('body').on('click','.field-edit', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(e.target).closest('.field-show').hide().closest('.field-container').find('.field-editor').show();
+    });
+    $('body').on('click','.cancel-edit', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(e.target).closest('.field-editor').hide().closest('.field-container').find('.field-show').show();
+    });
 });
 
 function invite() {
@@ -133,7 +143,7 @@ function showMessage(hasError, messages) {
 
 
 function addSelect2() {
-    $('.select2').each(function (i, input) {
+    $('select.select2').each(function (i, input) {
         var $input = $(input);
         $input.find('option[selected="selected"]').each(function (e) {
             var $option = $(this),
@@ -157,6 +167,27 @@ function addSelect2() {
     });
 }
 
+function form_fail($form, xhr) {
+    var data = xhr.responseJSON;
+    $form.find('.has-error').removeClass('has-error').removeAttr('title');
+    for (var name in data) {
+        if (data.hasOwnProperty(name)) {
+            var icon = $('<i>', {'class': 'fa fa-warning'}),
+                error_message = $('span', {
+                    'class': 'text-red error-msg',
+                    'id': 'error_' + $form.find('[name="' + name + '"]').id
+                }).text(data[name].join(', ')).append(icon);
+
+            $form.find('[name="' + name + '"]')
+                .after(error_message);
+            $form.find('[name="' + name + '"]')
+                .parents('.form-group')
+                .addClass('has-error')
+                .attr('title', data[name].join(', '));
+        }
+    }
+
+}
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
