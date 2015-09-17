@@ -421,6 +421,19 @@
           return parents
         }
 
+        function get_tags(unit_data) {
+          /**
+           * Return array of unit parents ids
+           * @param unit_data - (string) serialized unit object
+           */
+          var unit_json = JSON.parse(unit_data)
+          var tags = []
+          for (var i=0; i< unit_json.tags.length; i++) {
+            tags.push(unit_json.tags[i]['$oid'])
+          }
+          return tags
+        }
+
         var unit_json = JSON.parse(data.unit_data)
         window.unit_data = {
           'data-0-pk': data.pk,
@@ -428,6 +441,7 @@
           'data-0-description': unit_json.description,
           'data-0-parent_pk[]': get_parents(data.unit_data),
           'data-0-experiments_pk[]': exp_pk,
+          'data-0-tags_pk[]': get_tags(data.unit_data),
           'length':1
         }
         unit_data = window.unit_data
@@ -538,16 +552,16 @@
     e.stopPropagation();
     var $form = $(e.target);
     var unit_data = window.unit_data
-    unit_data['data-0-sample'] = $form.find('input[name="sample"]').val();
-
+    var sample = $form.find('input[name="sample"]').val()
+    unit_data['data-0-sample'] = sample;
 
     $.post($form.attr('action'), unit_data)
             .fail(function (xhr) {
               form_fail($form, xhr)
             }).done(function (response) {
-              var sample_value = $form.find('input[name="sample"]').val()
               $form.parents('.field-editor').hide().parents('div').find('.field-show').show();
-              $form.parents('.field-editor').hide().parents('div').find('.field-text').html(sample_value);
+              $form.parents('.field-editor').hide().parents('div').find('.field-text').html(sample);
+              graph.updateNodeText(response[0][1]['pk'], sample)
 
             });
   });
@@ -557,17 +571,21 @@
     e.stopPropagation();
     var $form = $(e.target);
     var unit_data = window.unit_data
-    unit_data['data-0-parent_pk[]'] = $form.find('input[name="parent"]').val();
 
+    var parents = $form.find('select[name="parent"]').val()
+    if (parents) {
+      unit_data['data-0-parent_pk[]'] = parents;
+    } else {
+      delete unit_data['data-0-parent_pk[]']
+    }
 
     $.post($form.attr('action'), unit_data)
             .fail(function (xhr) {
               form_fail($form, xhr)
             }).done(function (response) {
-              var sample_value = $form.find('input[name="sample"]').val()
               $form.parents('.field-editor').hide().parents('div').find('.field-show').show();
-              $form.parents('.field-editor').hide().parents('div').find('.field-text').html(sample_value);
-
+              $form.parents('.field-editor').hide().parents('div').find('.field-text').html(parents);
+              graph.updateParents(response[0][1]['pk'], parents)
             });
   });
 
@@ -666,7 +684,7 @@
 
 
   $(function() {
-    var graph  = new render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', update_unit_info)
+    var graph = window.graph  = new render_graph(JSON.parse( '{{ units_graph_json}}'), '.graph-area', update_unit_info)
     //graph.addLink("Cause", "Effect");
 
     $('.create-unit').click(function (e) {

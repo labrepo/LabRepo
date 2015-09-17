@@ -92,6 +92,9 @@ class Unit(HistoryDocument):
     def links(self):
         return UnitLink.objects.filter(parent=self)
 
+    def get_parent_string(self):
+        return ', '.join([x.sample for x in self.parent])
+
 Unit._default_manager = Unit.objects
 
 

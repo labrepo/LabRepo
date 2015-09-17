@@ -45,12 +45,36 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
     var max_zoom = 7;
     var current_id = 0;
 
-
     // Add and remove elements on the graph object
     this.addNode = function (id) {
-
         nodes.push(id);
+        update();
+    }
 
+    this.updateNodeText = function (id, text) {
+       for (var n in nodes) {
+         if (nodes[n].id == id) {
+            nodes[n].text = text;
+            break;
+         }
+       }
+       update();
+    }
+
+    this.updateParents = function (id, parent_ids) {
+        //remove old parents
+        for (i = 0; i < links.length; i++) {
+            link = links[i];
+            links[i]['seconds']--;
+            if (link.target.id == id) {
+                links.splice(i, 1);
+                i--;
+            }
+        }
+        //set new parents
+        for (var i in parent_ids) {
+            this.addLink(parent_ids[i], id)
+        }
         update();
     }
 
@@ -73,8 +97,12 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
         var targetNode = findNode(targetId);
 
         if((sourceNode !== undefined) && (targetNode !== undefined)) {
-            links.push({"source": sourceNode, "target": targetNode});
-            update();
+            links.push({
+                "source": sourceNode,
+                "target": targetNode,
+                "arrow": true
+            });
+//            update();
         }
     }
 
@@ -204,8 +232,6 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
         vis.call(zoom);
         d3.select(window).on("resize", resize);
         resize();
-        console.log(force)
-
 
         function isSelected(a, b) {
             return a.index == b.index;

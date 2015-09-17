@@ -63,6 +63,7 @@
   </form>
 </div>
 
+
 <div class="parents field-container">
   <h4>{% trans "Parents" %}</h4>
   <form action="{% url 'units:update' lab_pk=lab_pk%}" method="post" class="parent-unit-form">
@@ -78,7 +79,7 @@
       </span>
       {% endif %}
       <div class="field-text">
-        {{ object.parent }}
+        {{ object.get_parent_string }}
       </div>
     </div>
     <div class="field-editor" style="display: none">
@@ -90,7 +91,9 @@
       {% endwith %}
       <button type="submit" class="btn btn-info unit-description-send">{% trans 'Save' %}</button>
       <button class="btn btn-info cancel-edit">{% trans 'cancel'|title %}</button>
+
     </div>
+
   </form>
 </div>
 
