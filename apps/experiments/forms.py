@@ -70,3 +70,39 @@ class UpdateUnitsForm(BaseForm):
         self.fields['units'].widget.attrs['class'] += ' hidden-field'
         self.fields['units'].label = ''
         self.fields['units'].error_messages['required'] = _('You didn\'t select any units.')
+
+
+class AddUnitToExperimentForm(BaseForm):
+    """
+    Used to add units to a experiment.
+    """
+    experiment = forms.ModelChoiceField(queryset=Experiment.objects.none())
+    units = forms.ModelMultipleChoiceField(queryset=Unit.objects.none())
+
+    class Meta:
+        document = Experiment
+        fields = ('',)
+
+    def __init__(self, *args, **kwargs):
+        self.lab = kwargs['initial']['lab']
+        self.user = kwargs['initial']['user']
+
+        experiment = kwargs['initial']['experiment']
+        experiment_qs = Experiment.objects.filter(lab=self.lab.pk)
+        if not self.lab.is_owner(self.user):
+            experiment_qs = experiment_qs.filter((Q(owners__in=[self.user]) | Q(editors__in=[self.user]) | Q(viewers__in=[self.user])))
+
+        super(AddUnitToExperimentForm, self).__init__(*args, **kwargs)
+        self.fields['units'].queryset = Unit.objects.filter(lab=self.lab, experiments__ne=experiment, active=True)
+        self.fields['experiment'].widget.attrs['class'] += ' hidden-field'
+        self.fields['experiment'].queryset = experiment_qs
+        self.fields['experiment'].initial = experiment.pk
+
+        self.fields['units'].label = ''
+        self.fields['units'].error_messages['required'] = _('You didn\'t select any units.')
+        self.fields['units'].widget.attrs['class'] += ' select2'
+        del self.initial['user']
+        del self.initial['lab']
+
+
+

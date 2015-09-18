@@ -21,7 +21,7 @@ from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPe
                            FormInitialMixin, LoginRequiredMixin)
 from dashboard.documents import RecentActivity
 from experiments.documents import Experiment
-from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm
+from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm, AddUnitToExperimentForm
 from tags.documents import Tag
 from units.documents import Unit
 from units.forms import UnitForm, UnitPopupForm
@@ -203,7 +203,7 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
 
         ctx['units_graph_json'] = self.get_unit_graph_data()
 
-        ctx['unit_form'] = UnitPopupForm(lab_pk=self.lab.pk, exp_pk=self.object.pk)
+        ctx['unit_form'] = AddUnitToExperimentForm(initial={'lab': self.lab, 'user': self.request.user, 'experiment': self.object})
 
         UPLOAD_URL, UPLOAD_ROOT = get_upload(self.request, *args, **kwargs)
         ctx['UPLOAD_URL'] = UPLOAD_URL
@@ -231,6 +231,10 @@ class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitia
     def form_valid(self, form):
 
         self.object = form.cleaned_data['experiment']
+
+        if not (self.object.is_owner(self.request.user) or self.object.is_member(self.request.user)):
+            raise PermissionDenied
+
         for unit in form.cleaned_data['units']:
             unit.update(
                 add_to_set__experiments=self.object)

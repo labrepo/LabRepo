@@ -642,23 +642,25 @@
         e.stopPropagation();
         var $form = $(e.target);
 
-        var unit_data = {
-          'length':1,
-          'data-0-experiments_pk[]': exp_pk,
-          'data-0-description': $form.find('textarea[name="description"]').val(),
-          'data-0-sample': $form.find('textarea[name="sample"]').val(),
-          'data-0-tags': $form.find('textarea[name="tags"]').val(),
-        }
-        if ($form.find('select[name="parent"]').val()) {
-          unit_data['data-0-parent_pk[]'] = $form.find('select[name="parent"]').val()
-        }
-
-        $.post($form.attr('action'), unit_data)
+        $.post($form.attr('action'), $form.serialize())
             .fail(function (xhr) {
                 form_fail($form, xhr)
             }).done(function (response) {
-               //todo: update graph and list
-               location.reload();
+
+               $('#add_unit').modal('toggle');
+               var units = $form.find('select[name="units"]').val();
+                for (i in units){
+                  graph.addNode({
+                          id: units[i],
+                          index: 0,
+                          link: "#",
+                          score: 2,
+                          size: 1,
+                          text:  $form.find('select[name="units"]').find('option[value=' + units[i]+ ']').text(),
+                          type: "circle",
+                          weight: 1,
+                        });
+                }
 
             });
       });
