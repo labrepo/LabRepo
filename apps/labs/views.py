@@ -5,16 +5,19 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView, RedirectView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView, RedirectView, FormView
 from django.utils.translation import ugettext_lazy as _
+from django.template.loader import render_to_string
 
 from mongoengine import Q
 
 from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckEditPermissionMixin, CheckViewPermissionMixin,
-                           CheckDeletePermissionMixin, InviteFormMixin)
+                           CheckDeletePermissionMixin, InviteFormMixin, CheckLabPermissionMixin, AjaxableResponseMixin)
 from filemanager.views import check_directory
-from labs.documents import Lab
-from labs.forms import LabForm
+# from mongodbforms import embeddedformset_factory, EmbeddedDocumentForm
+from mongodbforms import CharField, embeddedformset_factory, EmbeddedDocumentFormSet, EmbeddedDocumentForm
+from labs.documents import Lab, LabStorage
+from labs.forms import LabForm, LabStorageForm
 from fabfile import create_test_lab
 
 class LabCreateView(LoginRequiredMixin, InviteFormMixin, ActiveTabMixin, CreateView):
@@ -99,12 +102,19 @@ class LabDeleteView(LoginRequiredMixin, CheckDeletePermissionMixin, ActiveTabMix
 
 class LabDetailView(LoginRequiredMixin, CheckViewPermissionMixin, ActiveTabMixin, DetailView):
     """
-     View for display information about an existing laboratory with related experiments
+    View for display information about an existing laboratory with related experiments
     """
     model = Lab
     template_name = 'labs/lab_detail.html'
     active_tab = 'labs'
     pk_url_kwarg = 'lab_pk'
+
+    def get_context_data(self, **kwargs):
+        context = super(LabDetailView, self).get_context_data(**kwargs)
+
+        context['storage_form'] = LabStorageForm()
+
+        return context
 
 
 class LabListView(LoginRequiredMixin, ActiveTabMixin, ListView):
@@ -139,3 +149,47 @@ class BaseLabCreateView(LoginRequiredMixin, RedirectView):
     def get(self, request, *args, **kwargs):
         self.request.user.create_test_lab()
         return super(BaseLabCreateView, self).get(request, *args, **kwargs)
+
+
+class LabStorageCreate(AjaxableResponseMixin, CheckLabPermissionMixin, CreateView):
+    model = LabStorage
+    form_class = LabStorageForm
+
+    def form_valid(self, form):
+        lab_storage = form.save(commit=False)
+        lab_storage.save()
+        self.lab.storages.append(lab_storage)
+        self.lab.save()
+
+        return self.render_to_json_response({'status': 'ok', 'pk': u'{}'.format(lab_storage.pk)})
+
+
+class LabStorageUpdate(AjaxableResponseMixin, CheckLabPermissionMixin, UpdateView):
+    model = LabStorage
+    form_class = LabStorageForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(instance=self.get_object())
+
+        form_html = render_to_string('labs/storage_form.html', {
+            'form': form,
+            'storage': self.get_object(),
+            'lab': self.lab,
+        })
+        return self.render_to_json_response({'form_html': form_html})
+
+    def form_valid(self, form):
+        lab_storage = form.save()
+        return self.render_to_json_response({'status': 'ok', 'pk': u'{}'.format(lab_storage.pk)})
+
+
+class LabStorageDelete(AjaxableResponseMixin, CheckLabPermissionMixin, DeleteView):
+    model = LabStorage
+    form_class = LabStorageForm
+
+    def delete(self, request, *args, **kwargs):
+        lab_storage = self.get_object()
+        self.lab.storages.remove(lab_storage)
+        self.lab.save()
+        lab_storage.delete()
+        return self.render_to_json_response({'status': 'ok'})

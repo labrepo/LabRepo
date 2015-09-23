@@ -2,7 +2,33 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import gettext_lazy as _, ugettext
 import mongoengine as me
+from mongoengine.queryset.base import CASCADE
 from mongoengine.django.auth import User
+
+
+class LabStorage(me.Document):
+    """
+    Filesystem storage for laboratories
+    """
+    FS_TYPES = (
+        ('SFTP', 'SFTP'),
+        ('s3', 's3'),
+    )
+
+    type = me.StringField(verbose_name=_('type'), choices=FS_TYPES, max_length=255, required=True)
+    username = me.StringField(verbose_name=_('username'), max_length=255, required=True)
+    host = me.StringField(verbose_name=_('host'), max_length=255, required=True)
+    password = me.StringField(verbose_name=_('password'), max_length=255, required=True)
+    port = me.IntField(verbose_name=_('port'))
+
+    key_file = me.FileField(verbose_name=_('port'))
+
+    def __unicode__(self):
+        if self.type == 'SFTP':
+            return 'SFTP: {}@{}'.format(self.username, self.host)
+        return u'{}'.format(self.name)
+
+LabStorage._default_manager = LabStorage.objects
 
 
 class Lab(me.Document):
@@ -19,6 +45,7 @@ class Lab(me.Document):
     members = me.ListField(me.ReferenceField(User), verbose_name=_('members'))
     guests = me.ListField(me.ReferenceField(User), verbose_name=_('guests'))
     is_test = me.BooleanField(default=False, verbose_name=_('test lab'))
+    storages = me.ListField(me.ReferenceField(LabStorage), verbose_name=_('storages'))
 
     meta = {'related_fkey_lookups': [], 'virtual_fields': [], 'verbose_name': ugettext('lab'), 'verbose_name_plural': ugettext('labs')}
 

@@ -2,7 +2,7 @@
 from django.utils.translation import ugettext_lazy as _
 
 from common.forms import BaseForm
-from labs.documents import Lab
+from labs.documents import Lab, LabStorage
 
 
 class LabBaseForm(BaseForm):
@@ -42,6 +42,15 @@ class LabForm(LabBaseForm):
                 self._errors['investigator'] = self.error_class([_('You have not permission change lab\'s investigator')])
                 del data['investigator']
         return data
+
+
+class LabStorageForm(BaseForm):
+    """
+    Form for create/edit laboratory storages
+    """
+    class Meta:
+        document = LabStorage
+        fields = ('type', 'username', 'host', 'password', )
 
 
 class LabAdminForm(LabBaseForm):
