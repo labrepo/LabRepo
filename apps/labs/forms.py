@@ -50,7 +50,7 @@ class LabStorageForm(BaseForm):
     """
     class Meta:
         document = LabStorage
-        fields = ('type', 'username', 'host', 'password', )
+        fields = ('type', 'username', 'host', 'password', 'path')
 
 
 class LabAdminForm(LabBaseForm):

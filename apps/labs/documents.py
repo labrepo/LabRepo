@@ -18,14 +18,21 @@ class LabStorage(me.Document):
     type = me.StringField(verbose_name=_('type'), choices=FS_TYPES, max_length=255, required=True)
     username = me.StringField(verbose_name=_('username'), max_length=255, required=True)
     host = me.StringField(verbose_name=_('host'), max_length=255, required=True)
+    path = me.StringField(verbose_name=_('path'), max_length=255, required=False)
     password = me.StringField(verbose_name=_('password'), max_length=255, required=True)
     port = me.IntField(verbose_name=_('port'))
 
     key_file = me.FileField(verbose_name=_('port'))
 
+    def get_path(self):
+        if self.path:
+            return self.path
+        else:
+            return u'/home/{}/'.format(self.username)
+
     def __unicode__(self):
         if self.type == 'SFTP':
-            return 'SFTP: {}@{}'.format(self.username, self.host)
+            return u'SFTP: {}@{}{}'.format(self.username, self.host, self.get_path())
         return u'{}'.format(self.name)
 
 LabStorage._default_manager = LabStorage.objects
