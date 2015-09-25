@@ -20,6 +20,7 @@ from labs.documents import Lab, LabStorage
 from labs.forms import LabForm, LabStorageForm
 from fabfile import create_test_lab
 
+
 class LabCreateView(LoginRequiredMixin, InviteFormMixin, ActiveTabMixin, CreateView):
     """
      View for creating a new laboratory
@@ -155,32 +156,43 @@ class LabStorageCreate(AjaxableResponseMixin, CheckLabPermissionMixin, CreateVie
     model = LabStorage
     form_class = LabStorageForm
 
+    def get_success_url(self):
+        return reverse('labs:detail', args=(self.lab.pk,))
+
     def form_valid(self, form):
         lab_storage = form.save(commit=False)
         lab_storage.save()
         self.lab.storages.append(lab_storage)
         self.lab.save()
+        return HttpResponseRedirect(self.get_success_url())
+        # return self.render_to_json_response({'status': 'ok', 'pk': u'{}'.format(lab_storage.pk)})
 
-        return self.render_to_json_response({'status': 'ok', 'pk': u'{}'.format(lab_storage.pk)})
+    def form_invalid(self, form):
+        print(form.errors)
 
 
 class LabStorageUpdate(AjaxableResponseMixin, CheckLabPermissionMixin, UpdateView):
     model = LabStorage
     form_class = LabStorageForm
 
+    def get_success_url(self):
+        return reverse('labs:detail', args=(self.lab.pk,))
+
     def get(self, request, *args, **kwargs):
         form = self.form_class(instance=self.get_object())
-
+        csrf_token_value = request.COOKIES['csrftoken']
         form_html = render_to_string('labs/storage_form.html', {
             'form': form,
             'storage': self.get_object(),
             'lab': self.lab,
+            'csrf_token_value': csrf_token_value,
         })
         return self.render_to_json_response({'form_html': form_html})
 
     def form_valid(self, form):
         lab_storage = form.save()
-        return self.render_to_json_response({'status': 'ok', 'pk': u'{}'.format(lab_storage.pk)})
+        return HttpResponseRedirect(self.get_success_url())
+        # return self.render_to_json_response({'status': 'ok', 'pk': u'{}'.format(lab_storage.pk)})
 
 
 class LabStorageDelete(AjaxableResponseMixin, CheckLabPermissionMixin, DeleteView):

@@ -19,10 +19,10 @@ class LabStorage(me.Document):
     username = me.StringField(verbose_name=_('username'), max_length=255, required=True)
     host = me.StringField(verbose_name=_('host'), max_length=255, required=True)
     path = me.StringField(verbose_name=_('path'), max_length=255, required=False)
-    password = me.StringField(verbose_name=_('password'), max_length=255, required=True)
+    password = me.StringField(verbose_name=_('password'), max_length=255, required=False)
     port = me.IntField(verbose_name=_('port'))
 
-    key_file = me.FileField(verbose_name=_('port'))
+    key_file = me.FileField(verbose_name=_('SSH key file'), required=False)
 
     def get_path(self):
         if self.path:

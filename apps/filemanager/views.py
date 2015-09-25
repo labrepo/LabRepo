@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import unicode_literals, absolute_import
 import json
 import mimetypes
 import os
 import re
 from os import path
+import StringIO
+import paramiko
 
 from fs.osfs import OSFS
 from fs.sftpfs import SFTPFS
@@ -57,8 +58,16 @@ class FileManagerView(View):
         self.fs.mountdir('.', local_fs)
         lab = Lab.objects.get(pk=request.session.get('lab'))
         for storage in lab.storages:
-            remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
-            self.fs.mountdir(storage.host, remote_fs)  # TODO
+            try:
+                if storage.password:
+                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
+                if storage.key_file:
+                    file_string = storage.key_file.read()
+                    pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
+                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
+                self.fs.mountdir(u'{}@{}'.format(storage.username, storage.host), remote_fs)
+            except paramiko.ssh_exception.SSHException:
+                pass
 
         if request.method == "POST":
             if request.GET.get('mode', None) == 'filetree':
@@ -381,7 +390,7 @@ def check_directory(upload_root):
         os.makedirs(upload_root)
 
 
-def get_upload(self, request, *args, **kwargs):
+def get_upload(request, *args, **kwargs):
     """
     Backward compatibility
     """

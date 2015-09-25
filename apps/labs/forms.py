@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from common.forms import BaseForm
@@ -48,9 +49,11 @@ class LabStorageForm(BaseForm):
     """
     Form for create/edit laboratory storages
     """
+    password = forms.CharField(widget=forms.PasswordInput(), required=False)
+
     class Meta:
         document = LabStorage
-        fields = ('type', 'username', 'host', 'password', 'path')
+        fields = ('type', 'username', 'host', 'password', 'path', 'key_file')
 
 
 class LabAdminForm(LabBaseForm):

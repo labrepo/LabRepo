@@ -1,5 +1,6 @@
 {% load i18n %}
-<form class="storage-edit-form" action="{% url 'labs:storage-update' lab_pk=lab.pk pk=storage.pk %}" method="post">
+<form class="storage-edit-form" enctype="multipart/form-data" method="post" action="{% url 'labs:storage-update' lab_pk=lab.pk pk=storage.pk %}">
+  <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token_value }}'/>
   {{ form }}
   <br>
   <button type="submit" class="btn btn-success">{% trans "Update" %}</button>
