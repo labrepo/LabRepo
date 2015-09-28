@@ -11,6 +11,7 @@ import paramiko
 from fs.osfs import OSFS
 from fs.sftpfs import SFTPFS
 from fs.mountfs import MountFS
+from fs.wrapfs.readonlyfs import ReadOnlyFS
 
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -59,13 +60,18 @@ class FileManagerView(View):
         lab = Lab.objects.get(pk=request.session.get('lab'))
         for storage in lab.storages:
             try:
-                if storage.password:
-                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
                 if storage.key_file:
                     file_string = storage.key_file.read()
                     pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
                     remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
-                self.fs.mountdir(u'{}@{}'.format(storage.username, storage.host), remote_fs)
+                elif storage.password:
+                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
+                fs_name = u'{}@{}'.format(storage.username, storage.host)
+                if storage.readonly:
+                    remote_fs = ReadOnlyFS(remote_fs)
+                    fs_name += u'(readonly)'
+
+                self.fs.mountdir(fs_name, remote_fs)
             except paramiko.ssh_exception.SSHException:
                 pass
 

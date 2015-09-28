@@ -16,6 +16,7 @@ class LabStorage(me.Document):
     )
 
     type = me.StringField(verbose_name=_('type'), choices=FS_TYPES, max_length=255, required=True)
+    readonly = me.BooleanField(verbose_name=_('read only'), default=False)
     username = me.StringField(verbose_name=_('username'), max_length=255, required=True)
     host = me.StringField(verbose_name=_('host'), max_length=255, required=True)
     path = me.StringField(verbose_name=_('path'), max_length=255, required=False)

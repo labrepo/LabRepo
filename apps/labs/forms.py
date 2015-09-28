@@ -53,8 +53,11 @@ class LabStorageForm(BaseForm):
 
     class Meta:
         document = LabStorage
-        fields = ('type', 'username', 'host', 'password', 'path', 'key_file')
+        fields = ('type', 'readonly', 'username', 'host', 'password', 'path', 'key_file')
 
+    def __init__(self, *args, **kwargs):
+        super(LabStorageForm, self).__init__(*args, **kwargs)
+        self.fields['readonly'].widget = forms.CheckboxInput()
 
 class LabAdminForm(LabBaseForm):
 
