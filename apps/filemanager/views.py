@@ -71,7 +71,7 @@ class FileManagerView(View):
                     remote_fs = ReadOnlyFS(remote_fs)
 
                 self.fs.mountdir(storage.get_folder_name(), remote_fs)
-            except paramiko.ssh_exception.SSHException:
+            except:  #TODO: too broad, add logger
                 pass
 
         if request.method == "POST":
