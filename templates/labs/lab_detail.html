@@ -202,11 +202,7 @@
               <div class="form-group">
                 {% render_field storage_form.path  placeholder=storage_form.path.label  %}
               </div>
-              <div class="checkbox" style="padding-left: 10px;">
-                <label>
-                  {% render_field storage_form.readonly %}{{ storage_form.readonly.label_tag }}
-                </label>
-              </div>
+
             </div>
             <div class="form-inline voffset2">
               <div class="form-group">
@@ -215,6 +211,17 @@
               <span> {% trans "OR" %} </span>
               <div class="form-group">
                 {% render_field storage_form.key_file %}
+              </div>
+            </div>
+            <a class="storage-show-more voffset1" href="#">{% trans "More" %}</a>
+            <div class="form-inline storage-more voffset2" style="display: none">
+              <div class="form-group">
+                {% render_field storage_form.folder_name  placeholder=storage_form.folder_name.label %}
+              </div>
+              <div class="checkbox" style="padding-left: 10px;">
+                <label>
+                  {% render_field storage_form.readonly %}{{ storage_form.readonly.label_tag }}
+                </label>
               </div>
             </div>
             <button style="width: 100%;" class="btn btn-success voffset2" type="submit">{% trans "Create" %}</button>
@@ -240,6 +247,11 @@
 //        location.reload();
 //      });
 //  });
+  $('body').on('click','.storage-show-more', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $('.storage-more').toggle();
+  });
 
   $('body').on('click','.storage-edit', function (e) {
     e.preventDefault();

@@ -66,12 +66,11 @@ class FileManagerView(View):
                     remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
                 elif storage.password:
                     remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
-                fs_name = u'{}@{}'.format(storage.username, storage.host)
+                # else raise
                 if storage.readonly:
                     remote_fs = ReadOnlyFS(remote_fs)
-                    fs_name += u'(readonly)'
 
-                self.fs.mountdir(fs_name, remote_fs)
+                self.fs.mountdir(storage.get_folder_name(), remote_fs)
             except paramiko.ssh_exception.SSHException:
                 pass
 

@@ -53,13 +53,15 @@ class LabStorageForm(BaseForm):
 
     class Meta:
         document = LabStorage
-        fields = ('type', 'readonly', 'username', 'host', 'password', 'path', 'key_file')
+        fields = ('type', 'readonly', 'username', 'host', 'password', 'path', 'folder_name', 'key_file')
 
     def __init__(self, *args, **kwargs):
         super(LabStorageForm, self).__init__(*args, **kwargs)
         self.fields['readonly'].widget = forms.CheckboxInput()
-        self.fields['type'].initial = 'SFTP'
         self.fields['readonly'].widget.attrs['class'] = self.fields['readonly'].widget.attrs.get('class', '') + ' checkbox'
+        self.fields['type'].initial = 'SFTP'
+        if self.instance.pk and not self.instance.folder_name:
+            self.initial['folder_name'] = self.instance.get_folder_name()
 
 
 class LabAdminForm(LabBaseForm):

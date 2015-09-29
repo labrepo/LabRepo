@@ -19,7 +19,8 @@ class LabStorage(me.Document):
     readonly = me.BooleanField(verbose_name=_('read only'), default=False)
     username = me.StringField(verbose_name=_('username'), max_length=255, required=True)
     host = me.StringField(verbose_name=_('host'), max_length=255, required=True)
-    path = me.StringField(verbose_name=_('path'), max_length=255, required=False)
+    path = me.StringField(verbose_name=_('path'), max_length=512, required=False)
+    folder_name = me.StringField(verbose_name=_('folder name'), max_length=255, required=False)
     password = me.StringField(verbose_name=_('password'), max_length=255, required=False)
     port = me.IntField(verbose_name=_('port'))
 
@@ -30,6 +31,14 @@ class LabStorage(me.Document):
             return self.path
         else:
             return u'/home/{}/'.format(self.username)
+
+    def get_folder_name(self):
+        if self.folder_name:
+            return self.folder_name
+        fs_name = u'{}@{}'.format(self.username, self.host)
+        if self.readonly:
+            fs_name += u'(readonly)'
+        return fs_name
 
     def __unicode__(self):
         if self.type == 'SFTP':
