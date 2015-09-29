@@ -74,6 +74,7 @@ THIRD_PARTY_APPS = (
     'rosetta',
     'registration',
     'social.apps.django_app.me',
+    'widget_tweaks',
 )
 LOCAL_APPS = (
     'comments',

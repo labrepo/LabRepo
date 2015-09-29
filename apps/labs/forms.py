@@ -58,6 +58,9 @@ class LabStorageForm(BaseForm):
     def __init__(self, *args, **kwargs):
         super(LabStorageForm, self).__init__(*args, **kwargs)
         self.fields['readonly'].widget = forms.CheckboxInput()
+        self.fields['type'].initial = 'SFTP'
+        self.fields['readonly'].widget.attrs['class'] = self.fields['readonly'].widget.attrs.get('class', '') + ' checkbox'
+
 
 class LabAdminForm(LabBaseForm):
 

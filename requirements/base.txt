@@ -24,5 +24,6 @@ numpy==1.9.1
 panda==0.1.5
 redis==2.10.3
 fs==0.5.3
+django-widget-tweaks==1.4.1
 amqp
 anyjson

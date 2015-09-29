@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n widget_tweaks %}
 
 {% block content_header %}{% trans object.name|title %}
   <small>{% trans 'Details' %}</small>{% endblock %}
@@ -182,10 +182,43 @@
             <div class="storage-form-area"></div>
           </div>
           {% endfor %}
-          <form class="storage-add"  enctype="multipart/form-data" method="post" action="{% url 'labs:storage-create' lab_pk=object.pk %}">{% csrf_token %}
-            {{ storage_form }}
-            <button class="btn btn-success" type="submit">{% trans "create" %}</button>
-          </form>
+
+          <form class="storage-add voffset3" enctype="multipart/form-data" method="post" action="{% url 'labs:storage-create' lab_pk=object.pk %}">{% csrf_token %}
+            <div class="box-header with-border">
+              <h3 class="box-title">{% trans "Add new storage" %}</h3>
+            </div>
+            <div class="form-inline">
+              <div class="form-group">
+                {% render_field storage_form.type style="width:200px" placeholder=storage_form.type.label %}
+              </div>
+            </div>
+            <div class="form-inline voffset2">
+              <div class="form-group">
+                {% render_field storage_form.host  placeholder=storage_form.host.label %}
+              </div>
+              <div class="form-group">
+                {% render_field storage_form.username  placeholder=storage_form.username.label %}
+              </div>
+              <div class="form-group">
+                {% render_field storage_form.path  placeholder=storage_form.path.label  %}
+              </div>
+              <div class="checkbox" style="padding-left: 10px;">
+                <label>
+                  {% render_field storage_form.readonly %}{{ storage_form.readonly.label_tag }}
+                </label>
+              </div>
+            </div>
+            <div class="form-inline voffset2">
+              <div class="form-group">
+                {% render_field storage_form.password  placeholder=storage_form.password.label %}
+              </div>
+              <span> {% trans "OR" %} </span>
+              <div class="form-group">
+                {% render_field storage_form.key_file %}
+              </div>
+            </div>
+            <button style="width: 100%;" class="btn btn-success voffset2" type="submit">{% trans "Create" %}</button>
+         </form>
         </div>
       </div>
     </div>
@@ -217,6 +250,7 @@
           form_fail($form, xhr)
       }).done(function (response) {
         $('.storage').find('.storage-form-area').hide()
+        $('.storage-add').hide()
         $('.storage').find('.list-group-item').show()
         that.closest('.storage').find('.storage-form-area').show().html(response.form_html)
         that.closest('.storage').find('.list-group-item').hide()
@@ -228,6 +262,7 @@
     e.stopPropagation();
     var that = $(this);
     that.closest('.storage').find('.storage-form-area').hide()
+    $('.storage-add').show()
     that.closest('.storage').find('.list-group-item').show()
   });
 

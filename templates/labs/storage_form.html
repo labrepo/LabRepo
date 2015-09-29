@@ -1,8 +1,37 @@
-{% load i18n %}
+{% load i18n widget_tweaks %}
 <form class="storage-edit-form" enctype="multipart/form-data" method="post" action="{% url 'labs:storage-update' lab_pk=lab.pk pk=storage.pk %}">
-  <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token_value }}'/>
-  {{ form }}
-  <br>
-  <button type="submit" class="btn btn-success">{% trans "Update" %}</button>
-  <a href="#" class="btn btn-warning storage-edit-cancel">{% trans "Cancel" %}</a>
+  <div class="form-inline">
+    <div class="form-group">
+      {% render_field form.type style="width:200px" placeholder=form.type.label %}
+    </div>
+  </div>
+  <div class="form-inline voffset2">
+    <div class="form-group">
+      {% render_field form.host placeholder=form.host.label %}
+    </div>
+    <div class="form-group">
+      {% render_field form.username placeholder=form.username.label %}
+    </div>
+    <div class="form-group">
+      {% render_field form.path placeholder=form.path.label  %}
+    </div>
+    <div class="checkbox" style="padding-left: 10px;">
+      <label>
+        {% render_field form.readonly %}{{ form.readonly.label_tag }}
+      </label>
+    </div>
+  </div>
+  <div class="form-inline voffset2">
+    <div class="form-group">
+      {% render_field form.password placeholder=form.password.label %}
+    </div>
+    <span> OR </span>
+    <div class="form-group">
+      {% render_field form.key_file %}
+    </div>
+  </div>
+  <div class="form-inline voffset2">
+    <button type="submit" class="btn btn-success" style="width: 48%;">{% trans "Update" %}</button>
+    <a href="#" class="btn btn-warning storage-edit-cancel" style="width: 48%;">{% trans "Cancel" %}</a>
+  </div>
 </form>
