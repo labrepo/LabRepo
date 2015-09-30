@@ -665,8 +665,9 @@
             });
       });
 
+    //upload files from filemanager
     $('body').on('click', '#preview', function(e){
-      var file_url = window.location.origin + $(this).find('h1').attr('title')
+      var file_url = $(this).find('h1').attr('title')
       var file_name = $(this).find('h1').text();
       //trim 'edit file'
       file_name = file_name.substring(0, file_name.length - $(this).find('h1').find('a').text().length);

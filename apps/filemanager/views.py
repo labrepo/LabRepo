@@ -7,6 +7,7 @@ import re
 from os import path
 import StringIO
 import paramiko
+from contextlib import contextmanager
 
 from fs.osfs import OSFS
 from fs.sftpfs import SFTPFS
@@ -197,9 +198,9 @@ class FileManagerView(View):
                 return HttpResponse(encode_json(result))
 
             if request.GET["mode"] == "download":
-
+                print(request.GET["path"])
                 relative_dir_path = trim_upload_url(request.GET["path"], self.UPLOAD_URL)
-
+                print(relative_dir_path)
                 download_path = path.join(self.UPLOAD_ROOT, relative_dir_path)
                 content_type = mimetypes.guess_type(download_path)[0]
                 filename = smart_str(os.path.basename(download_path))
@@ -295,8 +296,11 @@ class FileManagerView(View):
         else:
             _, ext = split_ext(info_path)
             preview = static_file('images/fileicons/' + ext[1:] + '.png')
+            a = '/55edee8c0640fd2fcefd98c8/filemanager/?mode=download&path=/media/uploads/55edee8c0640fd2fcefd98c8/user2@82.146.35.71(readonly)/test23.txt'
             thefile = {
                 'Path': info_url,
+                # 'Link': info_url + "/",
+                'Link': a,
                 'Filename': split_path(info_path)[-1],
                 'File Type': split_path(info_path)[1][1:],
                 'Preview': preview,
@@ -405,3 +409,37 @@ def get_upload(request, *args, **kwargs):
         request.session['lab'] = lab
 
     return os.path.join(settings.FILEMANAGER_UPLOAD_URL, lab + '/'), os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab + '/')
+
+
+@contextmanager
+def pyfs_file(lab_pk, file_path):
+    try:
+        UPLOAD_URL = os.path.join(settings.FILEMANAGER_UPLOAD_URL, lab_pk + '/')
+        UPLOAD_ROOT = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab_pk + '/')
+
+        fs = MountFS()
+        local_fs = OSFS(UPLOAD_ROOT)
+        fs.mountdir('.', local_fs)
+        lab = Lab.objects.get(pk=lab_pk)
+        for storage in lab.storages:
+            try:
+                if storage.key_file:
+                    file_string = storage.key_file.read()
+                    pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
+                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
+                elif storage.password:
+                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
+                # else raise
+                if storage.readonly:
+                    remote_fs = ReadOnlyFS(remote_fs)
+
+                fs.mountdir(storage.get_folder_name(), remote_fs)
+            except:  #TODO: too broad, add logger
+                pass
+
+        relative_dir_path = trim_upload_url(file_path, UPLOAD_URL)
+        file_object = fs.open(relative_dir_path, 'rb')
+
+        yield file_object
+    finally:
+        pass
