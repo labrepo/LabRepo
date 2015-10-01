@@ -48,32 +48,40 @@ class FileManagerView(View):
     """
     Handle filemanager backend
     """
+
+    def smart_mount(self, file_path=None):
+        """
+        Mounts only fs which store file on file_path. If file_path isn't set mound all fs.
+
+        """
+        self.fs = MountFS()
+        local_fs = OSFS(self.UPLOAD_ROOT)
+        self.fs.mountdir('.', local_fs)
+        if not self.fs.exists(file_path) or not file_path:
+            for storage in self.lab.storages:
+                if file_path.startswith(storage.get_folder_name()) or not file_path:
+                    try:
+                        if storage.key_file:
+                            file_string = storage.key_file.read()
+                            pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
+                            remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
+                        elif storage.password:
+                            remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
+                        # else raise
+                        if storage.readonly:
+                            remote_fs = ReadOnlyFS(remote_fs)
+
+                        self.fs.mountdir(storage.get_folder_name(), remote_fs)
+                    except:  #TODO: too broad, add logger
+                        pass
+
     @csrf_exempt
     @filemanager_require_auth
     def dispatch(self, request, *args, **kwargs):
 
         self.UPLOAD_URL, self.UPLOAD_ROOT = self.get_upload(request, *args, **kwargs)
         self.check_directory(self.UPLOAD_ROOT)
-
-        self.fs = MountFS()
-        local_fs = OSFS(self.UPLOAD_ROOT)
-        self.fs.mountdir('.', local_fs)
-        lab = Lab.objects.get(pk=request.session.get('lab'))
-        for storage in lab.storages:
-            try:
-                if storage.key_file:
-                    file_string = storage.key_file.read()
-                    pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
-                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
-                elif storage.password:
-                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
-                # else raise
-                if storage.readonly:
-                    remote_fs = ReadOnlyFS(remote_fs)
-
-                self.fs.mountdir(storage.get_folder_name(), remote_fs)
-            except:  #TODO: too broad, add logger
-                pass
+        self.lab = Lab.objects.get(pk=request.session.get('lab'))
 
         if request.method == "POST":
             if request.GET.get('mode', None) == 'filetree':
@@ -92,20 +100,20 @@ class FileManagerView(View):
             if request.GET["mode"] == "getinfo":
                 info_url = request.GET["path"]
                 relative_info_path = trim_upload_url(info_url, self.UPLOAD_URL)
+                self.smart_mount(relative_info_path)
                 return HttpResponse(encode_json(self.get_info(request, relative_info_path)))
 
             if request.GET["mode"] == "getfolder":
                 dir_url = request.GET["path"]
-
                 relative_dir_path = trim_upload_url(dir_url, self.UPLOAD_URL) or ''
-
+                self.smart_mount(relative_dir_path)
                 result = OrderedDict()
                 request.session["upload_path"] = relative_dir_path
 
                 for filename in self.filename_list(relative_dir_path):
                     relative_filename = path.join(relative_dir_path, filename)
                     file_url = path.join(dir_url, filename)
-                    info = self.get_info(request, relative_filename)
+                    info = self.get_short_info(request, relative_filename)
                     result[file_url] = info
 
                 return HttpResponse(encode_json(result))
@@ -115,7 +123,7 @@ class FileManagerView(View):
                 if old_url[-1] == '/':
                     old_url = old_url[:-1]
                 old_relative_file = trim_upload_url(old_url, self.UPLOAD_URL)
-
+                self.smart_mount(old_relative_file)
                 base_relative_path = path.dirname(old_relative_file)
                 base_url = path.join(self.UPLOAD_URL, base_relative_path)
                 old_name = path.basename(old_url)
@@ -144,6 +152,7 @@ class FileManagerView(View):
             if request.GET["mode"] == "delete":
                 delete_url = request.GET["path"]
                 relative_delete_path = trim_upload_url(delete_url, self.UPLOAD_URL)
+                self.smart_mount(relative_delete_path)
                 delete_path = path.join(self.UPLOAD_ROOT, relative_delete_path)
                 name = ''
                 try:
@@ -171,6 +180,7 @@ class FileManagerView(View):
             if request.GET["mode"] == "addfolder":
                 base_url = request.GET['path']
                 relative_path = trim_upload_url(base_url, self.UPLOAD_URL)
+                self.smart_mount(relative_path)
                 name = unicode(request.GET["name"].replace(" ", "_"))
                 new_path = path.join(relative_path, name)
                 new_url = path.join(base_url, name)
@@ -198,9 +208,8 @@ class FileManagerView(View):
                 return HttpResponse(encode_json(result))
 
             if request.GET["mode"] == "download":
-                print(request.GET["path"])
                 relative_dir_path = trim_upload_url(request.GET["path"], self.UPLOAD_URL)
-                print(relative_dir_path)
+                self.smart_mount(relative_dir_path)
                 download_path = path.join(self.UPLOAD_ROOT, relative_dir_path)
                 content_type = mimetypes.guess_type(download_path)[0]
                 filename = smart_str(os.path.basename(download_path))
@@ -243,7 +252,7 @@ class FileManagerView(View):
     def filetree(self, request, *args, **kwargs):
         output = ['<ul class="jqueryFileTree" style="display: none;">']
         relative_dir_path = trim_upload_url(request.POST.get('dir', ''), self.UPLOAD_URL)
-
+        self.smart_mount(relative_dir_path)
         try:
             output = ['<ul class="jqueryFileTree" style="display: none;">']
             dir_path = path.join(self.UPLOAD_ROOT, relative_dir_path)
@@ -334,6 +343,55 @@ class FileManagerView(View):
             thefile['Properties']['Size'] = file_metadata.get('size')
         return thefile
 
+    def get_short_info(self, request, relative_info_path, *args, **kwargs):
+
+        info_path = path.join(self.UPLOAD_ROOT, relative_info_path)
+        info_url = path.join(self.UPLOAD_URL, relative_info_path)
+
+        imagetypes = ['.gif', '.jpg', '.jpeg', '.png']
+        if self.fs.isdir(relative_info_path):
+            _, name = split_path(info_url)
+            thefile = {
+                'Path': info_url + "/",
+                'Filename': name,
+                'File Type': 'dir',
+                'Preview': static_file('images/fileicons/_Open.png'),
+                'Properties': {
+                    'Date Created': '',
+                    'Date Modified': '',
+                    'Width': '',
+                    'Height': '',
+                    'Size': ''
+                },
+                'Return': info_url,
+                'Error': '',
+                'Code': 0,
+            }
+        else:
+            _, ext = split_ext(info_path)
+            preview = static_file('images/fileicons/' + ext[1:] + '.png')
+            a = '/55edee8c0640fd2fcefd98c8/filemanager/?mode=download&path=/media/uploads/55edee8c0640fd2fcefd98c8/user2@82.146.35.71(readonly)/test23.txt'
+            thefile = {
+                'Path': info_url,
+                # 'Link': info_url + "/",
+                # 'Link': a,
+                'Filename': split_path(info_path)[-1],
+                'File Type': split_path(info_path)[1][1:],
+                'Preview': preview,
+                'Properties': {
+                    'Date Created': '',
+                    'Date Modified': '',
+                    'Width': '',
+                    'Height': '',
+                    'Size': ''
+                },
+                'Return': info_url,
+                'Error': '',
+                'Code': 0,
+            }
+        return thefile
+
+
     def handle_uploaded_file(self, request, f, *args, **kwargs):
         filename = f.name
         message = ''
@@ -341,7 +399,7 @@ class FileManagerView(View):
         upload_url = path.join(self.UPLOAD_URL, relative_upload_dir)
         upload_dir = path.join(self.UPLOAD_ROOT, relative_upload_dir)
         upload_file = path.join(relative_upload_dir, filename)
-
+        self.smart_mount(upload_file)
         if self.fs.exists(upload_file):
             filename = next(alt_name for alt_name in alternative_names(filename) if not self.fs.exists(path.join(upload_dir, alt_name)))
             upload_file = path.join(upload_dir, filename)
@@ -417,27 +475,30 @@ def pyfs_file(lab_pk, file_path):
         UPLOAD_URL = os.path.join(settings.FILEMANAGER_UPLOAD_URL, lab_pk + '/')
         UPLOAD_ROOT = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab_pk + '/')
 
+        relative_dir_path = trim_upload_url(file_path, UPLOAD_URL) # get the file path on pyfs
+
         fs = MountFS()
         local_fs = OSFS(UPLOAD_ROOT)
         fs.mountdir('.', local_fs)
         lab = Lab.objects.get(pk=lab_pk)
-        for storage in lab.storages:
-            try:
-                if storage.key_file:
-                    file_string = storage.key_file.read()
-                    pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
-                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
-                elif storage.password:
-                    remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
-                # else raise
-                if storage.readonly:
-                    remote_fs = ReadOnlyFS(remote_fs)
+        if not fs.exists(relative_dir_path):
+            for storage in lab.storages:
+                if file_path.startswith(storage.get_folder_name()):
+                    try:
+                        if storage.key_file:
+                            file_string = storage.key_file.read()
+                            pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
+                            remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
+                        elif storage.password:
+                            remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
+                        # else raise
+                        if storage.readonly:
+                            remote_fs = ReadOnlyFS(remote_fs)
 
-                fs.mountdir(storage.get_folder_name(), remote_fs)
-            except:  #TODO: too broad, add logger
-                pass
+                        fs.mountdir(storage.get_folder_name(), remote_fs)
+                    except:  #TODO: too broad, add logger
+                        pass
 
-        relative_dir_path = trim_upload_url(file_path, UPLOAD_URL)
         file_object = fs.open(relative_dir_path, 'rb')
 
         yield file_object

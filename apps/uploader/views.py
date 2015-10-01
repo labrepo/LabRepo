@@ -168,9 +168,9 @@ class LocalFileUploadMixinView(BaseUploaderMixin):
             obj.content_type = mimetypes.guess_type(f.get('name'))[0]  # or 'image/png',
 
             if need_upload:
-                with pyfs_file(kwargs.get('lab_pk'), f.get('link')) as f:
+                with pyfs_file(kwargs.get('lab_pk'), f.get('link')) as file_obj:
                     obj.file.new_file()
-                    for chunk in f.read():
+                    for chunk in file_obj.read():
                         obj.file.write(chunk)
                     obj.file.close()
                 obj.size = obj.file.get().length
