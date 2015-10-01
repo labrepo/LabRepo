@@ -153,6 +153,9 @@ class BaseLabCreateView(LoginRequiredMixin, RedirectView):
 
 
 class LabStorageCreate(AjaxableResponseMixin, CheckLabPermissionMixin, CreateView):
+    """
+    Create storage and add it to a lab instance
+    """
     model = LabStorage
     form_class = LabStorageForm
 
@@ -165,13 +168,12 @@ class LabStorageCreate(AjaxableResponseMixin, CheckLabPermissionMixin, CreateVie
         self.lab.storages.append(lab_storage)
         self.lab.save()
         return HttpResponseRedirect(self.get_success_url())
-        # return self.render_to_json_response({'status': 'ok', 'pk': u'{}'.format(lab_storage.pk)})
-
-    def form_invalid(self, form):
-        print(form.errors)
 
 
 class LabStorageUpdate(AjaxableResponseMixin, CheckLabPermissionMixin, UpdateView):
+    """
+    Edit lab's storage.
+    """
     model = LabStorage
     form_class = LabStorageForm
 
@@ -179,6 +181,9 @@ class LabStorageUpdate(AjaxableResponseMixin, CheckLabPermissionMixin, UpdateVie
         return reverse('labs:detail', args=(self.lab.pk,))
 
     def get(self, request, *args, **kwargs):
+        """
+        AJAX view. Return html with lab's storage form
+        """
         form = self.form_class(instance=self.get_object())
         csrf_token_value = request.COOKIES['csrftoken']
         form_html = render_to_string('labs/storage_form.html', {
@@ -192,10 +197,12 @@ class LabStorageUpdate(AjaxableResponseMixin, CheckLabPermissionMixin, UpdateVie
     def form_valid(self, form):
         lab_storage = form.save()
         return HttpResponseRedirect(self.get_success_url())
-        # return self.render_to_json_response({'status': 'ok', 'pk': u'{}'.format(lab_storage.pk)})
 
 
 class LabStorageDelete(AjaxableResponseMixin, CheckLabPermissionMixin, DeleteView):
+    """
+    AJAX view. Delete lab's storage.
+    """
     model = LabStorage
     form_class = LabStorageForm
 

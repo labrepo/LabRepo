@@ -54,7 +54,7 @@ class FileManagerMixin(object):
     def smart_mount(self, file_path=None):
         """
         Mounts only fs which store file on file_path. If file_path isn't set mound all fs.
-
+        :param file_path: (string) relative path to the file(from a pyfs root)
         """
         self.fs = MountFS()
         local_fs = OSFS(self.UPLOAD_ROOT)
@@ -285,7 +285,9 @@ class FileManagerView(FileManagerMixin, View):
         return HttpResponse(''.join(output))
 
     def get_info(self, request, relative_info_path, *args, **kwargs):
-
+        """
+        Return dict with full meta info about a file.
+        """
         info_path = path.join(self.UPLOAD_ROOT, relative_info_path)
         info_url = path.join(self.UPLOAD_URL, relative_info_path)
 
@@ -349,7 +351,9 @@ class FileManagerView(FileManagerMixin, View):
         return thefile
 
     def get_short_info(self, request, relative_info_path, *args, **kwargs):
-
+        """
+        Return dict with meta info about a file. Doesn't return preview and some additional info
+        """
         info_path = path.join(self.UPLOAD_ROOT, relative_info_path)
         info_url = path.join(self.UPLOAD_URL, relative_info_path)
 
@@ -395,7 +399,6 @@ class FileManagerView(FileManagerMixin, View):
                 'Code': 0,
             }
         return thefile
-
 
     def handle_uploaded_file(self, request, f, *args, **kwargs):
         filename = f.name
@@ -456,7 +459,7 @@ def static_file(relative_url):
 
 def check_directory(upload_root):
     """
-    Backward compatibility
+    Backward compatibility. Some views from other apps use it.
     """
     if not os.path.exists(upload_root):
         os.makedirs(upload_root)
@@ -464,7 +467,7 @@ def check_directory(upload_root):
 
 def get_upload(request, *args, **kwargs):
     """
-    Backward compatibility
+    Backward compatibility. Some views from other apps use it.
     """
     lab = request.session.get('lab')
     if not lab:
@@ -476,6 +479,12 @@ def get_upload(request, *args, **kwargs):
 
 @contextmanager
 def pyfs_file(lab_pk, file_path):
+    """
+    This context manager return file-like object from pyfs
+    :param lab_pk: current lab.pk
+    :param file_path: (string) relative path to the file(from a pyfs root)
+    :return:
+    """
     try:
         UPLOAD_URL = os.path.join(settings.FILEMANAGER_UPLOAD_URL, lab_pk + '/')
         UPLOAD_ROOT = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab_pk + '/')
@@ -512,7 +521,9 @@ def pyfs_file(lab_pk, file_path):
 
 
 class FileManagerDownloadView(FileManagerMixin, View):
-
+    """
+    Return response with a file from a pyfs
+    """
     def dispatch(self, request, *args, **kwargs):
         super(FileManagerDownloadView, self).dispatch(request, *args, **kwargs)
         fs_path = kwargs.get('fs_path')

@@ -1,11 +1,11 @@
 from django.conf.urls import patterns, url
-from .views import TagListView, TagCreateView, TagDeleteView, TagUpdateView
+from . import views
 
 
 urlpatterns = patterns(
     '',
-    url(r'^create/$', TagCreateView.as_view(), name='create'),
-    url(r'^update/(?P<pk>[\d\w]+)/$', TagUpdateView.as_view(), name='update'),
-    url(r'^delete/$', TagDeleteView.as_view(), name='delete'),
-    url(r'^list/$', TagListView.as_view(), name='list'),
+    url(r'^create/$', views.TagCreateView.as_view(), name='create'),
+    url(r'^update/(?P<pk>[\d\w]+)/$', views.TagUpdateView.as_view(), name='update'),
+    url(r'^delete/$', views.TagDeleteView.as_view(), name='delete'),
+    url(r'^list/$', views.TagListView.as_view(), name='list'),
 )

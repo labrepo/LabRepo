@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, include, url
-
-
 from . import views
 
 urlpatterns = patterns(
@@ -16,5 +14,4 @@ urlpatterns = patterns(
     url(r'^uploader/thumb/(?P<document_name>\w+)/(?P<pk>[\d\w]+)/(?P<file_name>.+)$',
         views.ThumbFileView.as_view(),
         name='file-thumb'),
-
 )
