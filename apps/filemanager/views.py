@@ -22,6 +22,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
+from django.core.urlresolvers import reverse
 import itertools
 
 from .decorators import filemanager_require_auth
@@ -44,10 +45,11 @@ split_path = os.path.split
 split_ext = os.path.splitext
 
 
-class FileManagerView(View):
-    """
-    Handle filemanager backend
-    """
+class FileManagerMixin(object):
+
+    def dispatch(self, request, *args, **kwargs):
+        self.UPLOAD_URL, self.UPLOAD_ROOT = self.get_upload(request, *args, **kwargs)
+        self.lab = Lab.objects.get(pk=request.session.get('lab'))
 
     def smart_mount(self, file_path=None):
         """
@@ -75,13 +77,25 @@ class FileManagerView(View):
                     except:  #TODO: too broad, add logger
                         pass
 
+    def get_upload(self, request, *args, **kwargs):
+        lab = request.session.get('lab')
+        if not lab:
+            lab = unicode(Lab.objects.get(pk=kwargs.get('lab_pk')).id)
+            request.session['lab'] = lab
+
+        return os.path.join(settings.FILEMANAGER_UPLOAD_URL, lab + '/'), os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab + '/')
+
+
+class FileManagerView(FileManagerMixin, View):
+    """
+    Handle filemanager backend
+    """
+
     @csrf_exempt
     @filemanager_require_auth
     def dispatch(self, request, *args, **kwargs):
-
-        self.UPLOAD_URL, self.UPLOAD_ROOT = self.get_upload(request, *args, **kwargs)
+        super(FileManagerView, self).dispatch(request, *args, **kwargs)
         self.check_directory(self.UPLOAD_ROOT)
-        self.lab = Lab.objects.get(pk=request.session.get('lab'))
 
         if request.method == "POST":
             if request.GET.get('mode', None) == 'filetree':
@@ -223,14 +237,6 @@ class FileManagerView(View):
                 return response
         return HttpResponse("failed")
 
-    def get_upload(self, request, *args, **kwargs):
-        lab = request.session.get('lab')
-        if not lab:
-            lab = unicode(Lab.objects.get(pk=kwargs.get('lab_pk')).id)
-            request.session['lab'] = lab
-
-        return os.path.join(settings.FILEMANAGER_UPLOAD_URL, lab + '/'), os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab + '/')
-
     def check_directory(self, upload_root):
         if getattr(self, 'fs', ''):
             if not self.fs.isdir(upload_root):
@@ -308,8 +314,6 @@ class FileManagerView(View):
             a = '/55edee8c0640fd2fcefd98c8/filemanager/?mode=download&path=/media/uploads/55edee8c0640fd2fcefd98c8/user2@82.146.35.71(readonly)/test23.txt'
             thefile = {
                 'Path': info_url,
-                # 'Link': info_url + "/",
-                'Link': a,
                 'Filename': split_path(info_path)[-1],
                 'File Type': split_path(info_path)[1][1:],
                 'Preview': preview,
@@ -326,11 +330,12 @@ class FileManagerView(View):
             }
             if ext in imagetypes:
                 try:
-                    img = Image.open(open(info_path, "r"))
+                    img = Image.open(self.fs.open(relative_info_path, "rb"))
                     xsize, ysize = img.size
                     thefile['Properties']['Width'] = xsize
                     thefile['Properties']['Height'] = ysize
-                    thefile['Preview'] = info_url
+                    preview_url = reverse('filemanager-download', kwargs={'lab_pk': self.lab.pk, 'fs_path': relative_info_path})
+                    thefile['Preview'] = preview_url
                 except:
                     pass
 
@@ -483,7 +488,7 @@ def pyfs_file(lab_pk, file_path):
         lab = Lab.objects.get(pk=lab_pk)
         if not fs.exists(relative_dir_path):
             for storage in lab.storages:
-                if file_path.startswith(storage.get_folder_name()):
+                if relative_dir_path.startswith(storage.get_folder_name()):
                     try:
                         if storage.key_file:
                             file_string = storage.key_file.read()
@@ -504,3 +509,22 @@ def pyfs_file(lab_pk, file_path):
         yield file_object
     finally:
         pass
+
+
+class FileManagerDownloadView(FileManagerMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+        super(FileManagerDownloadView, self).dispatch(request, *args, **kwargs)
+        fs_path = kwargs.get('fs_path')
+        self.smart_mount(fs_path)
+
+        content_type = mimetypes.guess_type(fs_path)[0]
+        filename = smart_str(os.path.basename(fs_path))
+
+        size = self.fs.getsize(fs_path)
+        response = HttpResponse(mimetype=content_type)
+        response['Content-Length'] = size
+        file_object = self.fs.open(fs_path, 'rb')
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        response.write(file_object.read())
+        return response
