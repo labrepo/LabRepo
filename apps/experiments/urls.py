@@ -1,14 +1,13 @@
 from django.conf.urls import patterns, url
-from experiments.views import (ExperimentCreateView, ExperimentDetailView, ExperimentUpdateView, ExperimentUpdateDateView,
-                               ExperimentDeleteView, ExperimentAddUnits)
+from . import views
 
 
 urlpatterns = patterns('',
-    url(r'^create/$', ExperimentCreateView.as_view(), name='create'),
-    url(r'^update/(?P<pk>[\d\w]+)/$', ExperimentUpdateView.as_view(), name='update'),
-    url(r'^edit/(?P<pk>[\d\w]+)/$', ExperimentUpdateDateView.as_view(), name='update-date'),
-    url(r'^delete/(?P<pk>[\d\w]+)/$', ExperimentDeleteView.as_view(), name='delete'),
-    url(r'^detail/(?P<pk>[\d\w]+)/$', ExperimentDetailView.as_view(), name='detail'),
+    url(r'^create/$', views.ExperimentCreateView.as_view(), name='create'),
+    url(r'^update/(?P<pk>[\d\w]+)/$', views.ExperimentUpdateView.as_view(), name='update'),
+    url(r'^edit/(?P<pk>[\d\w]+)/$', views.ExperimentUpdateDateView.as_view(), name='update-date'),
+    url(r'^delete/(?P<pk>[\d\w]+)/$', views.ExperimentDeleteView.as_view(), name='delete'),
+    url(r'^detail/(?P<pk>[\d\w]+)/$', views.ExperimentDetailView.as_view(), name='detail'),
 
-    url(r'^add_units/$', ExperimentAddUnits.as_view(), name='add-units'),
+    url(r'^add_units/$', views.ExperimentAddUnits.as_view(), name='add-units'),
 )
