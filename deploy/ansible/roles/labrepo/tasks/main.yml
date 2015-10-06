@@ -1,0 +1,86 @@
+---
+
+- name: Copy nginx configuration for labrepo
+  template: src=nginx.conf dest=/etc/nginx/sites-available/{{ server_hostname }}
+  notify: restart nginx
+  sudo: yes
+
+- name: Create symlink to site nginx config
+  file: src=/etc/nginx/sites-available/{{ server_hostname }} dest=/etc/nginx/sites-enabled/{{ server_hostname }} state=link
+  notify: restart nginx
+  sudo: yes
+
+- name: Copy supervisor config for django
+  template: src=supervisor_django.conf dest=/etc/supervisor/conf.d/django_{{ project_name }}.conf
+  notify: restart labrepo
+  sudo: yes
+
+- name: Copy supervisor config for celery
+  template: src=supervisor_celery.conf dest=/etc/supervisor/conf.d/celery_{{ project_name }}.conf
+  notify: restart labrepo
+  sudo: yes
+
+- name: Pymongo is needed for mongodb_user
+  pip: name=pymongo
+  sudo: yes
+
+- name: Add a mongodb user
+  mongodb_user: database={{ mongodb_name }} name={{ mongodb_user }} password={{ mongodb_passwd }} state=present
+  sudo: yes
+
+- name: Get code from git repo
+  git: repo={{ git_repo }} dest={{ project_dir }} accept_hostkey=yes
+  notify: restart labrepo
+
+- name: Check logs directory
+  file: path={{ project_dir }}/logs state=directory
+
+- stat: path=/swapfile
+  register: swapfile_rules
+  sudo: yes
+
+- name: Create swap(Note! You may disable if a server have enought memory)
+  command: "{{ item }}"
+  with_items:
+    -  "fallocate -l 4G /swapfile"
+    -  "chmod 600 /swapfile"
+    -  "mkswap /swapfile"
+    -  "swapon /swapfile"
+  sudo: yes
+  when: swapfile_rules.stat.exists == False
+
+- name: Install labrepo requirements
+  pip: requirements={{ project_dir }}/requirements.txt virtualenv={{ project_dir }}/env/
+
+- name: Create a django dotenv settings file
+  template: src=django_settings.conf dest={{ project_dir}}/settings/.env
+
+- name: Collect static
+  django_manage: command="collectstatic --noinput --verbosity=0" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
+  environment:
+        DJANGO_SETTINGS_MODULE: "settings.production"
+
+- name: Make django messages
+  django_manage: '{{ item }}'
+  with_items:
+    - 'command="makemessages -a --ignore=env/*" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
+    - 'command="makemessages -d djangojs -a --ignore=env/*" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
+    - 'command="compilemessages" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
+  environment:
+        DJANGO_SETTINGS_MODULE: "settings.production"
+
+- name: Check supervisor service
+  service: name=supervisor state=started enabled=yes
+  sudo: yes
+
+- name: Check nginx service
+  service: name=nginx state=started enabled=yes
+  sudo: yes
+
+#- name: Force restart of labrepo
+#  command: /bin/true
+#  notify: restart supervisor
+#  notify: restart labrepo
+
+
+

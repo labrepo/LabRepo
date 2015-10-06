@@ -1,0 +1,10 @@
+---
+- name: Install Labrepo, nginx, mongo, django
+  hosts: all
+
+  roles:
+    - common
+    - nginx
+    - mongo
+    - django
+    - labrepo

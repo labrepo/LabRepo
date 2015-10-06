@@ -1,0 +1,25 @@
+---
+
+- name: Apt-get update
+  apt: update_cache=yes
+  sudo: yes
+
+- name: Install build-essential
+  apt: name=build-essential state=present
+  sudo: yes
+
+- name: Install mosh
+  apt: name=mosh state=present
+  sudo: yes
+
+- name: Install git
+  apt: name=git state=present
+  sudo: yes
+
+- name: Install supervisor=3.0
+  apt: name=supervisor state=present
+  sudo: yes
+
+
+
+

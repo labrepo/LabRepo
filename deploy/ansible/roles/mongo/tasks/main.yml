@@ -1,0 +1,9 @@
+---
+- name: Install mongo
+  apt: name=mongodb state=present
+  sudo: yes
+
+- name: Copy mongod.conf
+  template: src=mongod.conf dest=/etc/mongo.conf
+  notify: restart mongo
+  sudo: yes

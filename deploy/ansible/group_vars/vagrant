@@ -1,0 +1,11 @@
+---
+# Expected value without www
+server_hostname: labrepo.org
+
+user: vagrant
+project_dir: /home/vagrant/labrepo
+
+# paste here values from secret.example
+
+
+

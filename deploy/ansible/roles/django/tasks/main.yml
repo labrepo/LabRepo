@@ -1,0 +1,14 @@
+---
+
+- name: Install apt python packages
+  apt: name={{ item }} state=installed
+  with_items:
+   - python-dev
+   - python-virtualenv
+   - python-pip
+   - libjpeg-dev
+   - libpng12-dev
+   - libfreetype6-dev
+   - gettext
+   - gettext-doc
+  sudo: yes

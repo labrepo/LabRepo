@@ -1,0 +1,17 @@
+---
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
+  sudo: yes
+
+- name: restart supervisor
+  service: name=supervisor state=started enabled=yes
+  sudo: yes
+
+- name: restart labrepo
+  supervisorctl: "{{ item }}"
+  with_items:
+    - "name=django_{{ project_name }} state=present config=/etc/supervisor/supervisord.conf"
+    - "name=django_{{ project_name }} state=restarted config=/etc/supervisor/supervisord.conf"
+    - "name=celery_{{ project_name }} state=present config=/etc/supervisor/supervisord.conf"
+    - "name=celery_{{ project_name }} state=restarted config=/etc/supervisor/supervisord.conf"
+  sudo: yes
