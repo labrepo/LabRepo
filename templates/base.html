@@ -127,7 +127,7 @@
         {% include 'message.html' %}
       {% endfor %}
     </div>
-    <div class="page-header">{% block manage_buttons %}{% endblock %}</div>
+    {% block page_header %}<div class="page-header">{% block manage_buttons %}{% endblock %}</div>{% endblock %}
     {% block content %}{% endblock %}
 
   </section>

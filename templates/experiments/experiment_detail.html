@@ -263,7 +263,7 @@
         </div>
     </div>
   </div>
-  {% include 'filemanager/modal.html' %}
+  {% include 'filemanager/angular/modal.html' %}
 </div>
 
 {% include 'alert.html' with obj=object.title %}
@@ -666,11 +666,10 @@
       });
 
     //upload files from filemanager
-    $('body').on('click', '#preview', function(e){
-      var file_url = $(this).find('h1').attr('title')
-      var file_name = $(this).find('h1').text();
-      //trim 'edit file'
-      file_name = file_name.substring(0, file_name.length - $(this).find('h1').find('a').text().length);
+    $('body').on('click', '.fm-choose', function(e){
+      var file_url = $(this).data('path')
+      var file_name = $(this).data('name');
+
       var url = '/{{ object.lab.pk }}/units/'+ window.unit_data['data-0-pk'] +'/local-upload/'
       var need_upload = $('.upload-file').is(":checked")
       var file = {

@@ -16,7 +16,7 @@ from django.core.exceptions import PermissionDenied
 
 from mongoengine.base.common import get_document
 
-from filemanager.views import pyfs_file
+from filemanager.views import pyfs_file, pyfs_file_ang
 from .response import JSONResponse, response_mimetype
 from .serialize import serialize
 
@@ -168,7 +168,7 @@ class LocalFileUploadMixinView(BaseUploaderMixin):
             obj.content_type = mimetypes.guess_type(f.get('name'))[0]  # or 'image/png',
 
             if need_upload:
-                with pyfs_file(kwargs.get('lab_pk'), f.get('link')) as file_obj:
+                with pyfs_file_ang(kwargs.get('lab_pk'), f.get('link')) as file_obj:
                     obj.file.new_file()
                     for chunk in file_obj.read():
                         obj.file.write(chunk)

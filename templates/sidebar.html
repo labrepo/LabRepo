@@ -90,7 +90,7 @@
         <!--</ul>-->
       <!--</li>-->
       <li class="{% if not active_tab and not object %} active{% endif %}">
-        <a href="{% url 'filemanager' lab_pk=lab.pk %}">
+        <a href="{% url 'filemanager-base' lab_pk=lab.pk %}">
           <i class="fa fa-folder{% if not active_tab and not object %}-open{% endif %}"></i><span>{% trans 'Filemanager' %}</span>
         </a>
       </li>

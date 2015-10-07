@@ -490,7 +490,7 @@ def pyfs_file(lab_pk, file_path):
         UPLOAD_ROOT = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab_pk + '/')
 
         relative_dir_path = trim_upload_url(file_path, UPLOAD_URL) # get the file path on pyfs
-
+        print(relative_dir_path)
         fs = MountFS()
         local_fs = OSFS(UPLOAD_ROOT)
         fs.mountdir('.', local_fs)
@@ -519,6 +519,46 @@ def pyfs_file(lab_pk, file_path):
     finally:
         pass
 
+#  TODO: Replace contextmanager with http response.(loose couplings)
+
+@contextmanager
+def pyfs_file_ang(lab_pk, file_path):
+    """
+    This context manager return file-like object from pyfs.
+    Is used with angular filemanager.
+    :param lab_pk: current lab.pk
+    :param file_path: (string) relative path to the file(from a pyfs root)
+    :return:
+    """
+    try:
+        UPLOAD_ROOT = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab_pk + '/')
+        relative_dir_path = file_path[1:]
+        fs = MountFS()
+        local_fs = OSFS(UPLOAD_ROOT)
+        fs.mountdir('.', local_fs)
+        lab = Lab.objects.get(pk=lab_pk)
+        if not fs.exists(relative_dir_path):
+            for storage in lab.storages:
+                if relative_dir_path.startswith(storage.get_folder_name()):
+                    try:
+                        if storage.key_file:
+                            file_string = storage.key_file.read()
+                            pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
+                            remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
+                        elif storage.password:
+                            remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
+                        # else raise
+                        if storage.readonly:
+                            remote_fs = ReadOnlyFS(remote_fs)
+                        fs.mountdir(storage.get_folder_name(), remote_fs)
+                    except:  #TODO: too broad, add logger
+                        pass
+
+        file_object = fs.open(relative_dir_path, 'rb')
+
+        yield file_object
+    finally:
+        pass
 
 class FileManagerDownloadView(FileManagerMixin, View):
     """
@@ -536,6 +576,250 @@ class FileManagerDownloadView(FileManagerMixin, View):
         response = HttpResponse(mimetype=content_type)
         response['Content-Length'] = size
         file_object = self.fs.open(fs_path, 'rb')
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        response.write(file_object.read())
+        return response
+
+
+class AngularFileManagerMixin(object):
+
+    def get_info(self, relative_info_path):
+        """
+        Return dict with meta info about a file.
+        """
+        info_path = path.join(self.UPLOAD_ROOT, relative_info_path)
+        info_url = path.join(self.UPLOAD_URL, relative_info_path)
+
+        _, name = split_path(info_url)
+
+        if self.fs.isdir(relative_info_path):
+            thefile = {
+                "name": name,
+                "type": "dir"
+            }
+        else:
+            _, ext = split_ext(info_path)
+            thefile = {
+                "name": name,
+                "type": "file"
+            }
+
+        file_metadata = self.fs.getinfo(relative_info_path)
+        if file_metadata.get('created_time', ''):
+            thefile['date'] = file_metadata.get('created_time').strftime('%Y-%m-%d %H:%M:%S')
+        if file_metadata.get('modified_time', ''):
+            thefile['date'] = file_metadata.get('modified_time').strftime('%Y-%m-%d %H:%M:%S')
+        thefile['size'] = file_metadata.get('size')
+        return thefile
+
+
+class FileManagerBaseView(FileManagerMixin, View):
+    """
+    Render base filemanager template
+    """
+    @filemanager_require_auth
+    def dispatch(self, request, *args, **kwargs):
+        return render(request, kwargs.get('template_name', 'filemanager/angular/base.html'))
+
+
+class AngFileManagerListView(AngularFileManagerMixin, FileManagerMixin, View):
+    """
+    Return json response with content of directory.
+    https://github.com/joni2back/angular-filemanager/blob/master/API.md - api description
+    """
+    @csrf_exempt
+    @filemanager_require_auth
+    def dispatch(self, request, *args, **kwargs):
+        super(AngFileManagerListView, self).dispatch(request, *args, **kwargs)
+        if request.method == 'POST':
+            d = json.loads(request.body)
+            relative_dir_path = d['params']['path'][1:]  # remove opening slash
+            if not relative_dir_path:
+                relative_dir_path = ''
+            self.smart_mount(relative_dir_path)
+            result = OrderedDict()
+            result['result'] = []
+            for filename in self.fs.listdir(relative_dir_path):
+                relative_filename = path.join(relative_dir_path, filename)
+                result['result'].append(self.get_info(relative_filename))
+            return HttpResponse(encode_json(result))
+
+
+class AngFileManagerCreateView(AngularFileManagerMixin, FileManagerMixin, View):
+    """
+    Create directory.
+    https://github.com/joni2back/angular-filemanager/blob/master/API.md - api description
+    """
+
+    @csrf_exempt
+    @filemanager_require_auth
+    def dispatch(self, request, *args, **kwargs):
+        super(AngFileManagerCreateView, self).dispatch(request, *args, **kwargs)
+        if request.method == 'POST':
+            d = json.loads(request.body)
+            relative_dir_path = d['params']['path'][1:]  # remove opening slash
+            folder_name = d['params']['name']
+            if not relative_dir_path:
+                relative_dir_path = ''
+            self.smart_mount(relative_dir_path)
+
+            new_path = path.join(relative_dir_path, folder_name)
+
+            if self.fs.isdir(relative_dir_path):
+                try:
+                    self.fs.makedir(new_path)
+                    success_code = True
+                    error_message = None
+                except:
+                    error_message = 'There was an error creating the directory.'
+                    success_code = None
+            else:
+                success_code = None
+                error_message = 'There is no Root Directory.'
+
+            result = OrderedDict()
+            result['result'] = {'success': success_code, 'error': error_message}
+
+            return HttpResponse(encode_json(result))
+
+
+class AngFileManagerRenameView(AngularFileManagerMixin, FileManagerMixin, View):
+    """
+    Rename directory or file.
+    https://github.com/joni2back/angular-filemanager/blob/master/API.md - api description
+    """
+    @csrf_exempt
+    @filemanager_require_auth
+    def dispatch(self, request, *args, **kwargs):
+        super(AngFileManagerRenameView, self).dispatch(request, *args, **kwargs)
+        if request.method == 'POST':
+            d = json.loads(request.body)
+            relative_dir_path = d['params']['path'][1:]  # remove opening slash
+            new_path = d['params']['newPath']
+
+            if not relative_dir_path:
+                relative_dir_path = ''
+            self.smart_mount(relative_dir_path)
+
+            if self.fs.isdir(relative_dir_path):
+                try:
+                    self.fs.movedir(relative_dir_path, new_path)
+                    success_code = True
+                    error_message = None
+                except:
+                    error_message = 'There was an error renaming the directory.'
+                    success_code = None
+            else:
+                try:
+                    self.fs.move(relative_dir_path, new_path)
+                    success_code = True
+                    error_message = None
+                except:
+                    error_message = 'There was an error renaming the file.'
+                    success_code = None
+
+            result = OrderedDict()
+            result['result'] = {'success': success_code, 'error': error_message}
+
+            return HttpResponse(encode_json(result))
+
+
+class AngFileManagerRemoveView(AngularFileManagerMixin, FileManagerMixin, View):
+    """
+    Remove directory or file.
+    https://github.com/joni2back/angular-filemanager/blob/master/API.md - api description
+    """
+    @csrf_exempt
+    @filemanager_require_auth
+    def dispatch(self, request, *args, **kwargs):
+        super(AngFileManagerRemoveView, self).dispatch(request, *args, **kwargs)
+        if request.method == 'POST':
+            d = json.loads(request.body)
+            relative_dir_path = d['params']['path'][1:]  # remove opening slash
+
+            self.smart_mount(relative_dir_path)
+
+            if self.fs.isdir(relative_dir_path):
+                try:
+                    self.fs.removedir(relative_dir_path)
+                    success_code = True
+                    error_message = None
+                except:
+                    error_message = 'There was an error removing the directory.'
+                    success_code = None
+            else:
+                try:
+                    self.fs.remove(relative_dir_path)
+                    success_code = True
+                    error_message = None
+                except:
+                    error_message = 'There was an error removing the file.'
+                    success_code = None
+
+            result = OrderedDict()
+            result['result'] = {'success': success_code, 'error': error_message}
+
+            return HttpResponse(encode_json(result))
+
+
+class AngFileManagerUploadView(AngularFileManagerMixin, FileManagerMixin, View):
+    """
+    Upload file to the directory.
+    https://github.com/joni2back/angular-filemanager/blob/master/API.md - api description
+    """
+    @csrf_exempt
+    @filemanager_require_auth
+    def dispatch(self, request, *args, **kwargs):
+        super(AngFileManagerUploadView, self).dispatch(request, *args, **kwargs)
+        if request.method == 'POST':
+            destination = request.POST['destination'][1:]
+            self.smart_mount(destination)
+            try:
+                f = request.FILES.get('file-0', request.FILES.get('upload'))
+                filename = f.name
+                upload_file = path.join(destination, filename)
+                self.smart_mount(upload_file)
+                if self.fs.exists(upload_file):
+                    filename = next(alt_name for alt_name in alternative_names(filename) if not self.fs.exists(path.join(destination, alt_name)))
+                    upload_file = path.join(destination, filename)
+                    # message = _('File with the same name already exists. The uploaded file has been renamed to \'{}\''.format(filename))
+
+                destination = self.fs.open(upload_file, 'wb+')
+                for chunk in f.chunks():
+                    destination.write(chunk)
+                destination.close()
+
+                success_code = True
+                error_message = None
+            except:
+                error_message = 'There was an error uploding the file.'
+                success_code = None
+
+            result = OrderedDict()
+            result['result'] = {'success': success_code, 'error': error_message}
+
+            return HttpResponse(encode_json(result))
+
+
+class AngFileManagerDownloadView(AngularFileManagerMixin, FileManagerMixin, View):
+    """
+    Handle file downloading.
+    https://github.com/joni2back/angular-filemanager/blob/master/API.md - api description
+    """
+    @csrf_exempt
+    @filemanager_require_auth
+    def dispatch(self, request, *args, **kwargs):
+        super(AngFileManagerDownloadView, self).dispatch(request, *args, **kwargs)
+        relative_dir_path = request.GET["path"][1:]
+        self.smart_mount(relative_dir_path)
+        download_path = path.join(self.UPLOAD_ROOT, relative_dir_path)
+        content_type = mimetypes.guess_type(download_path)[0]
+        filename = smart_str(os.path.basename(download_path))
+
+        size = self.fs.getsize(relative_dir_path)
+        response = HttpResponse(mimetype=content_type)
+        response['Content-Length'] = size
+        file_object = self.fs.open(relative_dir_path, 'rb')
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
         response.write(file_object.read())
         return response

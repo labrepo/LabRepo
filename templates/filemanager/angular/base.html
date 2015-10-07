@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block css %}
+
+  <link href="/static/src/css/animations.css" rel="stylesheet">
+  <link href="/static/src/css/dialogs.css" rel="stylesheet">
+  <!--<link rel="stylesheet" href="/static/dist/angular-filemanager.min.css">-->
+
+{% endblock %}
+
+{% block extra_script %}
+  <!-- third party -->
+  <script src="/static/bower_components/angular/angular.min.js"></script>
+  <script src="/static/bower_components/angular-translate/angular-translate.min.js"></script>
+  <script src="/static/bower_components/angular-cookies/angular-cookies.min.js"></script>
+
+  <!-- angular-filemanager -->
+  <script src="/static/src/js/app.js"></script>
+  <script src="/static/src/js/directives/directives.js"></script>
+  <script src="/static/src/js/filters/filters.js"></script>
+  <script src="/static/src/js/providers/config.js"></script>
+  <script src="/static/src/js/entities/chmod.js"></script>
+  <script src="/static/src/js/entities/item.js"></script>
+  <script src="/static/src/js/services/filenavigator.js"></script>
+  <script src="/static/src/js/services/fileuploader.js"></script>
+  <script src="/static/src/js/providers/translations.js"></script>
+  <script src="/static/src/js/controllers/main.js"></script>
+  <script src="/static/src/js/controllers/selector-controller.js"></script>
+
+  <!--<script src="/static/dist/angular-filemanager.min.js"></script>-->
+  <script type="text/javascript">
+    var lab_pk = '{{ lab.pk }}';
+    angular.module('FileManagerApp').config(['fileManagerConfigProvider', function (config) {
+      var defaults = config.$get();
+      config.set({
+        appName: '{{ lab }} storages',
+        listUrl: '/' + lab_pk + '/filemanager/list/',
+        createFolderUrl: '/' + lab_pk + '/filemanager/createfolder/',
+        renameUrl: '/' + lab_pk + '/filemanager/rename/',
+        removeUrl: '/' + lab_pk + '/filemanager/remove/',
+        uploadUrl: '/' + lab_pk + '/filemanager/upload/',
+        downloadFileUrl: '/' + lab_pk + '/filemanager/download/',
+        allowedActions: angular.extend(defaults.allowedActions, {
+          remove: true,
+          changePermissions: false,
+          edit: false,
+          compress: false,
+          compressChooseName: false,
+          extract: false
+        })
+      });
+    }]);
+  </script>
+{% endblock %}
+{% block page_header %}{% endblock %}
+
+{% block content %}
+<div data-ng-app="FileManagerApp">
+  <div class="ng-cloak">
+    <angular-filemanager></angular-filemanager>
+    </div>
+</div>
+{% endblock %}
+
+{% block breadcrumb %}
+  <li class="active">{% trans 'File Manager' %}</li>
+{% endblock %}
+
+{% block content_header %}
+  {% trans 'File Manager' %}
+{% endblock %}
