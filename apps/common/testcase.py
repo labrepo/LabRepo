@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.test import TestCase
-from django_selenium.testcases import SeleniumTestCase
+# from django_selenium.testcases import SeleniumTestCase
 
 from pymongo import Connection
 
@@ -26,10 +26,10 @@ class BaseTestCase(TestMixin, TestCase):
     pass
 
 
-class SeleniumBaseTestCase(TestMixin, SeleniumTestCase):
-    def tearDown(self):
-        super(SeleniumBaseTestCase, self).tearDown()
-        self.driver.quit()
-
-    def _fixture_setup(self):
-        return super(SeleniumTestCase, self)._fixture_setup()
+# class SeleniumBaseTestCase(TestMixin, SeleniumTestCase):
+#     def tearDown(self):
+#         super(SeleniumBaseTestCase, self).tearDown()
+#         self.driver.quit()
+#
+#     def _fixture_setup(self):
+#         return super(SeleniumTestCase, self)._fixture_setup()
