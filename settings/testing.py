@@ -2,27 +2,26 @@ from base import *
 
 TESTING = os.sys.argv[1:2] == ['test']
 
-if TESTING:
-    raise SystemExit('Use testing settings file')
 
-DEBUG = True
+DOMAIN = '0.0.0.0:8000'
 
-DOMAIN = environ.get('DOMAIN', 'localhost')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-ALLOWED_HOSTS = [DOMAIN]
 
-_MONGODB_USER = 'webmaster'
-_MONGODB_PASSWD = 'webmaster'
-_MONGODB_NAME = 'labrepo'
+_MONGODB_NAME = 'scincelab_test'
 _MONGODB_HOST = '127.0.0.1'
 _MONGODB_PORT = 27017
+_MONGODB_USER = 'admin'
+_MONGODB_PASSWD = 'password'
+mongoengine.connect(_MONGODB_NAME, tz_aware=USE_TZ)
 
+# TEST_RUNNER = 'django_selenium.selenium_runner.SeleniumTestRunner'
+# SELENIUM_DRIVER = 'Firefox'
+# SELENIUM_DRIVER_TIMEOUT = 10
 
 _MONGODB_DATABASE_HOST = \
     'mongodb://%s:%s@%s:%s/%s' \
     % (_MONGODB_USER, _MONGODB_PASSWD, _MONGODB_HOST, _MONGODB_PORT, _MONGODB_NAME)
-
-mongoengine.connect(_MONGODB_NAME, host=_MONGODB_DATABASE_HOST, tz_aware=USE_TZ)
 
 BROKER_URL = _MONGODB_DATABASE_HOST
 
@@ -32,7 +31,7 @@ CELERY_MONGODB_BACKEND_SETTINGS = {
     'user': _MONGODB_USER,
     'password': _MONGODB_PASSWD,
     'database': _MONGODB_NAME,
-    'taskmeta_collection': 'celery_tasks',
+    'taskmeta_collection': 'celery_tasks_test',
 }
 CELERY_ACCEPT_CONTENT = ['pickle']
 CELERY_EVENT_SERIALIZER = 'pickle'
@@ -44,3 +43,7 @@ BROKER_PORT = _MONGODB_PORT
 BROKER_USER = _MONGODB_USER
 BROKER_PASSWORD = _MONGODB_PASSWD
 BROKER_VHOST = "celery"
+
+
+if TESTING and 'test' not in _MONGODB_NAME:
+    raise SystemExit('Wrong mongo db?')

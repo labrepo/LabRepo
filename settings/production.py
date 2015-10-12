@@ -12,6 +12,9 @@ from django.core.exceptions import ImproperlyConfigured
 import dotenv
 dotenv.read_dotenv()
 
+TESTING = os.sys.argv[1:2] == ['test']
+if TESTING:
+    raise SystemExit('Use testing settings file')
 
 def get_env_setting(setting):
     """ Get the environment setting or return exception """

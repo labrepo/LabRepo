@@ -2,12 +2,12 @@ import factory
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.webdesign import lorem_ipsum
-
+from profiles.models import LabUser
 from mongoengine.django.auth import User
 
 
 class UserFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = User
+    FACTORY_FOR = LabUser
 
     @factory.sequence
     def username(n):
