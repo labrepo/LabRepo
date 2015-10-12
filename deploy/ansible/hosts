@@ -1,3 +1,8 @@
 [vagrant]
 1.2.3.10 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
 
+[staging]
+1.2.3.3 ansible_ssh_user=ubuntu ansible_ssh_private_key_file="~/.ssh/sshkey.pem"
+
+[production]
+1.2.3.4 ansible_ssh_user=ubuntu ansible_ssh_private_key_file="~/.ssh/sshkey.pem"
