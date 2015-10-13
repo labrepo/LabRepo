@@ -2,6 +2,10 @@
 import json
 from bson import ObjectId
 
+import bs4
+import requests
+from urlparse import urlparse
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -361,18 +365,115 @@ class CreateLinkView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
     model = Unit
 
     def post(self, request, *args, **kwargs):
-        link_text = request.POST.get('link')
-        link = UnitLink.objects.create(parent=self.get_object(), link=link_text)
+        """
+        Create new link attached to unit. Return html of preview box.
+        """
+        link = request.POST.get('link')
+
+        link_info = self.get_info(link)
+
+        unit_link = UnitLink.objects.create(
+            parent=self.get_object(),
+            link=link,
+            title=link_info['title'],
+            description=link_info['description'],
+            image=link_info['image'],
+        )
+
         lab_pk = kwargs.get('lab_pk')
-        delete_link = reverse('units:unit-remove-url', kwargs={'lab_pk': lab_pk, 'pk': link.pk})
-        date = formats.date_format(link.timestamp, "DATE_FORMAT"),
+        ctx = {
+            'lab_pk': lab_pk,
+            'link': unit_link,
+        }
         return self.render_to_json_response({
-            'pk': unicode(link.pk),
+            'pk': unicode(unit_link.pk),
             'success': True,
-            'delete_link': delete_link,
-            'date': date,
-            'title': link.truncated_title,
+            'html': render_to_string('units/tabs/link.html', ctx)
         })
+
+    def get_info(self, url):
+        """
+        Get html of url
+        :param url: (string) url to parse
+        :return: (dict) dict with title, description, image and canonical url
+        """
+        r = requests.get(url)
+        html = bs4.BeautifulSoup(r.text)
+
+        # first try open graph
+        try:
+            title = html.find("meta", {"name": "og:title"}).get('content', '')
+        except AttributeError:
+            title = None
+        try:
+            description = html.find("meta", {"property": "og:description"}).get('content', '')
+        except AttributeError:
+            description = None
+        try:
+            image = html.find("meta", {"property": "og:image"}).get('content', '')
+        except AttributeError:
+            image = None
+
+        # then meta
+        if not title:
+            title = html.title.text
+        if not description:
+            try:
+                description = html.find("meta", {"name": "description"}).get('content', '')
+            except AttributeError:
+                description = None
+
+        # another images
+        if not image:
+            try:
+                image = html.find("link", {"rel": "icon"}).get('href', '')
+            except AttributeError:
+                image = None
+        if not image:
+            try:
+                image = html.find('img').get('src', '')
+            except AttributeError:
+                image = None
+
+        if image:
+            image = self.to_full_url(image, url)
+
+        # If there isn't description get first paragraph
+        if not description:
+            description = html.find("p").text[:70] + u' ...'
+
+        try:
+            canonical = html.find("link", {"rel": "canonical"}).get('href', '')
+        except AttributeError:
+            canonical = url
+
+        result = {
+            'title': title,
+            'image': image,
+            'url': 'http://docs.ansible.com/ansible/playbooks_best_practices.html',
+            'canonicalUrl': canonical,
+            'description': u'{}'.format(description),
+        }
+
+        return result
+
+    def to_full_url(self, url, parent_url):
+        """
+        Handle url of image. Add domain if url is relative
+        :param url: (string) url of image or another resource. Relative or absolute
+        :param parent_url: (string) Url of requested parent page
+        :return: Full url to image
+        """
+        if url.startswith('http://') or url.startswith('https://'):
+            return url
+
+        parsed_url = urlparse(parent_url)
+        if url.startswith('/'):
+            return parsed_url.scheme + '://' + parsed_url.netloc + url
+        else:
+            path = parsed_url.path.split('/')[:-1]
+            path = '/'.join(path)
+            return parsed_url.scheme + '://' + parsed_url.netloc + path + '/' + url
 
 
 class DeleteLinkView(LoginRequiredMixin, CheckViewPermissionMixin, AjaxableResponseMixin, DeleteView):

@@ -98,22 +98,26 @@
 </div>
 
 
-<div id="urls-area" class="voffset4">
-  <h4>{% trans "Links" %}</h4>
-  <ul class="link-list">
-    {% for unit_url in object.links %}
-    <li>
-      <a href="{{ unit_url.link }}">{{ unit_url.truncated_title }}</a><button data-delete-url="{% url 'units:unit-remove-url' lab_pk=lab_pk pk=unit_url.pk %}" class="close link-delete" type="button">x</button>
-      <br><span class="">{{ unit_url.timestamp|date:"DATE_FORMAT" }}</span>
-    </li>
-    {% endfor %}
-  </ul>
-  <form class="links-unit-form form-inline" action="{% url 'units:unit-add-url' lab_pk=lab_pk pk=object.pk %}" method="post">
-    <div class="form-group">
-      <input class="form-control" required type="url" name="link">
-      <button class="btn btn-info bg-olive btn-flat" type="submit"><i class="glyphicon glyphicon-plus"></i> {% trans "Add link" %}</button>
+<div id="urls-area" class="box box-widget voffset4">
+  <div class="box-header with-border">
+    <h3 class="box-title">{% trans "Links" %}</h3>
+    <div class="box-tools">
+      <button class="btn btn-box-tool box-collapse" data-widget="collapse"><i class="fa fa-minus"></i></button>
     </div>
-  </form>
+  </div>
+  <div class="box-body">
+    <div class="link-list">
+      {% for link in object.links %}
+        {% include 'units/tabs/link.html' %}
+      {% endfor %}
+    </div>
+    <form class="links-unit-form form-inline" action="{% url 'units:unit-add-url' lab_pk=lab_pk pk=object.pk %}" method="post">
+      <div class="form-group">
+        <input class="form-control" required type="url" name="link">
+        <button class="btn btn-info bg-olive btn-flat" type="submit"><i class="glyphicon glyphicon-plus"></i> {% trans "Add link" %}</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div id="file-area" class="voffset4">

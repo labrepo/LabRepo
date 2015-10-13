@@ -119,6 +119,10 @@ class UnitLink(me.Document):
     parent = me.ReferenceField('Unit', reverse_delete_rule=CASCADE, required=True, verbose_name=_('unit'))
     link = me.URLField(verbose_name=_('url'))
     timestamp = me.DateTimeField(default=datetime.now, required=True)
+    image = me.StringField(verbose_name=_('image'))
+    title = me.StringField(verbose_name=_('title'))
+    canonicalUrl = me.StringField(verbose_name=_('canonicalUrl'))
+    description = me.StringField(verbose_name=_('description'))
 
     @property
     def truncated_title(self):

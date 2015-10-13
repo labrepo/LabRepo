@@ -616,9 +616,7 @@
                     }
                 }
             }).done(function (response) {
-                var delete_link = '<button data-delete-url="'+ response.delete_link + '" class="close link-delete" type="button">x</button>';
-                var date = '<br><span class="">' + response.date + '</span>'
-                $('.link-list').append('<li><a href="' + link + '">'+ response.title + '</a>'+ delete_link  + date + '</li>');
+                $('.link-list').append(response.html);
                 $form.find('input[name="link"]').val('');
             });
     });
@@ -629,12 +627,18 @@
 
         if(confirm('Delete this link?')) {
           var delete_url = $(this).data("delete-url");
-          var parent_li = $(this).closest('li')
+          var parent_box = $(this).closest('.box')
           $.post(delete_url, {}, function (response) {
-            parent_li.remove();
+            parent_box.remove();
           });
         }
         return false
+    });
+
+  $('body').on('click','.box-collapse', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).closest('.box').find('.box-body').toggle(200);
     });
 
     $('body').on('submit','.add-unit-form', function (e) {
