@@ -47,7 +47,17 @@
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
         </a>
-
+        {% if lab %}
+          <ul class="nav navbar-nav">
+            <ul class=" breadcrumb list-inline">
+              <li><a href="/"><i class="fa fa-home"></i> {% trans 'Home' %}</a></li>
+              <li><a href="{{ lab.get_absolute_url }}">
+                <i class="fa fa-flask"></i> {% blocktrans %}{{ lab }}{% endblocktrans %}</a>
+              </li>
+              {% block breadcrumb %}{% endblock %}
+            </ul>
+          </ul>
+        {% endif %}
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
             {% if lab %}
@@ -107,20 +117,9 @@
   {% endblock menu %}
 
 <aside class="content-wrapper">
-  <section class="content-header">
-    <h1>{% block content_header %}{% endblock %}</h1>
-    {% if lab %}
-      <ol class="breadcrumb">
-        <li><a href="/"><i class="fa fa-home"></i> {% trans 'Home' %}</a></li>
-        <li><a href="{{ lab.get_absolute_url }}">
-          <i class="fa fa-flask"></i> {% blocktrans %}{{ lab }}{% endblocktrans %}</a>
-        </li>
-        {% block breadcrumb %}{% endblock %}
-      </ol>
-    {% endif %}
-
-  </section>
-
+  <!--<section class="content-header">-->
+    <!--<h1>{% block content_header %}{% endblock %}</h1>-->
+  <!--</section>-->
   <section class="content">
     <div id="messages">
       {% for message in messages %}

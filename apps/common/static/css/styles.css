@@ -293,3 +293,13 @@ span.has-error {
 .box-comment .box-tools{
    float: right;
 }
+.nav .breadcrumb {
+    margin: 0 7px;
+    background: #fff;
+}
+@media (min-width: 768px) {
+    .nav .breadcrumb {
+        float: left;
+        margin: 7px 10px;
+    }
+}
