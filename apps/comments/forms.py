@@ -13,7 +13,7 @@ class CommentForm(BaseForm):
         lab_pk = kwargs.pop('lab_pk')
         super(CommentForm, self).__init__(*args, **kwargs)
         self.fields['text'].label = ''
-        self.fields['text'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk)
+        self.fields['text'].widget = CKEditorUploadWidget(config_name='comments', lab_pk=lab_pk)
         self.fields['text'].widget.attrs['id'] = 'comment-{}-{}-{}'.format(self.prefix,
                                                                                   self.initial.get('instance_type'),
                                                                                   self.initial.get('object_id')

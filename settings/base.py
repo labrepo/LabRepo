@@ -241,4 +241,14 @@ CKEDITOR_CONFIGS = {
         'height': 200,
         'skin': 'bootstrapck',
     },
+    'comments': {
+        'toolbar': [
+            ['Link', 'Unlink'],
+            ['Image', 'Table', 'Smiley', 'SpecialChar', 'Blockquote'],
+            ['Source'],
+        ],
+        'width': '100%',
+        'height': 200,
+        'skin': 'bootstrapck',
+    },
 }

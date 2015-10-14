@@ -14,11 +14,22 @@
   <div class="col-lg-12">
     <div class="nav-tabs-custom">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#exp-page" data-toggle="tab"><i class="fa fa-eyedropper"></i> {% trans 'Experiment details' %}</a></li>
+        <li class="active"><a href="#exp-discussion" data-toggle="tab"><i class="fa fa-edit"></i> {% trans 'Discussion' %}</a></li>
         <li class=""><a href="#unit-page" data-toggle="tab"><i class="fa fa-cube"></i> {% trans 'Units' %}</a></li>
+        <li class=""><a href="#exp-page" data-toggle="tab"><i class="fa fa-eyedropper"></i> {% trans 'Details' %}</a></li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane active" id="exp-page">
+        <div class="tab-pane active" id="exp-discussion">
+          <div class="row">
+            <div class="col-lg-8">
+              Blocks
+              </div>
+            <div class="col-lg-4">
+              {% include 'comments/comment_form_block.html' with not_collapse="1" %}
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" id="exp-page">
           <div class="row">
             <div class="col-lg-6">
               <div class="nav-tabs-custom">
@@ -115,19 +126,19 @@
             <div class="col-lg-6">
               <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                  <li class=""><a href="#all" data-toggle="tab"><i class="fa fa-history"></i> {% trans 'All' %}</a></li>
-                  <li class="active">
-                    <a href="#comments_activities" data-toggle="tab"><i class="fa fa-comments"></i> {% trans 'Comments' %}</a>
-                  </li>
+                  <li class="active"><a href="#all" data-toggle="tab"><i class="fa fa-history"></i> {% trans 'All' %}</a></li>
+                  <!--<li class="active">-->
+                    <!--<a href="#comments_activities" data-toggle="tab"><i class="fa fa-comments"></i> {% trans 'Comments' %}</a>-->
+                  <!--</li>-->
                 </ul>
                 <div class="tab-content">
                   <div class="tab-pane" id="all"
                        data-url="{% url 'dashboard:experiment-all-activity' lab_pk=lab.pk experiment_pk=object.pk %}">
                   </div>
                   <!-- /.tab-pane -->
-                  <div class="tab-pane active" id="comments_activities">
-                    {% include 'comments/comment_form.html' with not_collapse="1" %}
-                  </div>
+                  <!--<div class="tab-pane active" id="comments_activities">-->
+
+                  <!--</div>-->
                   <!-- /.tab-pane -->
                 </div>
                 <!-- /.tab-content -->
@@ -732,6 +743,18 @@
         window.dispatchEvent(new Event('resize'));
       })
 
+    });
+  $('body').on('click','.comment-input', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).hide()
+        $(this).closest('form').find('.comment-editor').show();
+    });
+  $('body').on('click','.comment-cancel', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).closest('form').find('.comment-input').show();
+        $(this).closest('form').find('.comment-editor').hide();
     });
   </script>
 {% endblock %}

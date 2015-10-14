@@ -19,7 +19,7 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
     """
     model = Comment
     form_class = CommentForm
-    template_name = 'comments/comment.html'
+    template_name = 'comments/comment_block.html'
     prefix = 'create'
 
     def form_valid(self, form):

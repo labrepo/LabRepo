@@ -1,0 +1,50 @@
+{% load i18n static bootstrap_tags %}
+
+<div class="box box-widget">
+  <div class="box-header with-border">
+    <h3 class="box-title">{% trans 'Comments' %}</h3>
+    <div class="box-tools">
+      <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+      <!--<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>-->
+    </div>
+  </div>
+  <div class="box-body">
+
+  </div><!-- /.box-body -->
+  <div class="box-footer box-comments comments-block">
+    {% for comment in comments %}
+      {% include 'comments/comment_block.html' %}
+    {% endfor %}
+    {% include 'alert.html' with modal_id=delete_modal_id|default:'confirm-delete-comment' class="comment-remove" modal_class="confirm-delete-comment" %}
+  </div>
+
+  <div class="box-footer">
+    <form action="{% url 'comment:comment' lab_pk=lab.pk %}" method="post" id="comment-form" class="comment-form">
+      <div class="comment-input">
+        <img class="img-responsive img-circle img-sm " src="{% static 'img/gravatar.png' %}" alt="alt text">
+        <!-- .img-push is used to add margin to elements next to floating images -->
+        <div class="img-push">
+          <input type="text" class="form-control input-sm " placeholder="Press enter to post comment">
+        </div>
+      </div>
+      <div class="comment-editor" style="display: none">
+        <div class="box-body">
+          {% csrf_token %}
+          {{ comment_form_create|as_bootstrap }}
+          <!--{{ comment_form_create.media }}-->
+        </div>
+        <div class="box-footer text-right">
+          <button type="button" class="btn btn-info btn-sm btn-flat comment-cancel">{% trans 'Cancel'|upper %}</button>
+          <button type="submit" class="btn btn-info btn-sm btn-flat">{% trans 'Submit comment'|upper %}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if not not_modal %}
+  {% block modal %}
+    {% load static i18n %}
+    {% include 'modal.html' with modal_id=modal_id|default:'comment-modal' action="" extra_form=comment_form_update modal_title='update  comment' class="comment-modal"%}
+  {% endblock %}
+{% endif %}

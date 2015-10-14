@@ -289,3 +289,7 @@ span.has-error {
     float: none;
     padding-left: 5px !important;
 }
+
+.box-comment .box-tools{
+   float: right;
+}

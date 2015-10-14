@@ -1,0 +1,22 @@
+{% load static i18n %}
+
+<div class="box-comment comment-block" data-pk="{{ comment.pk }}">
+  <div class="box-tools">
+      <button class="btn btn-box-tool comment-edit"  title="Edit" data-toggle="modal"
+                data-target="#{{ modal_id|default:'comment-modal' }}" data-url="{% url 'comment:update' lab_pk=lab.pk pk=comment.pk %}">
+        <i class="fa fa-edit"></i>
+      </button>
+      <!--<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>-->
+      <button class="btn btn-box-tool comment-delete" data-target="#{{ delete_modal_id|default:'confirm-delete-comment' }}"
+                data-toggle="modal"
+                data-href="{% url 'comment:delete' lab_pk=lab.pk pk=comment.pk %}" ><i class="fa fa-times"></i></button>
+    </div>
+  <img class="img-circle img-sm" src="{% static 'img/gravatar.png' %}" alt="user image">
+  <div class="comment-text">
+    <span class="username">
+      {{ comment.init_user.full_name }}
+      <span class="text-muted s">{{ comment.action_time|timesince }}</span>
+    </span>
+    {{ comment|safe }}
+  </div>
+</div>
