@@ -303,3 +303,6 @@ span.has-error {
         margin: 7px 10px;
     }
 }
+.comment-activities.comments-block {
+    max-height: 600px;
+}
