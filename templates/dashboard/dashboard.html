@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load i18n static %}
+{% load i18n static widget_tweaks %}
 
 {% block content_header %}{% trans lab.name %}
   <small>{% trans 'Dashboard' %}</small>{% endblock %}
@@ -39,18 +39,18 @@
 
 {% block content %}
   <div class="row">
-    <div class="col-lg-3 col-xs-6">
-      {% include 'small-box_collapse.html' with obj_list=lab.investigator title_box='investigators' color='yellow' icon='users' %}
-    </div>
-    <div class="col-lg-3 col-xs-6">
-      {% include 'small-box_collapse.html' with obj_list=lab.guests title_box='guests' color='red' icon='users' %}
-    </div>
-    <div class="col-lg-3 col-xs-6">
-      {% include 'small-box_collapse.html' with obj_list=lab.memebers title_box='members' color='aqua' icon='users' %}
-    </div>
-    <div class="col-lg-3 col-xs-6">
-      {% include 'small-box_collapse.html' with obj_list=experiments_list title_box='experiments' color='olive' icon='flask' %}
-    </div>
+    <!--<div class="col-lg-3 col-xs-6">-->
+      <!--{% include 'small-box_collapse.html' with obj_list=lab.investigator title_box='investigators' color='yellow' icon='users' %}-->
+    <!--</div>-->
+    <!--<div class="col-lg-3 col-xs-6">-->
+      <!--{% include 'small-box_collapse.html' with obj_list=lab.guests title_box='guests' color='red' icon='users' %}-->
+    <!--</div>-->
+    <!--<div class="col-lg-3 col-xs-6">-->
+      <!--{% include 'small-box_collapse.html' with obj_list=lab.memebers title_box='members' color='aqua' icon='users' %}-->
+    <!--</div>-->
+    <!--<div class="col-lg-3 col-xs-6">-->
+      <!--{% include 'small-box_collapse.html' with obj_list=experiments_list title_box='experiments' color='olive' icon='flask' %}-->
+    <!--</div>-->
   </div>
   <div class="row">
     <div class="col-lg-4 resent-activities-container">
@@ -85,6 +85,74 @@
       </div>
       <!-- /. box -->
     </div>
+    <section class="col-lg-6">
+    <div class="box">
+      <div class="box-header"><h3 class="box-title">{% trans 'storages'|title %}</h3></div>
+      <div class="box-body">
+        <div class="list-group">
+          {% for storage in lab.storages %}
+          <div class="storage">
+            <span class="list-group-item list-group-item-sm">{{ storage }}
+              <span class="pull-right">
+              <a class="storage-edit" href="#" data-url="{% url 'labs:storage-update' lab_pk=lab.pk pk=storage.pk %}">
+                <i class="fa fa-edit"></i></a>
+              <a class="storage-delete" href="#" data-url="{% url 'labs:storage-delete' lab_pk=lab.pk pk=storage.pk %}">
+                <i class="fa fa-remove"></i></a>
+              </span>
+            </span>
+            <div class="storage-form-area"></div>
+          </div>
+          {% endfor %}
+          <form class="storage-add voffset3" enctype="multipart/form-data" method="post" action="{% url 'labs:storage-create' lab_pk=lab.pk %}">{% csrf_token %}
+            <div class="box-header with-border">
+              <h3 class="box-title">{% trans "Add new storage" %}</h3>
+            </div>
+            <div class="form-inline">
+              <div class="form-group">
+                {% render_field storage_form.type style="width:200px" placeholder=storage_form.type.label %}
+              </div>
+            </div>
+            <div class="form-inline voffset2">
+              <div class="form-group">
+                {% render_field storage_form.host  placeholder=storage_form.host.label %}
+              </div>
+              <div class="form-group">
+                {% render_field storage_form.path  placeholder=storage_form.path.label  %}
+              </div>
+            </div>
+            <div class="form-inline voffset2">
+              <div class="form-group">
+                {% render_field storage_form.username  placeholder=storage_form.username.label %}
+              </div>
+            </div>
+
+            <div class="form-inline voffset2">
+              <div class="form-group">
+                {% render_field storage_form.password  placeholder=storage_form.password.label %}
+              </div>
+              <span> {% trans "OR" %} </span>
+              <div class="form-group">
+                {% render_field storage_form.key_file %}
+              </div>
+            </div>
+            <a class="storage-show-more voffset1" href="#">{% trans "More" %}</a>
+            <div class="form-inline storage-more voffset2" style="display: none">
+              <div class="form-group">
+                {% render_field storage_form.folder_name  placeholder=storage_form.folder_name.label %}
+              </div>
+              <div class="checkbox" style="padding-left: 10px;">
+                <label>
+                  {% render_field storage_form.readonly %}{{ storage_form.readonly.label_tag }}
+                </label>
+              </div>
+            </div>
+            <button style="width: 100%;" class="btn btn-success voffset2" type="submit">{% trans "Create" %}</button>
+         </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
     <!--<div class="col-lg-4">-->
       <!--<div class="box box-info">-->
         <!--<div class="box-header">-->
@@ -173,4 +241,77 @@
   <script src="{% static 'js/recent.js' %}"></script>
   <script src='{% static "adminLTE/plugins/fullcalendar/fullcalendar.js" %}'></script>
   <script src='{% static "js/calendar.js" %}'></script>
+  <script type="text/javascript">
+
+  $('body').on('submit','.storage-add', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var $form = $(e.target);
+    $.post($form.attr('action'), $form.serialize())
+      .fail(function (xhr) {
+          form_fail($form, xhr)
+      }).done(function (response) {
+        location.reload();
+      });
+  });
+
+  $('body').on('click','.storage-show-more', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $('.storage-more').toggle();
+  });
+
+  $('body').on('click','.storage-edit', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var that = $(this);
+    $.get(that.data('url'),{})
+            .fail(function (xhr) {
+              form_fail($form, xhr)
+            }).done(function (response) {
+              $('.storage').find('.storage-form-area').hide()
+              $('.storage-add').hide()
+              $('.storage').find('.list-group-item').show()
+              that.closest('.storage').find('.storage-form-area').show().html(response.form_html)
+              that.closest('.storage').find('.list-group-item').hide()
+            });
+  });
+
+  $('body').on('click','.storage-edit-cancel', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var that = $(this);
+    that.closest('.storage').find('.storage-form-area').hide()
+    $('.storage-add').show()
+    that.closest('.storage').find('.list-group-item').show()
+  });
+
+  //  $('body').on('submit','.storage-edit-form', function (e) {
+  //    e.preventDefault();
+  //    e.stopPropagation();
+  //    var $form = $(e.target);
+  //    $.post($form.attr('action'), $form.serialize())
+  //      .fail(function (xhr) {
+  //          form_fail($form, xhr)
+  //      }).done(function (response) {
+  //        location.reload();
+  //      });
+  //  });
+
+  $('body').on('click','.storage-delete', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var that = $(this);
+    if (confirm("Remove storage")) {
+      $.post(that.data('url'),{})
+              .fail(function (xhr) {
+                form_fail($form, xhr)
+              }).done(function (response) {
+                that.closest('.storage').remove()
+              });
+    } else {
+      return false
+    }
+  });
+</script>
 {% endblock %}

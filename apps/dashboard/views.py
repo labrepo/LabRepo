@@ -12,7 +12,7 @@ from common.mixins import ActiveTabMixin, LoginRequiredMixin, AjaxableResponseMi
 from dashboard.documents import RecentActivity
 from experiments.documents import Experiment
 from labs.documents import Lab
-
+from labs.forms import LabStorageForm
 
 class DashboardView(ActiveTabMixin, LoginRequiredMixin, ListView):
     model = RecentActivity
@@ -31,6 +31,7 @@ class DashboardView(ActiveTabMixin, LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super(DashboardView, self).get_context_data(**kwargs)
         ctx['experiments'] = self.get_experiments()
+        ctx['storage_form'] = LabStorageForm()
         return ctx
 
     def get_experiments(self):
