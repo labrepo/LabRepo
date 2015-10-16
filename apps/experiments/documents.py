@@ -41,6 +41,7 @@ class Experiment(me.Document):
     description = me.StringField(required=False, verbose_name=_('description'))
     status = me.IntField(choices=STATUS, verbose_name=_('status'))
     active = me.BooleanField(default=True, required=True, verbose_name=_('active'))
+    wooflo_key = me.StringField(max_length=255, verbose_name=_('wooflo project key'))
 
     meta = {'related_fkey_lookups': [], 'virtual_fields': [],
             'verbose_name': ugettext('experiment'), 'verbose_name_plural': ugettext('experiments')}

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import dateutil
 import json
+import requests
+import re
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -51,6 +53,12 @@ class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMi
         self.object.lab = self.lab
         if not set(self.lab.investigator) & set(self.object.owners):
             self.object.owners.extend(list(set(self.lab.investigator) - set(self.object.owners)))
+
+        try:
+            self.object.wooflo_key = get_wooflo_key(self.object)
+        except:
+            pass
+
         self.object.save()
         self.save_recent_activity(RecentActivity.ADD, experiment=unicode(self.object.pk))
         self.get_success_message()
@@ -194,6 +202,13 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
         return mark_safe(json.dumps(graph_data))
 
     def get_context_data(self, *args, **kwargs):
+        try:
+            if not self.object.wooflo_key:
+                self.object.wooflo_key = get_wooflo_key(self.object)
+                self.object.save()
+        except Exception as e:
+            pass
+
         ctx = super(ExperimentDetailView, self).get_context_data(**kwargs)
         ctx['units'] = self.units
 
@@ -246,3 +261,27 @@ class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitia
 
     def get_success_message(self):
         return ugettext(u'Experiment was changed successfully.')
+
+def get_wooflo_key(experiment):
+    s = requests.Session()
+    r = s.get('http://wooflo.magic60.ru/signin')
+    rr = re.search(r'<input id="csrf_token" name="csrf_token" type="hidden" value="(.*?)">', r.text)
+    token = rr.group(1)
+    r = s.post('http://wooflo.magic60.ru/signin', data={
+        'LoginEmail': 'cyc60@mail.ru',
+        'LoginPassword': '1',
+        'csrf_token': token,
+    })
+    headers = {
+        'X-CSRFToken': token,
+    }
+    payload = {
+        'Name': u'{}'.format(experiment.title),
+        'PublicView': True,
+        'PublicEdit': True,
+        'csrf_token': token,
+    }
+
+    r = s.post('http://wooflo.magic60.ru/projects', files={'value_1': (None, '12345')}, headers=headers, data=payload)
+    return r.json()['pk']
+
