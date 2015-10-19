@@ -89,18 +89,18 @@ def create_test_lab(self):
             for experiment in unit.experiments:
                 unit_experiment.append(experiments[unicode(experiment.pk)])
             unit.experiments = unit_experiment
-            measurements = []
-            for measurement_pk in unit.measurements:
-                measurement = Measurement.objects.get(pk=measurement_pk.pk)
-                measurement.measurement_type = measurement_types[unicode(measurement_pk.measurement_type.pk)]
-                measurement.pk = None
-                measurement = measurement.save(user=user)
-                measurements.append(measurement)
-                for comment in Comment.objects.filter(object_id=measurement_pk.pk):
-                    comment.object_id = measurement.pk
-                    comment.pk = None
-                    comment.save()
-            unit.measurements = measurements
+            # measurements = []
+            # for measurement_pk in unit.measurements:
+            #     measurement = Measurement.objects.get(pk=measurement_pk.pk)
+            #     measurement.measurement_type = measurement_types[unicode(measurement_pk.measurement_type.pk)]
+            #     measurement.pk = None
+            #     measurement = measurement.save(user=user)
+            #     measurements.append(measurement)
+            #     for comment in Comment.objects.filter(object_id=measurement_pk.pk):
+            #         comment.object_id = measurement.pk
+            #         comment.pk = None
+            #         comment.save()
+            # unit.measurements = measurements
             unit_tags = []
             for tag in unit.tags:
                 unit_tags.append(tags[unicode(tag.pk)])

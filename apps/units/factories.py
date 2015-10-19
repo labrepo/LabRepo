@@ -17,7 +17,7 @@ class UnitFactory(factory.DjangoModelFactory):
 
     @factory.lazy_attribute
     def measurements(self):
-        return MeasurementFactory.create_batch(2, lab=self.lab, user=self.user)
+        return MeasurementFactory(lab=self.lab, user=self.user)
 
     @factory.lazy_attribute
     def experiments(self):

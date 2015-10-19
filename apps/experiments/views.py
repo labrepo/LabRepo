@@ -220,7 +220,7 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
 
         ctx['unit_form'] = AddUnitToExperimentForm(initial={'lab': self.lab, 'user': self.request.user, 'experiment': self.object})
 
-        UPLOAD_URL, UPLOAD_ROOT = get_upload(self.request, *args, **kwargs)
+        UPLOAD_URL, UPLOAD_ROOT = get_upload(self.request, lab_pk=self.lab.pk, *args, **kwargs)
         ctx['UPLOAD_URL'] = UPLOAD_URL
         return ctx
 
