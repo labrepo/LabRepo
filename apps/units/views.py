@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import logging
 from bson import ObjectId
 
 import bs4
@@ -39,6 +40,8 @@ from labs.documents import Lab
 from measurements.documents import MeasurementType
 from tags.documents import Tag
 from unit_collections.documents import Collection
+
+logger = logging.getLogger(__name__)
 
 
 class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, AjaxableResponseMixin,
@@ -355,6 +358,7 @@ class UnitFileDropboxUploadView(DropboxFileUploadMixinView):
     model = UnitFile
     parent_model = Unit
 
+
 class UnitFileLocalUploadView(LocalFileUploadMixinView):
     model = UnitFile
     parent_model = Unit
@@ -369,15 +373,18 @@ class CreateLinkView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         Create new link attached to unit. Return html of preview box.
         """
         link = request.POST.get('link')
-
-        link_info = self.get_info(link)
+        try:
+            link_info = self.get_info(link)
+        except Exception as e:
+            logger.error('Error in link preview', exc_info=True)
+            link_info = {}
 
         unit_link = UnitLink.objects.create(
             parent=self.get_object(),
             link=link,
-            title=link_info['title'],
-            description=link_info['description'],
-            image=link_info['image'],
+            title=link_info.get('title', ''),
+            description=link_info.get('description', ''),
+            image=link_info.get('image', ''),
         )
 
         lab_pk = kwargs.get('lab_pk')
@@ -416,7 +423,10 @@ class CreateLinkView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
 
         # then meta
         if not title:
-            title = html.title.text
+            try:
+                title = html.title.text
+            except AttributeError:
+                title = None
         if not description:
             try:
                 description = html.find("meta", {"name": "description"}).get('content', '')
@@ -440,8 +450,10 @@ class CreateLinkView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
 
         # If there isn't description get first paragraph
         if not description:
-            description = html.find("p").text[:70] + u' ...'
-
+            try:
+                description = html.find("p").text[:70] + u' ...'
+            except AttributeError:
+                description = None
         try:
             canonical = html.find("link", {"rel": "canonical"}).get('href', '')
         except AttributeError:
@@ -450,7 +462,7 @@ class CreateLinkView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         result = {
             'title': title,
             'image': image,
-            'url': 'http://docs.ansible.com/ansible/playbooks_best_practices.html',
+            'url': url,
             'canonicalUrl': canonical,
             'description': u'{}'.format(description),
         }
