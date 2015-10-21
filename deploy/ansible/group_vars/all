@@ -5,3 +5,4 @@ project_name: labrepo
 git_repo: git@bitbucket.org:kaurov/labrepo-public.git
 
 
+mongodb_test_database: scincelab_test

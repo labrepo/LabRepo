@@ -33,6 +33,10 @@
   mongodb_user: database={{ mongodb_name }} name={{ mongodb_user }} password={{ mongodb_passwd }} state=present
   sudo: yes
 
+- name: Add a test mongodb user
+  mongodb_user: database={{ mongodb_test_database }}  name={{ mongodb_user }} password={{ mongodb_passwd }} state=present
+  sudo: yes
+
 - name: Get code from git repo
   git: repo={{ git_repo }} dest={{ project_dir }} accept_hostkey=yes
   notify: restart labrepo
