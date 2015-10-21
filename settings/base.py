@@ -110,6 +110,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'common.context_processors.menu_processor',
     'common.context_processors.sidebar_processor',
+    'common.context_processors.js_variables_processor',
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',

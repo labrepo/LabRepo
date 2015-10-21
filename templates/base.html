@@ -135,6 +135,18 @@
 </div>
 
   {% block modal %}{% endblock %}
+
+  <script type="text/javascript">
+    // set global user variables
+    var plot_un = '{{ user.plot_un|default:"" }}';
+    var plot_key = '{{ user.plot_key|default:"" }}';
+
+//    set project variables from django
+    var LabRepo = {}
+    LabRepo.domain = '{{ DOMAIN }}';
+    LabRepo.debug = '{{ DEBUG }}';
+  </script>
+
   <!-- jQuery UI 1.10.3 -->
   <script src="{% static 'adminLTE/plugins/jQueryUI/jquery-ui.min.js' %}" type="text/javascript"></script>
   <script src="{% static 'adminLTE/plugins/slimScroll/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
@@ -145,11 +157,7 @@
   <script src="{% static 'js/app.js' %}" type="text/javascript"></script>
   <script src="{% static 'js/forms.js' %}"></script>
   <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
-  <script type="text/javascript">
-    // set global user variables
-    var plot_un = '{{ user.plot_un|default:"" }}';
-    var plot_key = '{{ user.plot_key|default:"" }}';
-  </script>
+
   {% block script %}
     {% block extra_script %}{% endblock %}
     {% block form_script %}{% endblock %}

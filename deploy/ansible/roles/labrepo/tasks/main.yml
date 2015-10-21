@@ -20,6 +20,11 @@
   notify: restart labrepo
   sudo: yes
 
+- name: Copy supervisor config for labrepo chat
+  template: src=supervisor_chat.conf dest=/etc/supervisor/conf.d/chat_{{ project_name }}.conf
+  notify: restart labrepo
+  sudo: yes
+
 - name: Pymongo is needed for mongodb_user
   pip: name=pymongo
   sudo: yes
@@ -73,6 +78,8 @@
   django_manage: command="test --noinput --failfast" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
   environment:
         DJANGO_SETTINGS_MODULE: "settings.testing"
+
+
 - name: Check supervisor service
   service: name=supervisor state=started enabled=yes
   sudo: yes

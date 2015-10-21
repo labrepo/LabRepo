@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import json
+
+import redis
 
 from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
@@ -30,6 +33,17 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
         resent_activity = self.save_recent_activity(RecentActivity.COMMENT,
                                                     **{'comment_model': self.object.instance_type,
                                                     self.object.instance_type.lower(): self.object.object_id})
+
+        # publish message in the redis queue
+        r = redis.StrictRedis(host='localhost', port=6379, db=3)
+        p = r.pubsub()
+        channel = '{}'.format(self.object.object_id)
+        html = render_to_string(self.template_name, {'comment': self.object, 'lab': self.lab})
+        r.publish(channel, json.dumps({
+            'html': html,
+            'user_pk': u'{}'.format(self.object.init_user.pk),
+        }))
+
         return self.render_to_json_response({'data': render_to_string(self.template_name, {'comment': self.object},
                                                                       context_instance=RequestContext(self.request)),
                                              'resent_activity': render_to_string('dashboard/resent.html',

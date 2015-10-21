@@ -1,5 +1,6 @@
 from mongoengine import Q
 
+from django.conf import settings
 from experiments.documents import Experiment
 from labs.documents import Lab
 from django.http import HttpResponse
@@ -30,3 +31,13 @@ def sidebar_processor(request):
     if request.COOKIES.get('sidebarcollapse'):
         return {'SIDEBAR_COLLAPSED': True}
     return {}
+
+
+def js_variables_processor(request):
+    """
+    Add variables which are used in js code
+    """
+    return {
+        'DOMAIN': settings.DOMAIN,
+        'DEBUG': settings.DEBUG,
+    }

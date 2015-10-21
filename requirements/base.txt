@@ -28,3 +28,5 @@ django-widget-tweaks==1.4.1
 beautifulsoup4==4.4.1
 amqp
 anyjson
+tornado==4.1
+tornado-redis==2.4.18

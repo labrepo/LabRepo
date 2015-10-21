@@ -6,7 +6,7 @@ $(document).ready(function () {
 
     submitForm($('.comment-form'), function (response, form) {
         form.closest('.comments-block').find('div#comment').append(response.data); //old
-        form.closest('.box').find('.comments-block').append(response.data);  // new
+//        form.closest('.box').find('.comments-block').append(response.data);  // new
         $('div#all div.resent-activities ul:not(.pager), div#comments_activities div.resent-activities ul:not(.pager)').prepend(response.resent_activity);
         form.trigger('reset').find('.has-error').removeClass('has-error');
         var comment_field_id = form.find('textarea[name="create-text"]').attr('id');
