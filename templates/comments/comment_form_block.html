@@ -1,13 +1,13 @@
 {% load i18n static bootstrap_tags %}
 
 <div class="box box-widget chat-box" data-experiment-pk="{{ object.pk }}">
-  <div class="box-header with-border">
-    <h3 class="box-title">{% trans 'Comments' %}</h3>
-    <div class="box-tools">
-      <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-      <!--<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>-->
-    </div>
-  </div>
+  <!--<div class="box-header with-border">-->
+    <!--<h3 class="box-title">{% trans 'Comments' %}</h3>-->
+    <!--<div class="box-tools">-->
+      <!--<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>-->
+      <!--&lt;!&ndash;<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>&ndash;&gt;-->
+    <!--</div>-->
+  <!--</div>-->
   <div class="box-body">
 
   </div><!-- /.box-body -->
@@ -15,6 +15,7 @@
     {% for comment in comments %}
       {% include 'comments/comment_block.html' %}
     {% endfor %}
+    <div class="comments-end"></div>
     {% include 'alert.html' with modal_id=delete_modal_id|default:'confirm-delete-comment' class="comment-remove" modal_class="confirm-delete-comment" %}
   </div>
 

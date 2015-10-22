@@ -13,11 +13,12 @@
     <link href="{% static 'adminLTE/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
     <!-- Ionicons -->
     <link href='{% static "adminLTE/css/ionicons.min.css" %}' rel="stylesheet" type="text/css"/>
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+
     <!-- Theme style -->
     <link href='{% static "adminLTE/css/AdminLTE.css" %}' rel="stylesheet" type="text/css"/>
 
     <link href='{% static "adminLTE/css/skins/skin-black.min.css" %}' rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
   {% endblock %}
   {% block css %}{% endblock %}
 
@@ -48,7 +49,7 @@
             <span class="sr-only">Toggle navigation</span>
         </a>
         {% if lab %}
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav hidden-xs hidden-sm">
             <ul class=" breadcrumb list-inline">
               <li><a href="/"><i class="fa fa-home"></i> {% trans 'Home' %}</a></li>
               <li><a href="{{ lab.get_absolute_url }}">

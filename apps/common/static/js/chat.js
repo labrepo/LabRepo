@@ -20,6 +20,7 @@ socket.onmessage = function(event) {
     debug_log('Get message: ', event.data)
     var data = JSON.parse(event.data);
     $('.comment-form').closest('.box').find('.comments-block').append(data.html);
+    scroll_to_end()
 };
 
 socket.onerror = function(error) {
@@ -32,3 +33,7 @@ function debug_log(){
         console.log('[SOCKETS]', Array.prototype.slice.call(arguments).join(' '))
     }
 }
+
+function scroll_to_end() {
+    $(".comments-block").scrollTop($(".comments-block")[0].scrollHeight);
+};

@@ -13,6 +13,11 @@ $(document).ready(function () {
         CKEDITOR.instances[comment_field_id].setData('');
     });
 
+    // Scroll to comment's block bottom
+    if ($(".comment-activities").length) {
+        $(".comment-activities").scrollTop($(".comment-activities")[0].scrollHeight);
+    }
+
     invite();
 
     $('body')

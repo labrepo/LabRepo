@@ -306,3 +306,8 @@ span.has-error {
 .comment-activities.comments-block {
     max-height: 600px;
 }
+
+.comment-block .comment-text img {
+    width: 100% !important;
+    height: 100% !important;
+}
