@@ -1,4 +1,9 @@
 ---
 - name: Install redis
-  apt: name=redis-server state=present
+  apt: name=redis-server=2:2.8.4-2 state=present
+  sudo: yes
+
+- name: Copy redis.conf
+  template: src=redis.conf dest=/etc/redis/redis.conf
+  notify: restart redis
   sudo: yes

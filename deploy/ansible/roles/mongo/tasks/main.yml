@@ -1,6 +1,6 @@
 ---
 - name: Install mongo
-  apt: name=mongodb state=present
+  apt: name=mongodb=1:2.4.9-1ubuntu2 state=present
   sudo: yes
 
 - name: Copy mongod.conf

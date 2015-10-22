@@ -17,7 +17,7 @@
   sudo: yes
 
 - name: Install supervisor=3.0
-  apt: name=supervisor state=present
+  apt: name=supervisor=3.0b2-1 state=present
   sudo: yes
 
 

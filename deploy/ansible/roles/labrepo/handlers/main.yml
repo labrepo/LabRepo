@@ -1,6 +1,6 @@
 ---
-- name: restart nginx
-  service: name=nginx state=restarted enabled=yes
+- name: Reload nginx
+  service: name=nginx state=reload enabled=yes
   sudo: yes
 
 - name: restart supervisor
