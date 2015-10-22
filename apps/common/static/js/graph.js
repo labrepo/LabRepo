@@ -1,7 +1,7 @@
 function render_graph(graph_data, graph_area_selector, onclick_function) {
 
     var w = window.innerWidth;
-    var h = window.innerHeight;
+    var h = window.innerHeight - window.innerHeight / 3 ;
 
     var focus_node = null, highlight_node = null;
 
@@ -407,7 +407,7 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
         function resize() {
             var rect = d3.select(".graph-area").node().getBoundingClientRect();
             var width = rect.width;
-            var height = window.innerHeight;
+            var height = window.innerHeight - window.innerHeight / 3;
 
             //            var svg_rect = svg.node().getBBox()
             //height = svg_rect.height;//window.innerHeight;

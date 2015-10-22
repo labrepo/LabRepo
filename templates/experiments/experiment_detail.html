@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% load i18n static %}
-
+{% block wrapper_classes %}{% endblock %}
 {% block breadcrumb %}
 <li class="active" xmlns="http://www.w3.org/1999/html">{{ object }}</li>
 {% endblock %}
@@ -13,7 +13,7 @@
 <div class="row">
   <div class="col-lg-12">
     <div class="nav-tabs-custom">
-      <ul class="nav nav-tabs" role="tablist">
+      <ul class="nav nav-tabs exp-nav" role="tablist">
         <li class="active"><a href="#exp-chat" role="tab" data-toggle="tab"><i class="fa fa-comments"></i> {% trans 'Discussion' %}</a></li>
         <li class=""><a href="#exp-workfow" data-target="#exp-workfow" role="tab" data-toggle="tab"><i class="fa fa-edit"></i> {% trans 'Workflow' %}</a></li>
         <li class=""><a href="#unit-page" data-target="#unit-page" role="tab" data-toggle="tab"><i class="fa fa-cube"></i> {% trans 'Data' %}</a></li>
@@ -161,7 +161,7 @@
             <div class="col-lg-6">
               <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                  <li class="active"><a href="#units-graph" data-toggle="tab"><i class="fa fa-pie-chart"></i>  {% trans 'Graph' %}</a></li>
+                  <li class=""><a href="#units-graph" data-toggle="tab"><i class="fa fa-pie-chart"></i>  {% trans 'Graph' %}</a></li>
                   <li class="">
                     <a href="#units-list" data-toggle="tab"><i class="fa fa-list"></i> {% trans 'List' %}</a>
                   </li>
@@ -401,12 +401,15 @@
     $(function() {
       InitJSTree(treeElement,['search', 'checkbox']);
 
+      // set height of comment block
+      $('.comment-activities').css('max-height', window.innerHeight / 3)
+
       // fix bootstrap tabs urls
       var hash = window.location.hash;
       hash = hash.substr(0, 2) == '#/' ? '#' + hash.substr(2) :  hash;
       hash && $('ul.nav a[href="' + hash + '"]').tab('show');
 
-      $('.nav-tabs a').click(function (e) {
+      $('.nav-tabs.exp-nav a').click(function (e) {
         $(this).tab('show');
         var scrollmem = $('body').scrollTop();
         window.location.hash = this.hash;
@@ -756,12 +759,12 @@
       })
 
     });
-  $('body').on('click','.comment-input', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        $(this).hide()
-        $(this).closest('form').find('.comment-editor').show();
-    });
+//  $('body').on('click','.comment-input', function (e) {
+//        e.preventDefault();
+//        e.stopPropagation();
+//        $(this).hide()
+//        $(this).closest('form').find('.comment-editor').show();
+//    });
   $('body').on('click','.comment-cancel', function (e) {
         e.preventDefault();
         e.stopPropagation();
