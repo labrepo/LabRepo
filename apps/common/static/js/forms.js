@@ -18,6 +18,13 @@ $(document).ready(function () {
         $(".comment-activities").scrollTop($(".comment-activities")[0].scrollHeight);
     }
 
+    // Add lightbox to chat images
+    $('.comment-block .comment-text img').each(function (i, element) {
+        var that = $(element)
+        that.wrap( '<a href="'+that.attr('src')+'" data-lightbox="'+ i +'"></a>' );
+    });
+
+
     invite();
 
     $('body')
