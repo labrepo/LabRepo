@@ -1,0 +1,51 @@
+---
+- name: Add elasticsearch apt key
+  apt_key: url=http://packages.elasticsearch.org/GPG-KEY-elasticsearch state=present
+  sudo: yes
+
+- name: Add Elasticsearch repository.
+  apt_repository:
+    repo: 'deb http://packages.elasticsearch.org/elasticsearch/1.2/debian stable main'
+    state: present
+    update_cache: yes
+  sudo: yes
+
+- name: Install openjdk for elasticsearch
+  apt: name=openjdk-7-jre-headless state=present
+  sudo: yes
+
+- name: Install curl
+  apt: name=curl state=present
+  sudo: yes
+
+- name: Install elasticsearch
+  apt: name=elasticsearch=1.2.4 state=present
+  sudo: yes
+
+- name: Make Elasticsearch start with boot
+  command: update-rc.d elasticsearch defaults
+  sudo: yes
+
+- name: Check elastic plugins directory
+  file: path=/usr/share/elasticsearch/plugins/ state=directory
+  sudo: yes
+
+- stat: path=/usr/share/elasticsearch/plugins/mapper-attachments
+  register: mapper_attachments_rules
+  sudo: yes
+
+- name: Plugins for ElasticSearch(mapper-attachments)
+  command: /usr/share/elasticsearch/bin/plugin --install elasticsearch/elasticsearch-mapper-attachments/2.3.1 chdir=/usr/share/elasticsearch
+  sudo: yes
+  when: mapper_attachments_rules.stat.islnk is not defined
+  notify: restart elasticsearch
+
+- stat: path=/usr/share/elasticsearch/plugins/river-mongodb
+  register: river_mongodb_rules
+  sudo: yes
+
+- name: Plugins for ElasticSearch(river-mongodb)
+  command: /usr/share/elasticsearch/bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/2.0.1
+  sudo: yes
+  when: river_mongodb_rules.stat.islnk is not defined
+  notify: restart elasticsearch
