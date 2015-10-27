@@ -38,8 +38,9 @@ class UnitPopupForm(BaseForm):
         self.fields['experiments'].initial = experiment
         self.fields['parent'].queryset = Unit.objects.filter(lab=lab, active=True)
         self.fields['tags'].queryset = Tag.objects.filter(lab=lab)
-        self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk,
-                                                                 attrs={'id': 'unit_create_description_field'})
+        # self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk,
+        #                                                          attrs={'id': 'unit_create_description_field'})
+        self.fields['description'].widget.attrs['class'] += ' summernote '
 
     class Meta:
         document = Unit
@@ -58,10 +59,11 @@ class UnitTabForm(BaseForm):
         lab_pk = kwargs.pop('lab_pk')
         lab = Lab.objects.get(pk=lab_pk)
         super(UnitTabForm, self).__init__(*args, **kwargs)
-        self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk,
-                                                                 attrs={'id': 'unit_description_field'})
+        # self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab_pk,
+        #                                                          attrs={'id': 'unit_description_field'})
                                                                  # FIX CKEDITOR MULTIPLE INSTANCES
         self.fields['description'].label = ''
+        self.fields['description'].widget.attrs['class'] += ' summernote '
         self.fields['sample'].widget = forms.TextInput()
         self.fields['parent'].queryset = Unit.objects.filter(lab=lab, active=True)
 

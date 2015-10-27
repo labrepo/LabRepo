@@ -200,7 +200,7 @@
             </div>
 
             <div class="col-lg-6">
-              <div class="nav-tabs-custom">
+              <div class="nav-tabs-custom unit-tabs">
                 <ul class="nav nav-tabs">
                   <li class="active"><a href="#unit-desc" data-toggle="tab"><i class="fa fa-file-text-o"></i> {% trans 'Description' %}</a></li>
                   <li class=""><a href="#unit-measurements" data-toggle="tab"><i class="fa fa-table"></i> {% trans 'Measurements' %}</a></li>
@@ -295,6 +295,8 @@
   <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.full.css' %}">
   <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.bootstrap.css' %}">
   <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
+  <link href="{% static 'summernote/summernote.css' %}" type="text/css" media="all" rel="stylesheet" />
+
   <link rel="stylesheet" media="screen" href="{% static 'lightbox/css/lightbox.css' %}">
   <style>
     svg {
@@ -356,7 +358,7 @@
 
 {% block script %}
   {% include 'uploader/scripts.html' %}
-  <script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+  <script type="text/javascript" src="{{ STATIC_URL }}summernote/summernote.min.js"></script>
   <script src="{% static 'js/font-awesome-unicode-map.js' %}"></script>
   <script src="{% static 'js/recent.js' %}"></script>
   <script src="{% static 'js/d3.v3.min.js' %}"></script>
@@ -508,6 +510,7 @@
 
         // comments
         $('#unit-comments').html(data.comments)
+        addSumernote();
 
         //edit button
 //        var edit_url = '/{{ lab.pk }}/units/detail/'+ unit.id + '/'
@@ -554,21 +557,13 @@
         var unit_data = window.unit_data
         unit_data['data-0-description'] = $form.find('textarea[name="description"]').val();
 
-        if (typeof CKEDITOR !== "undefined") {
-            for (var instance in CKEDITOR.instances) {
-                if (CKEDITOR.instances.hasOwnProperty(instance)) {
-                    CKEDITOR.instances[instance].updateElement();
-                }
-            }
-        }
-
         $.post($form.attr('action'), unit_data)
             .fail(function (xhr) {
                 form_fail($form, xhr)
             }).done(function (response) {
-               var desc_value = $form.find('textarea[name="description"]').val()
-               $form.parents('.description-editor').hide().parents('#description').find('.description-show').show();
-               $form.parents('.description-editor').hide().parents('#description').find('.description-text').html(desc_value);
+                var desc_value = $form.find('textarea[name="description"]').val()
+                $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
+                $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(desc_value);
 
             });
     });
@@ -585,8 +580,8 @@
             .fail(function (xhr) {
               form_fail($form, xhr)
             }).done(function (response) {
-              $form.parents('.field-editor').hide().parents('div').find('.field-show').show();
-              $form.parents('.field-editor').hide().parents('div').find('.field-text').html(sample);
+              $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
+              $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(sample);
               graph.updateNodeText(response[0][1]['pk'], sample)
 
             });
@@ -609,8 +604,8 @@
             .fail(function (xhr) {
               form_fail($form, xhr)
             }).done(function (response) {
-              $form.parents('.field-editor').hide().parents('div').find('.field-show').show();
-              $form.parents('.field-editor').hide().parents('div').find('.field-text').html(parents);
+              $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
+                $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(parents);
               graph.updateParents(response[0][1]['pk'], parents)
             });
   });

@@ -142,6 +142,10 @@
     var plot_un = '{{ user.plot_un|default:"" }}';
     var plot_key = '{{ user.plot_key|default:"" }}';
 
+    var lab_pk = "{{ lab_pk }}"
+    if (!lab_pk){
+      lab_pk = "{{ lab.pk }}"
+    }
 //    set project variables from django
     var LabRepo = {}
     LabRepo.domain = '{{ DOMAIN }}';

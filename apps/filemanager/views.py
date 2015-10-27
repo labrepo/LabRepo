@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import
 import json
+import uuid
 import mimetypes
 import os
 import re
@@ -9,12 +10,14 @@ import StringIO
 import paramiko
 from contextlib import contextmanager
 
+from PIL import Image
+
 from fs.osfs import OSFS
 from fs.sftpfs import SFTPFS
 from fs.mountfs import MountFS
 from fs.wrapfs.readonlyfs import ReadOnlyFS
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError, HttpResponseForbidden
 from django.shortcuts import render
 from django.utils.datastructures import SortedDict as OrderedDict
 from django.utils.encoding import smart_str
@@ -490,7 +493,7 @@ def pyfs_file(lab_pk, file_path):
         UPLOAD_ROOT = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab_pk + '/')
 
         relative_dir_path = trim_upload_url(file_path, UPLOAD_URL) # get the file path on pyfs
-        print(relative_dir_path)
+
         fs = MountFS()
         local_fs = OSFS(UPLOAD_ROOT)
         fs.mountdir('.', local_fs)
@@ -823,3 +826,71 @@ class AngFileManagerDownloadView(AngularFileManagerMixin, FileManagerMixin, View
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
         response.write(file_object.read())
         return response
+
+
+class SummernoteUploadView(View):
+    """
+    Handle image uploading from summernote wysiwyg.
+    """
+    def get_file_name(self, lab_pk, filename):
+        """
+        return file name for saving file. check for filename conflicts.
+        Add random string to name if filename already exists.
+        """
+        path = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab_pk, filename)
+        name = filename
+        while os.path.isfile(path):
+            name = u'{}_{}.{}'.format(
+                filename.split('.')[0],
+                uuid.uuid4().hex[:10],
+                '.'.join(filename.split('.')[1:])
+            )
+            path = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab_pk, name)
+
+        return name
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method != 'POST':
+            return HttpResponseBadRequest('Only POST method is allowed')
+
+        if not request.user.is_authenticated():
+            return HttpResponseForbidden('Only authenticated users are allowed')
+
+        if not request.FILES.getlist('files'):
+            return HttpResponseBadRequest('No files were requested')
+
+        try:
+            attachments = []
+            for file in request.FILES.getlist('files'):
+
+                # check if an image
+                try:
+                    Image.open(file)
+                except IOError:
+                    return HttpResponseServerError('Failed to save attachment. Not an Image')
+
+                filename = self.get_file_name(kwargs.get('lab_pk'), file.name)
+                path = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, kwargs.get('lab_pk'), filename)
+
+                with open(path, 'wb+') as destination:
+                    for chunk in file.chunks():
+                        destination.write(chunk)
+
+                url = request.build_absolute_uri(os.path.join(
+                    settings.FILEMANAGER_UPLOAD_URL,
+                    kwargs.get('lab_pk'),
+                    filename,
+                ))
+
+                attachments.append({
+                    'name': filename,
+                    'size': file.size,
+                    'url': url,
+                })
+
+            return HttpResponse(encode_json({
+                'files': attachments
+            }))
+
+        except IOError:
+            return HttpResponseServerError('Failed to save attachment')

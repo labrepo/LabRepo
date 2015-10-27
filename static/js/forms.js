@@ -2,15 +2,19 @@ $(document).ready(function () {
 
 
     addSelect2();
-
+    addSumernote()
 
     submitForm($('.comment-form'), function (response, form) {
-        form.closest('.comments-block').find('div#comment').append(response.data); //old
-//        form.closest('.box').find('.comments-block').append(response.data);  // new
+//        form.closest('.comments-block').find('div#comment').append(response.data); //old
+        //if not web sockets
+        form.closest('.box').find('.comments-list').append(response.data);  // new
+
         $('div#all div.resent-activities ul:not(.pager), div#comments_activities div.resent-activities ul:not(.pager)').prepend(response.resent_activity);
         form.trigger('reset').find('.has-error').removeClass('has-error');
         var comment_field_id = form.find('textarea[name="create-text"]').attr('id');
-        CKEDITOR.instances[comment_field_id].setData('');
+        $('#' + comment_field_id).code('');
+//        CKEDITOR.instances[comment_field_id].setData('');
+//        CKEDITOR.instances[comment_field_id].setData('');
     });
 
     // Scroll to comment's block bottom
@@ -34,7 +38,8 @@ $(document).ready(function () {
 
             $('div.comment-modal form').attr('action', that.data('url')).find('[name="update-text"]').val(value);
             var comment_field_id = that.closest('.comment-area').find('div.comment-modal textarea[name="update-text"]').attr('id');
-            CKEDITOR.instances[comment_field_id].setData(value);
+            $(that.closest('.comment-area').find('div.comment-modal textarea[name="update-text"]')).code(value);
+//            CKEDITOR.instances[comment_field_id].setData(value);
         })
         .on('click', '.comment-remove', function () {
             submitForm($(this).closest('form'), function (response) {
@@ -71,6 +76,61 @@ $(document).ready(function () {
     });
 });
 
+function addSumernote() {
+    $('.summernote').each(function (i, input) {
+        var $input = $(input);
+        $input.summernote({
+            height: 200,
+            width: '100%',
+            airMode: false,
+            focus: true,
+            toolbar: [
+                ['style', ['style']],
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['para', ['ul', 'ol']],
+                ['insert', ['link', 'picture']],
+                ['view', ['fullscreen', 'codeview']],
+                ['help', ['help']]
+            ],
+            onKeydown: function (e) {
+                if (e.keyCode == 13 && e.shiftKey && !$input.summernote('isEmpty'))
+                {
+                    $input.closest('form').submit()
+                    // prevent default behavior
+                    e.preventDefault();
+                }
+            },
+
+            onImageUpload: function(files) {
+                var imageInput = $('.note-image-input');
+                var sn = $(this);
+                imageInput.fileupload({
+                    uploadTemplateId: null,
+                    downloadTemplateId: null,
+                });
+
+                var jqXHR = imageInput.fileupload('send',
+                    {
+                        files: files,
+                        formData: {csrfmiddlewaretoken: csrftoken},
+                        url: '/' + lab_pk + '/filemanager/summernote_upload/',
+                    })
+                    .success(function (data, textStatus, jqXHR) {
+                        $.each(data.files, function (index, file) {
+                            sn.summernote("insertImage", file.url);
+                        });
+                    })
+                    .error(function (jqXHR, textStatus, errorThrown) {
+                        // TODO: Display a detailed error message. It will come from JSON.
+                        alert( 'Got an error while uploading images.' );
+                    });
+            }
+        });
+        //fix started bug
+        $input.code('');
+    });
+};
+
 function invite() {
     submitForm($('.invite-member'), function (response, form) {
         var fields = form.data('field').split(',');
@@ -106,7 +166,7 @@ function submitForm(el, callback, error_callback) {
                 }
             }
         }
-        console.log($form);
+
         $.post($form.attr('action'), $form.serialize())
             .fail(function (xhr) {
                 if (error_callback) {

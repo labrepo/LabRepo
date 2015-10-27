@@ -125,7 +125,7 @@ class CommentMixin(object):
         return {'instance_type': self.model._meta.object_name, 'object_id': self.object.pk}
 
     def get_list_comment(self):
-        return Comment.objects.filter(instance_type=self.model._meta.object_name, object_id=self.object.pk)
+        return Comment.objects.filter(instance_type=self.model._meta.object_name, object_id=self.object.pk).order_by('action_time')
 
     def get_context_data(self, **kwargs):
         ctx = super(CommentMixin, self).get_context_data(**kwargs)

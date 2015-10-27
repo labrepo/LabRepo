@@ -3,6 +3,9 @@ from . import views
 
 urlpatterns = patterns(
     'filemanager.views',
+
+    url(r'^summernote_upload/$', views.SummernoteUploadView.as_view(), name='summernote_upload'),
+
     url(r'^include/$', views.FileManagerView.as_view(), name='filemanager-include'),
     url(r'^old/$', views.FileManagerView.as_view(), {'template_name': 'filemanager/filemanager.html'}, name='filemanager'),
 

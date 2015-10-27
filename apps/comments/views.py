@@ -34,15 +34,16 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
                                                     **{'comment_model': self.object.instance_type,
                                                     self.object.instance_type.lower(): self.object.object_id})
 
-        # publish message in the redis queue
-        r = redis.StrictRedis(host='localhost', port=6379, db=3)
-        p = r.pubsub()
-        channel = '{}'.format(self.object.object_id)
-        html = render_to_string(self.template_name, {'comment': self.object, 'lab': self.lab})
-        r.publish(channel, json.dumps({
-            'html': html,
-            'user_pk': u'{}'.format(self.object.init_user.pk),
-        }))
+        # publish message in the redis queue if experiment's comment
+        if self.object.instance_type == 'Experiment':
+            r = redis.StrictRedis(host='localhost', port=6379, db=3)
+            p = r.pubsub()
+            channel = '{}'.format(self.object.object_id)
+            html = render_to_string(self.template_name, {'comment': self.object, 'lab': self.lab})
+            r.publish(channel, json.dumps({
+                'html': html,
+                'user_pk': u'{}'.format(self.object.init_user.pk),
+            }))
 
         return self.render_to_json_response({'data': render_to_string(self.template_name, {'comment': self.object},
                                                                       context_instance=RequestContext(self.request)),
@@ -56,7 +57,7 @@ class CommentUpdateView(CheckLabPermissionMixin, InitialLabMixin, AjaxableRespon
     """
     model = Comment
     form_class = CommentForm
-    template_name = 'comments/comment.html'
+    template_name = 'comments/comment_block.html'
     prefix = 'update'
 
     def get_object(self, queryset=None):

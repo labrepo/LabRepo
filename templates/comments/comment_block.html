@@ -17,6 +17,8 @@
       {{ comment.init_user.full_name }}
       <span class="text-muted s">{{ comment.action_time|timesince }}</span>
     </span>
-    {{ comment|safe }}
+    <div class="comment-context">
+      {{ comment|safe }}
+    </div>
   </div>
 </div>

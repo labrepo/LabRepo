@@ -210,6 +210,7 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
             pass
 
         ctx = super(ExperimentDetailView, self).get_context_data(**kwargs)
+        self.units = Unit.objects.filter(experiments=self.object, active=True)
         ctx['units'] = self.units
 
         tags = Tag.objects.filter(lab=self.kwargs.get('lab_pk'))
@@ -224,11 +225,11 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
         ctx['UPLOAD_URL'] = UPLOAD_URL
         return ctx
 
-    def get_list_comment(self):
-        self.units = Unit.objects.filter(experiments=self.object, active=True)
-        queryset = list(super(ExperimentDetailView, self).get_list_comment())
-        queryset += list(Comment.objects.filter(instance_type='Unit', object_id__in=self.units.values_list('pk')))
-        return queryset
+    # def get_list_comment(self):
+    #     self.units = Unit.objects.filter(experiments=self.object, active=True)
+    #     queryset = list(super(ExperimentDetailView, self).get_list_comment())
+    #     queryset += list(Comment.objects.filter(instance_type='Unit', object_id__in=self.units.values_list('pk')))
+    #     return queryset
 
 
 class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitialMixin, AjaxableResponseMixin,
