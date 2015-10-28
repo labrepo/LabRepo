@@ -7,7 +7,7 @@ $(document).ready(function () {
     submitForm($('.comment-form'), function (response, form) {
 //        form.closest('.comments-block').find('div#comment').append(response.data); //old
         //if not web sockets
-        form.closest('.box').find('.comments-list').append(response.data);  // new
+        form.closest('.comment-area').find('.comments-list').append(response.data);  // new
 
         $('div#all div.resent-activities ul:not(.pager), div#comments_activities div.resent-activities ul:not(.pager)').prepend(response.resent_activity);
         form.trigger('reset').find('.has-error').removeClass('has-error');
@@ -80,7 +80,7 @@ function addSumernote() {
     $('.summernote').each(function (i, input) {
         var $input = $(input);
         $input.summernote({
-            height: 200,
+            height: 150,
             width: '100%',
             airMode: false,
             focus: true,

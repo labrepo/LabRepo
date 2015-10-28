@@ -1,47 +1,27 @@
 {% load i18n static bootstrap_tags %}
 <div class="comment-area">
-<div class="box box-widget chat-box" data-experiment-pk="{{ object.pk }}">
-  <!--<div class="box-header with-border">-->
-    <!--<h3 class="box-title">{% trans 'Comments' %}</h3>-->
-    <!--<div class="box-tools">-->
-      <!--<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>-->
-      <!--&lt;!&ndash;<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>&ndash;&gt;-->
-    <!--</div>-->
-  <!--</div>-->
-  <div class="box-body">
-
-  </div><!-- /.box-body -->
-  <div class="box-footer box-comments comments-block {% if not_sockets %}comments-list{% endif %} comment-activities">
-    {% for comment in comments %}
-      {% include 'comments/comment_block.html' %}
-    {% endfor %}
-    <div class="comments-end"></div>
-    {% include 'alert.html' with modal_id=delete_modal_id|default:'confirm-delete-comment' class="comment-remove" modal_class="confirm-delete-comment" %}
-  </div>
-
-  <div class="box-footer">
+    <div class="box-footer box-comments comments-block chat-box {% if not_sockets %}comments-list{% endif %} comment-activities" data-experiment-pk="{{ object.pk }}">
+      {% for comment in comments %}
+        {% include 'comments/comment_block.html' %}
+      {% endfor %}
+      <div class="comments-end"></div>
+      {% include 'alert.html' with modal_id=delete_modal_id|default:'confirm-delete-comment' class="comment-remove" modal_class="confirm-delete-comment" %}
+    </div>
+  <div class="box-footer comment-form-a">
     <form action="{% url 'comment:comment' lab_pk=lab.pk %}" method="post" id="comment-form" class="comment-form">
-      <!--<div class="comment-input">-->
-        <!--<img class="img-responsive img-circle img-sm " src="{% static 'img/gravatar2.png' %}" alt="alt text">-->
-        <!--&lt;!&ndash; .img-push is used to add margin to elements next to floating images &ndash;&gt;-->
-        <!--<div class="img-push">-->
-          <!--<input type="text" class="form-control input-sm " placeholder="Press enter to post comment">-->
-        <!--</div>-->
-      <!--</div>-->
+
       <div class="comment-editor">
-        <div class="box-body">
+        <div class="">
           {% csrf_token %}
           {{ comment_form_create|as_bootstrap }}
-          <!--{{ comment_form_create.media }}-->
         </div>
-        <div class="box-footer text-right">
-          <button type="button" class="btn btn-info btn-sm btn-flat comment-cancel">{% trans 'Cancel'|upper %}</button>
+        <div class=" text-right">
+          <!--<button type="button" class="btn btn-info btn-sm btn-flat comment-cancel">{% trans 'Cancel'|upper %}</button>-->
           <button type="submit" class="btn btn-info btn-sm btn-flat">{% trans 'Submit comment'|upper %}</button>
         </div>
       </div>
     </form>
   </div>
-</div>
 
 {% if not not_modal %}
   {% block modal %}

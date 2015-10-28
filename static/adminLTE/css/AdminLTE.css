@@ -9,6 +9,9 @@
 /*
  * Core: General Layout Style
  * -------------------------
+ *
+ * Fixes by labrepo:
+ * 1. img-sm, .box-comments .box-comment img, .user-block.user-block-sm img - image width and height are disabled
  */
 html,
 body {
@@ -4597,7 +4600,7 @@ table.text-center th {
   float: left;
 }
 .img-sm,
-.box-comments .box-comment img,
+/*.box-comments .box-comment img,*/
 .user-block.user-block-sm img {
   width: 30px!important;
   height: 30px!important;

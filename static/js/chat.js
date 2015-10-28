@@ -19,8 +19,8 @@ socket.onclose = function(event) {
 socket.onmessage = function(event) {
     debug_log('Get message: ', event.data)
     var data = JSON.parse(event.data);
-    $('.comment-form').closest('.box').find('.comments-block').append(data.html);
-    scroll_to_end()
+    $('.comment-form').closest('.comment-area').find('.comments-block').append(data.html);
+    comments_scroll_to_end()
 };
 
 socket.onerror = function(error) {
@@ -28,12 +28,11 @@ socket.onerror = function(error) {
 }
 
 function debug_log(){
-    console.log(LabRepo.debug)
     if(LabRepo.debug){
         console.log('[SOCKETS]', Array.prototype.slice.call(arguments).join(' '))
     }
 }
 
-function scroll_to_end() {
+function comments_scroll_to_end(a) {
     $(".comments-block").scrollTop($(".comments-block")[0].scrollHeight);
 };
