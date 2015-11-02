@@ -98,6 +98,10 @@ class AddUnitToExperimentForm(BaseForm):
         self.fields['experiment'].queryset = experiment_qs
         self.fields['experiment'].initial = experiment.pk
 
+        self.fields['experiment'].label = ''
+        self.fields['experiment'].help_text = ''
+        self.fields['units'].help_text = ''
+
         self.fields['units'].label = ''
         self.fields['units'].error_messages['required'] = _('You didn\'t select any units.')
         self.fields['units'].widget.attrs['class'] += ' select2'
