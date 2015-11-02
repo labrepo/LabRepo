@@ -1,6 +1,6 @@
 function render_graph(graph_data, graph_area_selector, onclick_function) {
 
-    var w = window.innerWidth;
+    var w = $(graph_area_selector).width();
     var h = window.innerHeight - window.innerHeight / 3 ;
 
     var focus_node = null, highlight_node = null;
@@ -19,10 +19,12 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
         .domain([1,100])
         .range([8,24]);
 
-    var force = d3.layout.force()
-        .linkDistance(60)
-        .charge(-300)
-        .size([w,h]);
+    var force = cola.d3adaptor()
+        .avoidOverlaps(true)
+        .convergenceThreshold(1e-9)
+        .handleDisconnected(false)
+        .symmetricDiffLinkLengths(30)
+        .size([w,h])
 
     var selected_node = null;
 
@@ -144,6 +146,9 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
     var nodes = graph.nodes,
         links = graph.links;
 
+    // set node sizes to remove node interception # cola.js
+    graph.nodes.forEach(function (v) { v.width = 80, v.height = 20 })
+
     force
         .nodes(nodes)
         .links(links)
@@ -227,7 +232,7 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
 
         s.exit().remove();
 
-        force.start();
+        force.start(30, 0, 10);
 
         vis.call(zoom);
         d3.select(window).on("resize", resize);
