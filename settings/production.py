@@ -58,26 +58,12 @@ _MONGODB_DATABASE_HOST = \
 
 mongoengine.connect(_MONGODB_NAME, host=_MONGODB_DATABASE_HOST, tz_aware=USE_TZ)
 
-BROKER_URL = _MONGODB_DATABASE_HOST
+BROKER_URL = 'redis://localhost:6379/1'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
 
-CELERY_MONGODB_BACKEND_SETTINGS = {
-    "host": _MONGODB_HOST,
-    "port": _MONGODB_PORT,
-    'user': _MONGODB_USER,
-    'password': _MONGODB_PASSWD,
-    'database': _MONGODB_NAME,
-    'taskmeta_collection': 'celery_tasks',
-}
 CELERY_ACCEPT_CONTENT = ['pickle']
 CELERY_EVENT_SERIALIZER = 'pickle'
-CELERY_RESULT_BACKEND = "mongodb"
 
-BROKER_BACKEND = "mongodb"
-BROKER_HOST = _MONGODB_HOST
-BROKER_PORT = _MONGODB_PORT
-BROKER_USER = _MONGODB_USER
-BROKER_PASSWORD = _MONGODB_PASSWD
-BROKER_VHOST = "celery"
 
 EMAIL_HOST = get_env_setting('EMAIL_HOST')
 EMAIL_PORT = get_env_setting('EMAIL_PORT')
