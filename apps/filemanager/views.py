@@ -9,7 +9,7 @@ from os import path
 import StringIO
 import paramiko
 from contextlib import contextmanager
-
+import itertools
 from PIL import Image
 
 from fs.osfs import OSFS
@@ -26,7 +26,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.core.urlresolvers import reverse
-import itertools
+from django.core.exceptions import PermissionDenied
 
 from .decorators import filemanager_require_auth
 from labs.documents import Lab
@@ -53,6 +53,9 @@ class FileManagerMixin(object):
     def dispatch(self, request, *args, **kwargs):
         self.UPLOAD_URL, self.UPLOAD_ROOT = self.get_upload(request, *args, **kwargs)
         self.lab = Lab.objects.get(pk=request.session.get('lab'))
+
+        if not self.lab.is_assistant(request.user):
+            raise PermissionDenied
 
     def smart_mount(self, file_path=None):
         """
@@ -747,7 +750,8 @@ class AngFileManagerRemoveView(AngularFileManagerMixin, FileManagerMixin, View):
                     self.fs.removedir(relative_dir_path)
                     success_code = True
                     error_message = None
-                except:
+                except Exception as e:
+                    print e
                     error_message = 'There was an error removing the directory.'
                     success_code = None
             else:
@@ -894,3 +898,6 @@ class SummernoteUploadView(View):
 
         except IOError:
             return HttpResponseServerError('Failed to save attachment')
+
+
+# TODO: add stubs for get methods
