@@ -1,8 +1,3 @@
-
-$(function () {
-    InitJSTree($('#location-tree'));
-});
-
 function InitJSTree(treeElement, plugins){
 
         if (typeof(treeElement)==='undefined') treeElement = $('#location-tree');

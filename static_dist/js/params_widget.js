@@ -112,7 +112,8 @@
             $('#id_params').val(JSON.stringify(data));
         }
     };
-    $('#json-field').dictEditor(JSON.parse($('#id_params').val()), opt);
-
+    if($('#json-field').lenght){
+        $('#json-field').dictEditor(JSON.parse($('#id_params').val()), opt);
+    }
 })
 (jQuery);

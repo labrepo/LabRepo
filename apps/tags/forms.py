@@ -11,9 +11,6 @@ from common.forms import BaseForm
 
 
 class DictWidget(HiddenInput):
-    class Media:
-        css = {'all': ('css/jsoneditor.css',)}
-        js = ('js/params_widget.js',)
 
     def render(self, name, value, attrs=None):
         value = json.dumps(value)
@@ -30,9 +27,6 @@ class DictWidget(HiddenInput):
 
 
 class ColorWidget(TextInput):
-    class Media:
-        css = {'all': ('adminLTE/plugins/colorpicker/bootstrap-colorpicker.min.css',)}
-        js = ('adminLTE/plugins/colorpicker/bootstrap-colorpicker.min.js', 'js/color_widget.js')
 
     def render(self, name, value, attrs=None):
         html = u"""

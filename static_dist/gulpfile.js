@@ -14,8 +14,11 @@ gulp.task('default', function (callback) {
         'scripts:jquery',
         'scripts:vendor',
         'copy_fonts',
-        'copy_images',
         'copy_templates',
+        'images:vendor',
+        'images:app',
+        'scripts:app',
+        'styles:app',
 
         function (error) {
             if (error) {
@@ -27,7 +30,7 @@ gulp.task('default', function (callback) {
         });
 });
 
-gulp.task('copy_images', function() {
+gulp.task('images:vendor', function() {
     return gulp.src(mainBowerFiles({
         "overrides":{
             "jstree":{
@@ -61,6 +64,7 @@ gulp.task('styles:vendor', function () {
             "bower_components/handsontable/dist/handsontable.full.min.css",
             "bower_components/handsontable/plugins/bootstrap/handsontable.bootstrap.css",
             "bower_components/AdminLTE/plugins/fullcalendar/fullcalendar.min.css",
+            "bower_components/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.css",
             "bower_components/jstree/dist/themes/default/style.min.css",
             "bower_components/jquery.fancytree/dist/skin-bootstrap/ui.fancytree.min.css",
             "bower_components/summernote/dist/summernote.css",
@@ -92,7 +96,7 @@ gulp.task('styles:vendor', function () {
             replace:  ['40px.png','../images/40px.png'],
         }))
         .pipe(urlAdjuster({
-            replace:  ['throbber.gif','../images/throbber.gifg'],
+            replace:  ['throbber.gif','../images/throbber.gif'],
         }))
         .pipe(urlAdjuster({
             replace:  ['../',''],
@@ -151,6 +155,7 @@ gulp.task('scripts:vendor', function () {
         "bower_components/AdminLTE/dist/js/app.js",
         "bower_components/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js",
         "bower_components/AdminLTE/plugins/fullcalendar/fullcalendar.min.js",
+        "bower_components/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.js",
 
         "bower_components/blueimp-tmpl/js/tmpl.min.js",
         "bower_components/blueimp-load-image/js/load-image.all.min.js",
@@ -196,3 +201,34 @@ gulp.task('scripts:vendor', function () {
         .pipe(concat('vendors.js'))
         .pipe(gulp.dest('../static/'));
 })
+
+gulp.task('scripts:app', function () {
+
+    return gulp.src([
+        "js/**.js",
+    ])
+        .pipe(print())
+        .pipe(concat('app.js'))
+        .pipe(gulp.dest('../static/'));
+})
+
+gulp.task('styles:app', function () {
+
+    return gulp.src([
+        "css/**.css",
+    ])
+        .pipe(print())
+        .pipe(concat('styles.css'))
+        .pipe(gulp.dest('../static/'));
+})
+
+gulp.task('images:app', function() {
+    return gulp.src([
+        "img/**",
+    ])
+        .pipe(filter([
+            '**/*.{png,gif,svg,jpeg,jpg}',
+        ]))
+        .pipe(print())
+        .pipe(gulp.dest('../static/img/'));
+});

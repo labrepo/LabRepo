@@ -91,7 +91,7 @@
         </div>
     </div>
     <div class="wrap-handsontable">
-      <div id="dataTable" data-content='{{ data }}' data-title='{{ title }}' data-column='{{ column }}'
+      <div id="dataTableEditable" data-content='{{ data }}' data-title='{{ title }}' data-column='{{ column }}'
            data-headers='{{ headers }}' {% block urls %}{% endblock %}></div>
     </div>
   </div>
@@ -129,12 +129,9 @@
 
 {% block script %}
   {% block extra_script %}{% endblock %}
-  <script src="{% static 'js/handson-table-new.js' %}"></script>
-  <script src="{% static 'js/plot.js' %}"></script>
-
     <script type="text/javascript">
         $(function() {
-            var table = $("#dataTable");
+            var table = $("#dataTableEditable");
             var options = $(table).handsontable('getDataAtRow', 0);
             $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
             for (var i = 0, max = options.length; i < max; i += 1) {
@@ -146,7 +143,7 @@
         $('body').on('click',' .revert-revision', function (e) {
             var url = $(this).data('url');
             $.post(url, function (data) {
-                var table = $("#dataTable");
+                var table = $("#dataTableEditable");
                 var table_data = data.table_data;
                 table_data.unshift(data.headers);
                 table.handsontable('loadData', table_data);
