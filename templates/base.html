@@ -20,6 +20,8 @@
   <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
   <![endif]-->
   <!--<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script>if (!window.jQuery) { document.write('<script src="/static/jquery.min.js"><\/script>'); }</script>
   {% block top_scripts %}{% endblock %}
 </head>
 <body class="sidebar-mini {% block body_classes %}skin-black {% endblock %}{% if SIDEBAR_COLLAPSED %}sidebar-collapse{% endif %}">

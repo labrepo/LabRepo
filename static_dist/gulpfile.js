@@ -11,6 +11,7 @@ var
 gulp.task('default', function (callback) {
     runSequence(
         'styles:vendor',
+        'scripts:jquery',
         'scripts:vendor',
         'copy_fonts',
         'copy_images',
@@ -130,10 +131,16 @@ gulp.task('copy_templates', function () {
         .pipe(gulp.dest('../static/src/templates/'));
 })
 
+gulp.task('scripts:jquery', function () {
+    return gulp.src([
+        "bower_components/jquery/dist/jquery.min.js",
+    ])
+    .pipe(gulp.dest('../static/'));
+})
+
 gulp.task('scripts:vendor', function () {
 
     return gulp.src([
-        "bower_components/jquery/dist/jquery.min.js",
         "bower_components/jquery-ui/jquery-ui.min.js",
         "bower_components/js-cookie/src/js.cookie.min.js",
         "bower_components/bootstrap/dist/js/bootstrap.min.js",
