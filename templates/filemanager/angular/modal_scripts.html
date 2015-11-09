@@ -1,8 +1,7 @@
-{% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 
-{% block extra_script %}
   <script type="text/javascript">
+    console.log('!')
     var lab_pk = '{{ lab.pk }}';
     angular.module('FileManagerApp').config(['fileManagerConfigProvider', function (config) {
       var defaults = config.$get();
@@ -14,32 +13,22 @@
         removeUrl: '/' + lab_pk + '/filemanager/remove/',
         uploadUrl: '/' + lab_pk + '/filemanager/upload/',
         downloadFileUrl: '/' + lab_pk + '/filemanager/download/',
+        modal: true,
+        sidebar: false,
+        breadcrumb: false,
         allowedActions: angular.extend(defaults.allowedActions, {
-          remove: true,
-          changePermissions: false,
+          rename: false,
+          copy: false,
           edit: false,
+          changePermissions: false,
           compress: false,
           compressChooseName: false,
-          extract: false
+          extract: false,
+          download: false,
+          preview: true,
+          choose: true,
+          remove: false
         })
       });
     }]);
   </script>
-{% endblock %}
-{% block page_header %}{% endblock %}
-
-{% block content %}
-<div data-ng-app="FileManagerApp">
-  <div class="ng-cloak">
-    <angular-filemanager></angular-filemanager>
-    </div>
-</div>
-{% endblock %}
-
-{% block breadcrumb %}
-  <li class="active">{% trans 'File Manager' %}</li>
-{% endblock %}
-
-{% block content_header %}
-  {% trans 'File Manager' %}
-{% endblock %}

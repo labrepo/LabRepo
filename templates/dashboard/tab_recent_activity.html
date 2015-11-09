@@ -4,10 +4,10 @@
 {% include 'pagination.html' %}
 {% block extra_script %}
   <script>
-    $(function () {
+    (function($) {
       $('#timelineDiv').slimScroll({
         height: '510px'
       });
-    });
+   })(jQuery);
   </script>
 {% endblock %}

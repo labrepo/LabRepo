@@ -45,12 +45,11 @@
 {% block modal %}{% include 'alert.html' with btn_id="location-remove" modal_id="confirm-delete" %}{% endblock %}
 
 {% block script %}
-  <script src="{% static 'jstree/jstree.js' %}"></script>
   <script src="{% static 'js/forms.js' %}"></script>
   <script src="{% static 'js/tree.js' %}"></script>
   {% block form_script %}{% endblock %}
 {% endblock %}
 
 {% block css %}
-  <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
+  <!--<link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">-->
 {% endblock %}

@@ -287,13 +287,6 @@
 {% endblock %}
 
 {% block css %}
-  {% include 'uploader/styles.html' %}
-  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.full.css' %}">
-  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.bootstrap.css' %}">
-  <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
-  <link href="{% static 'summernote/summernote.css' %}" type="text/css" media="all" rel="stylesheet" />
-
-  <link rel="stylesheet" media="screen" href="{% static 'lightbox/css/lightbox.css' %}">
   <style>
     svg {
       background-color: #FFF;
@@ -353,25 +346,18 @@
 {% endblock %}
 
 {% block script %}
+  {% include 'filemanager/angular/modal_scripts.html' %}
   {% include 'uploader/scripts.html' %}
-  <script type="text/javascript" src="{{ STATIC_URL }}summernote/summernote.min.js"></script>
+
   <script src="{% static 'js/font-awesome-unicode-map.js' %}"></script>
   <script src="{% static 'js/recent.js' %}"></script>
-  <script src="{% static 'js/d3.v3.min.js' %}"></script>
-  <script src="{% static 'js/cola.min.js' %}"></script>
   <script src="{% static 'js/graph.js' %}"></script>
 
-  <script src="{% static 'jquery-handsontable/jquery.handsontable.full.js' %}"></script>
-  <script src="{% static 'jquery-handsontable/selectMultipleEditor.js' %}"></script>
-  <script src="{% static 'jquery-handsontable/select2Editor.js' %}"></script>
-  <script src="{% static 'jquery-handsontable/datetimeEditor.js' %}"></script>
   {% block extra_script %}{% endblock %}
   <script src="{% static 'js/handson-table-new.js' %}"></script>
-  <script src="{% static 'jstree/jstree.js' %}"></script>
   <script src="{% static 'js/tree.js' %}"></script>
   <script src="{% static 'js/plot.js' %}"></script>
   <script src="{% static 'js/chat.js' %}"></script>
-  <script src="{% static 'lightbox/js/lightbox.min.js' %}"></script>
 
   <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="mw4uj2q482bd8w0"></script>
 

@@ -36,14 +36,6 @@
 {% endblock %}
 
 {% block script %}
-  <script src="{% static 'jstree/jstree.js' %}"></script>
-  <script src="{% static 'fancytree/js/jquery.fancytree.js' %}"></script>
-  <script src="{% static 'fancytree/js/jquery.fancytree.dnd.js' %}"></script>
-  <script src="{% static 'fancytree/js/jquery.fancytree.edit.js' %}"></script>
-  <script src="{% static 'fancytree/js/jquery.fancytree.glyph.js' %}"></script>
-  <script src="{% static 'fancytree/js/jquery.fancytree.table.js' %}"></script>
-  <script src="{% static 'fancytree/js/jquery.fancytree.wide.js' %}"></script>
-  <script src="{% static 'fancytree/js/jquery.fancytree.filter.js' %}"></script>
   <script src="{% static 'js/ftree.js' %}"></script>
   <script>
     // $('.hideSection').click(function (el) {
@@ -76,8 +68,4 @@
     // });
   </script>
   {% block form_script %}{{ form.media }}{% endblock %}
-{% endblock %}
-{% block css %}
-  <link rel="stylesheet" media="screen" href="{% static 'jstree/themes/default/style.min.css' %}">
-  <link rel="stylesheet" media="screen" href="{% static 'fancytree/css/ui.fancytree.css' %}">
 {% endblock %}

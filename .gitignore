@@ -58,3 +58,5 @@ local.py
 
 /doc/build/
 fabricrc
+static_dist/bower_components
+static_dist/node_modules

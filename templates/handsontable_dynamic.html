@@ -57,17 +57,11 @@
 
 
 {% block css %}
-  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.full.css' %}">
-  <link rel="stylesheet" media="screen" href="{% static 'jquery-handsontable/jquery.handsontable.bootstrap.css' %}">
   {% block extra_css %}{% endblock %}
 {% endblock %}
 
 
 {% block script %}
-  <script src="{% static 'jquery-handsontable/jquery.handsontable.full.js' %}"></script>
-  <script src="{% static 'jquery-handsontable/selectMultipleEditor.js' %}"></script>
-  <script src="{% static 'jquery-handsontable/select2Editor.js' %}"></script>
-  <script src="{% static 'jquery-handsontable/datetimeEditor.js' %}"></script>
   {% block extra_script %}{% endblock %}
   <script src="{% static 'js/handson-table-new.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,43 @@
+{
+  "name": "labrepo",
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "install": {
+    "path": "static/vendors"
+  },
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "d3": "~3.5.6",
+    "webcola": "~3.1.0",
+    "angular": "~1.4.7",
+    "jquery-ui": "~1.11.4",
+    "AdminLTE": "admin-lte#~2.3.2",
+    "js-cookie": "~2.0.4",
+    "select2": "~3.5.0",
+    "bootstrap": "~3.3.5",
+    "eonasdan-bootstrap-datetimepicker": "~4.17.37",
+    "blueimp-file-upload": "blueimp-file-upload-node#~9.11.2",
+    "ckeditor": "~4.5.4",
+    "jquery.fancytree": "fancytree#~2.12.0",
+    "Filemanager": "~2.2.0",
+    "summernote": "~0.6.16",
+    "lightbox2": "lightbox#~2.8.1",
+    "handsontable": "~0.20.0",
+    "angular-filemanager": "~1.4.0",
+    "handsontable-select2-editor": "~0.0.2",
+    "jstree": "~3.2.1",
+    "blueimp-gallery": "~2.16.0",
+    "font-awesome": "fontawesome#~4.4.0",
+    "Ionicons": "ionicons#~2.0.1"
+  }
+}
