@@ -64,6 +64,10 @@
 - name: Create a django dotenv settings file
   template: src=django_settings.conf dest={{ project_dir}}/settings/.env
 
+
+- include: static.yml
+
+
 - name: Collect static
   django_manage: command="collectstatic --noinput --verbosity=0" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
   environment:
@@ -81,7 +85,7 @@
 - name: Run tests
   django_manage: command="test --noinput --failfast" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
   environment:
-        DJANGO_SETTINGS_MODULE: "settings.testing"
+        DJANGO_SETTINGS_MODULE: "settings.server_testing"
 
 
 - name: Check supervisor service
@@ -92,10 +96,11 @@
   service: name=nginx state=started enabled=yes
   sudo: yes
 
-#- name: Force restart of labrepo
-#  command: /bin/true
-#  notify: restart supervisor
-#  notify: restart labrepo
+- name: Force restart of labrepo
+  command: /bin/true
+  notify: restart supervisor
+  notify: restart nginx
+  notify: restart labrepo
 
 
 

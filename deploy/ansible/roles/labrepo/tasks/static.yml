@@ -1,0 +1,16 @@
+---
+
+- name: install npm packeges
+  command: npm install
+  args:
+    chdir: "{{ project_dir }}/static_dist"
+
+- name: install bower packeges
+  command: bower install
+  args:
+    chdir: "{{ project_dir }}/static_dist"
+
+- name: run gulp task
+  command: gulp
+  args:
+    chdir: "{{ project_dir }}/static_dist"

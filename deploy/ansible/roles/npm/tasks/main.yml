@@ -1,0 +1,24 @@
+---
+- name: Install npm
+  apt: name=npm=1.3.10~dfsg-1 state=present
+  sudo: yes
+
+- name: Install gulp global
+  npm: >
+    name=gulp
+    state=present
+    global=yes
+    version=3.9.0
+  sudo: yes
+
+- name: Install bower global
+  npm: >
+    name=bower
+    state=present
+    global=yes
+    version=1.6.5
+  sudo: yes
+
+- name: Create symlink to node
+  file: src=/usr/bin/nodejs dest=/usr/bin/node state=link
+  sudo: yes

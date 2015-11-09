@@ -9,4 +9,5 @@
     - elastic
     - redis
     - django
+    - npm
     - labrepo
