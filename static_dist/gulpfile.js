@@ -5,6 +5,8 @@ var
     mainBowerFiles = require('main-bower-files'),
     runSequence = require('run-sequence'),
     print = require('gulp-print'),
+    uglify = require('gulp-uglify'),
+    minifyCss = require('gulp-minify-css'),
     urlAdjuster = require('gulp-css-url-adjuster')
     ;
 
@@ -83,6 +85,7 @@ gulp.task('styles:vendor', function () {
         .pipe(print())
 
         .pipe(concat('vendors.css'))
+        .pipe(minifyCss({processImport: false}))
         .pipe(urlAdjuster({
             replace:  ['select2-spinner.gif','../images/select2-spinner.gif'],
         }))
@@ -199,6 +202,7 @@ gulp.task('scripts:vendor', function () {
     ])
         .pipe(print())
         .pipe(concat('vendors.js'))
+        .pipe(uglify())
         .pipe(gulp.dest('../static/'));
 })
 
@@ -209,6 +213,7 @@ gulp.task('scripts:app', function () {
     ])
         .pipe(print())
         .pipe(concat('app.js'))
+        .pipe(uglify())
         .pipe(gulp.dest('../static/'));
 })
 
@@ -219,6 +224,7 @@ gulp.task('styles:app', function () {
     ])
         .pipe(print())
         .pipe(concat('styles.css'))
+        .pipe(minifyCss({processImport: false}))
         .pipe(gulp.dest('../static/'));
 })
 
