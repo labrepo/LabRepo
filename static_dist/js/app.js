@@ -6,6 +6,11 @@ $('.sidebar-toggle').click(function (event) {
     }
 })
 
+// -----  MathJax  -----
+window.MathJax.Hub.Config({
+    displayAlign: "left"
+});
+window.MathJax.Hub.Configured()
 
 // -----  Dashboard  -----
 $('body').on('submit','.storage-add', function (e) {
