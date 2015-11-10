@@ -2,12 +2,3 @@
   {% include 'dashboard/timeline.html' %}
 </div>
 {% include 'pagination.html' %}
-{% block extra_script %}
-  <script>
-    (function($) {
-      $('#timelineDiv').slimScroll({
-        height: '510px'
-      });
-   })(jQuery);
-  </script>
-{% endblock %}

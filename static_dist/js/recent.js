@@ -4,6 +4,7 @@ $(document).ready(function() {
         var that = $(this);
         $.get(that.data('url')).done(function(response){
             that.html(response);
+            set_recent_height();
         });
     }).on('click', 'ul.pager a', function(e){
         e.preventDefault();
@@ -11,8 +12,15 @@ $(document).ready(function() {
         if (that.attr('href').length) {
             $.get(that.attr('href')).done(function (response) {
                 $tabContainer.filter('.active').html(response);
+                set_recent_height();
             });
         }
         return false;
     })
 });
+
+function set_recent_height() {
+    $('#timelineDiv').slimScroll({
+        height: '510px'
+    });
+};

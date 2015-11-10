@@ -95,3 +95,26 @@ function table_to_plot_data(table_data) {
     }
     return plot_data
 }
+
+ $(function() {
+     var table = $("#dataTableEditable");
+     var options = $(table).handsontable('getDataAtRow', 0);
+     $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
+     for (var i = 0, max = options.length; i < max; i += 1) {
+         $('#plot-form .asis').append('<option value="'+ i +'">' + options[i] + '</option>')
+     }
+ });
+
+ // revert table data on revision restore
+ $('body').on('click',' .revert-revision', function (e) {
+     var url = $(this).data('url');
+     $.post(url, function (data) {
+         var table = $("#dataTableEditable");
+         var table_data = data.table_data;
+         table_data.unshift(data.headers);
+         table.handsontable('loadData', table_data);
+     });
+
+     reset_plot();
+
+ });
