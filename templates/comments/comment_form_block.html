@@ -11,13 +11,10 @@
     <form action="{% url 'comment:comment' lab_pk=lab.pk %}" method="post" id="comment-form" class="comment-form">
 
       <div class="comment-editor">
-        <div class="">
-          {% csrf_token %}
-          {{ comment_form_create|as_bootstrap }}
-        </div>
-        <div class=" text-right">
-          <!--<button type="button" class="btn btn-info btn-sm btn-flat comment-cancel">{% trans 'Cancel'|upper %}</button>-->
-          <button type="submit" class="btn btn-info btn-sm btn-flat">{% trans 'Submit comment'|upper %}</button>
+        {% csrf_token %}
+        <div class="textarea-with-button">
+          {{ comment_form_create }}
+          <button type="submit" class="textarea-button btn btn-info btn-sm btn-flat">{% trans 'Submit comment'|upper %}</button>
         </div>
       </div>
     </form>

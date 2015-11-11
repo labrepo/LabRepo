@@ -300,7 +300,15 @@ span.has-error {
     }
 }
 
+div.textarea-with-button{
+    position:relative;
+}
 
+.textarea-button{
+ position:absolute;
+ bottom:10px;
+ right:10px;
+}
 
 html {
   height: 100%;
@@ -379,3 +387,4 @@ text.id {
     text-anchor: middle;
     dominant-baseline: central;
 }
+/*END GRAPH*/

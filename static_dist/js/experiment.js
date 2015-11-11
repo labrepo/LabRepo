@@ -24,7 +24,7 @@ options = {
       // set height of comment block
       $('.comment-activities').css('max-height', window.innerHeight -430)
       if (window.innerHeight > 650) {
-        $('.comment-activities').not('.comments-list').css('max-height', $('.main-sidebar').height() - 395)
+        $('.comment-activities').not('.comments-list').css('max-height', $('.main-sidebar').height() - 325)
       }
       $('#exp-workfow iframe').css('min-height', $('.main-sidebar').height() -100)
       setTimeout( function() {
