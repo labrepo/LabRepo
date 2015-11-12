@@ -156,6 +156,8 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = rel('public', 'static')
 
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
+
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = rel('public', 'media')
