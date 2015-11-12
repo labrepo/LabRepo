@@ -6,7 +6,7 @@ user: ubuntu
 project_dir: /home/ubuntu/labrepo
 
 # paste here values from secret.example
-
+django_settings_file: production
 admin_email: <e-mail for sending debug information>
 secret_key: <50 random characters unique key>
 mongodb_user: <admin user for mongodb>

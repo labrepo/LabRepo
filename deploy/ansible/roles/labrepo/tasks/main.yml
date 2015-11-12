@@ -71,7 +71,7 @@
 - name: Collect static
   django_manage: command="collectstatic --noinput --verbosity=0" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
   environment:
-        DJANGO_SETTINGS_MODULE: "settings.production"
+        DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"
 
 - name: Make django messages
   django_manage: '{{ item }}'
@@ -80,7 +80,7 @@
     - 'command="makemessages -d djangojs -a --ignore=env/*" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
     - 'command="compilemessages" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
   environment:
-        DJANGO_SETTINGS_MODULE: "settings.production"
+        DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"
 
 - name: Run tests
   django_manage: command="test --noinput --failfast" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
