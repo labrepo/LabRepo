@@ -24,7 +24,7 @@ def get_env_setting(setting):
         error_msg = "Set the %s env variable" % setting
         raise ImproperlyConfigured(error_msg)
 
-DEBUG = True
+DEBUG = False
 
 DOMAIN = environ.get('DOMAIN', 'localhost')
 
