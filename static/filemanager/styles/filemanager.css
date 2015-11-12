@@ -86,7 +86,7 @@ button#home {
 	font-size: 12px;
 }
 
-#fileinfo *:not(."CodeMirror") {
+#fileinfo *:not(".CodeMirror") {
 	color: #333;
 }
 
@@ -449,7 +449,7 @@ div.clip {
 a#edit-file span {display:none}
 a#edit-file {display:inline-block;background-image: url(../images/pencil.png);width:16px;height:16px}
 
-/* div.jqi button { background-image: url(../images/circular/yes.png); } */
+
 
 div.jqi {
 	position: absolute;
