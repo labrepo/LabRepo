@@ -11,4 +11,5 @@
    - libfreetype6-dev
    - gettext
    - gettext-doc
+   - ghostscript=9.10~dfsg-0ubuntu10.4
   sudo: yes
