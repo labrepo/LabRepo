@@ -55,7 +55,7 @@ def upload_js():
         <td>
                     <span class="preview">
                         {% if (file.thumbnailUrl) { %}
-                            <a href="{%=file.url%}" title="{%=file.name%}" data-lightbox="lightbox" >
+                            <a data-ss="{%=file.type%}" href="{% if (file.type == 'application/pdf' ) { %}{%=file.thumbnailUrl%}{% } else { %}{%=file.url%}{% } %}" title="{%=file.name%}" data-lightbox="lightbox" >
                                 <img src="{%=file.thumbnailUrl%}" width="170">
                             </a>
                         {% } %}

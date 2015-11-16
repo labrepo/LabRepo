@@ -30,3 +30,4 @@ amqp
 anyjson
 tornado==4.1
 tornado-redis==2.4.18
+ghostscript==0.4.1

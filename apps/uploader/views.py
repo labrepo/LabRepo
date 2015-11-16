@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+import os
 import json
 import requests
 import mimetypes
 import StringIO
 
 from PIL import Image
+import ghostscript
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.views.generic import View
@@ -73,6 +75,30 @@ class BaseUploaderMixin(View, SingleObjectMixin):
                                           thumb_io.len, None)
         return thumb_file
 
+    def generate_pdf_review(self, instance):
+        """
+        Generate thumbnail jpeg for pdf file.
+        instance - BaseFile(or subclass) instance
+        Return path to file with jpeg
+        """
+        filename_pdf = '/tmp/tmp_pdf_{}.pdf'.format(instance.name)
+        filename_jpg = '/tmp/tmpjpg_{}.jpg'.format(instance.name)
+        with open(filename_pdf, 'w') as f:
+            f.write(instance.file.read())
+
+        # test.py just placeholder
+        args = """test.py
+               -sDEVICE=jpeg
+               -o {}
+               -dJPEGQ=95
+               -dFirstPage=1
+               -dLastPage=1
+               {} """.format(filename_jpg, filename_pdf).split()
+
+        GS = ghostscript.Ghostscript(*args)
+        os.remove(filename_pdf)
+        return filename_jpg
+
 
 class FileUploadMixinView(BaseUploaderMixin):
     """
@@ -91,15 +117,26 @@ class FileUploadMixinView(BaseUploaderMixin):
                 obj.file.put(f, content_type=f.content_type)
                 obj.size = obj.file.get().length
 
-                #generate thumb
-                try:
-                    thumb_file = self.generate_thumb(obj)
-                    obj.thumbnail.new_file()
-                    for chunk in thumb_file.chunks():
-                        obj.thumbnail.write(chunk)
-                    obj.thumbnail.close()
-                except IOError:
-                    pass  # file isn't a image
+                if f.content_type == 'application/pdf':
+                    thumb_filename = self.generate_pdf_review(obj)
+                    with open(thumb_filename, 'r') as f:
+                        thumb_file = InMemoryUploadedFile(f, None, u'thumb_{}'.format(obj.name), obj.content_type,
+                                              os.fstat(f.fileno()).st_size, None)
+                        obj.thumbnail.new_file()
+                        for chunk in thumb_file.chunks():
+                            obj.thumbnail.write(chunk)
+                        obj.thumbnail.close()
+                    os.remove(thumb_filename)
+                else:
+                    #generate thumb
+                    try:
+                        thumb_file = self.generate_thumb(obj)
+                        obj.thumbnail.new_file()
+                        for chunk in thumb_file.chunks():
+                            obj.thumbnail.write(chunk)
+                        obj.thumbnail.close()
+                    except IOError:
+                        pass  # file isn't a image
 
                 obj.save()
 
