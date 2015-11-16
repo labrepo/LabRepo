@@ -317,7 +317,8 @@ $('body').on('submit','.add-unit-form', function (e) {
                     weight: 1,
                 });
             }
-
+            $form.find('select[name="units"]').select2("val", "");
+            $form.find('select[name="units"]').val("val", "");
         });
 });
 

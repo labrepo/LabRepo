@@ -93,15 +93,15 @@ class AddUnitToExperimentForm(BaseForm):
             experiment_qs = experiment_qs.filter((Q(owners__in=[self.user]) | Q(editors__in=[self.user]) | Q(viewers__in=[self.user])))
 
         super(AddUnitToExperimentForm, self).__init__(*args, **kwargs)
-        self.fields['units'].queryset = Unit.objects.filter(lab=self.lab, experiments__ne=experiment, active=True)
-        self.fields['experiment'].widget.attrs['class'] += ' hidden-field'
+
+        self.fields['experiment'].widget = forms.HiddenInput()
         self.fields['experiment'].queryset = experiment_qs
         self.fields['experiment'].initial = experiment.pk
-
         self.fields['experiment'].label = ''
         self.fields['experiment'].help_text = ''
         self.fields['units'].help_text = ''
 
+        self.fields['units'].queryset = Unit.objects.filter(lab=self.lab, experiments__ne=experiment, active=True)
         self.fields['units'].label = ''
         self.fields['units'].error_messages['required'] = _('You didn\'t select any units.')
         self.fields['units'].widget.attrs['class'] += ' select2'
