@@ -98,11 +98,14 @@ function table_to_plot_data(table_data) {
 
  $(function() {
      var table = $("#dataTableEditable");
-     var options = $(table).handsontable('getDataAtRow', 0);
-     $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
-     for (var i = 0, max = options.length; i < max; i += 1) {
-         $('#plot-form .asis').append('<option value="'+ i +'">' + options[i] + '</option>')
+     if (table.length){
+         var options = $(table).handsontable('getDataAtRow', 0);
+         $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
+         for (var i = 0, max = options.length; i < max; i += 1) {
+             $('#plot-form .asis').append('<option value="'+ i +'">' + options[i] + '</option>')
+         }
      }
+
  });
 
  // revert table data on revision restore

@@ -11,10 +11,12 @@ $(function() {
     if (window.innerHeight > 650) {
         $('.comment-activities').not('.comments-list').css('max-height', sidebar_height - 325).css('min-height', sidebar_height - 325);
     }
-    $('#exp-workfow iframe').css('min-height', sidebar_height -100)
-    setTimeout( function() {
-        comments_scroll_to_end()
-    }, 500);
+    if ($('#exp-workfow iframe').length) {
+        $('#exp-workfow iframe').css('min-height', sidebar_height - 100)
+        setTimeout(function () {
+            comments_scroll_to_end()
+        }, 500);
+    }
 
     // fix bootstrap tabs urls
     var hash = window.location.hash;
@@ -32,7 +34,9 @@ $(function() {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         window.dispatchEvent(new Event('resize'));
     })
-    var graph = window.graph  = new render_graph($('.graph-area').data('graph-json'), '.graph-area', update_unit_info)
+    if ($('.graph-area').length){
+        var graph = window.graph  = new render_graph($('.graph-area').data('graph-json'), '.graph-area', update_unit_info)
+    }
 
 });
 

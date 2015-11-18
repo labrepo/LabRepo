@@ -154,6 +154,8 @@ function render_graph(graph_data, graph_area_selector, onclick_function) {
         .links(links)
     var update = function () {
 
+        // reset node sizes to remove node interception # cola.js(chrome bug)
+        graph.nodes.forEach(function (v) { v.width = 80, v.height = 20 })
              vis.selectAll("g").selectAll("*").remove();
         // build arrows.
         var arrows = vis.selectAll("marker")
