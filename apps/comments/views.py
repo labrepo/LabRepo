@@ -18,6 +18,7 @@ from units.models import Unit
 from experiments.models import Experiment
 from .models import Comment
 
+
 class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialLabMixin, RecentActivityMixin, CreateView):
     """
     View for create comment
@@ -36,14 +37,14 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
             model = Unit
 
         self.object = Comment(
-            text= form.cleaned_data['text']
+            text=form.cleaned_data['text']
         )
         self.object.init_user = self.request.user
         self.object.content_object = model.objects.get(id=form.cleaned_data['object_id'])
         self.object.save()
-        # resent_activity = self.save_recent_activity(RecentActivity.COMMENT,
-        #                                             **{'comment_model': self.object.instance_type,
-        #                                             self.object.instance_type.lower(): self.object.object_id})
+        resent_activity = self.save_recent_activity(RecentActivity.COMMENT,
+                                                    value=self.object.text,
+                                                    obj=self.object.content_object)
 
         # publish message in the redis queue if experiment's comment
         if self.object.instance_type == 'Experiment':
@@ -102,8 +103,8 @@ class CommentDeleteView(LoginRequiredMixin, AjaxableResponseMixin, RecentActivit
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+        self.save_recent_activity(RecentActivity.DELETE)
         self.object.delete()
-        # self.save_recent_activity(RecentActivity.DELETE, comment_model=self.object.instance_type)
         return self.render_to_json_response({'pk': unicode(self.object.pk)})
 
     def get_object(self, queryset=None):

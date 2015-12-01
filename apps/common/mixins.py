@@ -96,7 +96,7 @@ class LabQueryMixin(object):
 
 class RecentActivityMixin(object):
 
-    def save_recent_activity(self, action_flag, **kwargs):
+    def save_recent_activity(self, action_flag,  **kwargs):
         obj = kwargs.get('obj', getattr(self, 'object', None))
         kwargs['object_name'] = obj.__unicode__()
         if obj:
@@ -104,11 +104,8 @@ class RecentActivityMixin(object):
                 lab_id=Lab.objects.get(pk=self.kwargs.get('lab_pk')),
                 init_user=self.request.user,
                 content_object=obj,
-                # instance_type=obj._meta.object_name,
-                # object_id=obj.pk,
                 action_flag=action_flag,
-                # content_object=obj,
-                # extra=kwargs
+                value=kwargs.get('value', None),
             )
 
 

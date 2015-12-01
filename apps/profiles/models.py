@@ -4,8 +4,6 @@ from django.core.urlresolvers import reverse
 from django.db import models
 
 
-
-
 class LabUser(AbstractUser):
     """Extend Mongo Engine User model"""
     plot_un = models.CharField(max_length=512, blank=False, null=True, verbose_name=_('Plot.ly username(un)'))
@@ -23,6 +21,9 @@ class LabUser(AbstractUser):
 
     def get_username(self):
         return self.email.split('@')[0]
+
+    def full_name(self):
+        return self.first_name + ' ' + self.last_name
 
     class Meta:
         unique_together = ('email', )

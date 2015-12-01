@@ -2,16 +2,14 @@
 import json
 
 from django.utils.decorators import method_decorator
-
 from django.views.generic import View
-
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.db.models import Q
-from common.mixins import LoginRequiredMixin, AjaxableResponseMixin, CheckLabPermissionMixin
 
 from rest_framework import generics
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
-
+from common.mixins import LoginRequiredMixin, AjaxableResponseMixin, CheckLabPermissionMixin, RecentActivityMixin
+from dashboard.models import RecentActivity
 from units.api.serializers import UnitSerializer
 from units.models import Unit
 from experiments.models import Experiment
@@ -33,7 +31,7 @@ class UnitListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListAPI
         return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'], experiments__in=experiments, active=True)
 
 
-class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, AjaxableResponseMixin, View):
+class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin, AjaxableResponseMixin, View):
 
     serializer_class = UnitSerializer
 
@@ -64,13 +62,16 @@ class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, AjaxableRespon
                 if unit_data.get('pk', None):
                     unit = Unit.objects.get(pk=unit_data['pk'])
                     serializer = UnitSerializer(unit, data=unit_data)
+                    self.flag = RecentActivity.UPDATE
                 else:
                     raise Unit.DoesNotExist
             except Unit.DoesNotExist:
                 serializer = UnitSerializer(data=unit_data)
+                self.flag = RecentActivity.ADD
 
             if serializer.is_valid():
                 unit = serializer.save()
+                self.save_recent_activity(self.flag, obj=unit)
                 results.append((index, {'pk': unit.pk, 'success': True}))
             else:
                 results.append((index, {'errors': u'{}'.format(serializer.errors), 'success': False}))

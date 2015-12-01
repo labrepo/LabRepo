@@ -9,10 +9,11 @@
     {% for object in objects %}
       <li>
         <!-- timeline icon -->
-        <i class="fa fa-{% if object.instance_type|lower  == 'tag' or object.instance_type|lower == 'comment' %}{{ object.instance_type|lower }}
-                        {% elif object.instance_type|lower == 'experiment' %}eyedropper
-                        {% elif object.instance_type|lower == 'unit' %}cube
-                        {% elif object.instance_type|lower == 'collection' %}cubes
+        <i class="fa fa-{% if object.action_flag == object.COMMENT or object.content_type.model|lower == 'comment' %}comment
+                        {% elif object.content_type.model|lower  == 'tag' %}tag
+                        {% elif object.content_type.model|lower == 'experiment' %}eyedropper
+                        {% elif object.content_type.model|lower == 'unit' %}cube
+                        {% elif object.content_type.model|lower == 'collection' %}cubes
                         {% else %}question
                         {% endif %}
                      bg-{% if object.action_flag == object.ADD %}olive
@@ -31,7 +32,7 @@
             {{ object.get_action_flag_display }}
             {% if object.action_flag == object.COMMENT %}
               {{ object.comment_model|lower }}
-              {% with comment_object=object.content_object.get_object %}
+              {% with comment_object=object.content_object %}
                 {% if comment_object and comment_object.active %}
                   <a href="{{ comment_object.get_absolute_url }}">{{ comment_object|safe }}</a>
                 {% else %}
@@ -40,9 +41,7 @@
                 </h3>
                 <div class="timeline-body">
                   {% if object.content_object %}
-                    {{ object.content_object.text|safe }}
-                  {% else %}
-                    {{ object.extra.object_name|safe }}
+                    {{ object.value|safe }}
                   {% endif %}
                 </div>
               {% endwith %}
@@ -51,7 +50,7 @@
               <a href="{{ object.content_object.get_absolute_url }}">{{ object.content_object|safe|default_if_none:'' }}</a>
               </h3>
             {% else %}
-              {% trans object.instance_type|lower %}
+              {% trans object.content_type.name|lower %}
               </h3>
               <div class="timeline-body">
 
@@ -61,7 +60,6 @@
                   {{ object.extra.object_name|safe|default:'' }}
                 {% endif %}
               </div>
-
             {% endif %}
         </div>
       </li>

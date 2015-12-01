@@ -63,7 +63,7 @@ class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMi
             pass
 
         self.object.save()
-        # self.save_recent_activity(RecentActivity.ADD, experiment=unicode(self.object.pk))
+        self.save_recent_activity(RecentActivity.ADD)
         self.get_success_message()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -96,7 +96,7 @@ class ExperimentUpdateView(CheckLabPermissionMixin, InviteFormMixin, CheckEditPe
             self.object.owners.add(list(set(lab.investigator) - set(self.object.owners)))
         self.object.lab = lab
         self.object.save()
-        self.save_recent_activity(RecentActivity.UPDATE, experiment=unicode(self.object.pk))
+        self.save_recent_activity(RecentActivity.UPDATE)
         self.get_success_message()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -127,7 +127,7 @@ class ExperimentUpdateDateView(CheckLabPermissionMixin, CheckEditPermissionMixin
         self.object.start = dateutil.parser.parse(data['start'])
         self.object.end = dateutil.parser.parse(data['end'])
         self.object.save()
-        resent = self.save_recent_activity(RecentActivity.UPDATE, experiment=unicode(self.object.pk))
+        resent = self.save_recent_activity(RecentActivity.UPDATE)
         return self.render_to_json_response({'data': render_to_string(self.template_name, {'object': resent})})
 
 
@@ -144,7 +144,7 @@ class ExperimentDeleteView(CheckLabPermissionMixin, CheckDeletePermissionMixin, 
         success_url = self.get_success_url()
         self.object.active = False
         self.object.save()
-        self.save_recent_activity(RecentActivity.DELETE, **{self.model._meta.object_name.lower(): self.object.pk})
+        self.save_recent_activity(RecentActivity.DELETE)
         self.get_success_message()
         return HttpResponseRedirect(success_url)
 
