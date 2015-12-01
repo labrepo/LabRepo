@@ -8,7 +8,7 @@ class CommentMappingType(MappingType, Indexable):
     @classmethod
     def get_model(cls):
         """Returns the Django model this MappingType relates to comment"""
-        from .documents import Comment
+        from .models import Comment
         return Comment
 
     @classmethod

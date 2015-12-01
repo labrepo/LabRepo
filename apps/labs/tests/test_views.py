@@ -1,22 +1,21 @@
+from django.test import TestCase
 from django.contrib.webdesign import lorem_ipsum
 from django.core.urlresolvers import reverse
 from django.utils.translation import gettext_lazy as _
 
-from mongoengine.django.auth import User
-from labs.documents import Lab
+from labs.models import Lab
 from labs.factories import LabFactory
-from common.testcase import BaseTestCase
+from profiles.models import LabUser
 from profiles.factories import UserFactory
-from profiles.factories import UserFactory
-from tags.documents import Tag
+from tags.models import Tag
 from tags.factories import TagFactory
-from units.documents import Unit
+from units.models import Unit
 from units.factories import UnitFactory
-from experiments.documents import Experiment
+from experiments.models import Experiment
 from experiments.factories import ExperimentFactory
 
 
-class TestLabTest(BaseTestCase):
+class TestLabTest(TestCase):
     def setUp(self):
         self.owner = UserFactory()
         self.member = UserFactory()
@@ -25,8 +24,9 @@ class TestLabTest(BaseTestCase):
 
     def test_create_lab(self):
         url = reverse('labs:create')
+        name = lorem_ipsum.words(1, False)
         data = {
-            'name': lorem_ipsum.words(1, False),
+            'name': name,
             'investigator': [self.owner.pk],
             'members': [self.member.pk],
         }
@@ -38,6 +38,7 @@ class TestLabTest(BaseTestCase):
         resp = self.client.post(url, data, follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(Lab.objects.count(), 1)
+        self.assertEqual(Lab.objects.all().first().name, name)
 
     def test_not_valid(self):
         url = reverse('labs:create')
@@ -213,4 +214,4 @@ class TestLabTest(BaseTestCase):
         resp = self.client.post(url, data, follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'You have not permission change lab&#39;s investigator', 1)
-        self.assertEqual(Lab.objects.first().investigator, [self.owner])
+        self.assertEqual(list(Lab.objects.first().investigator.all()), [self.owner])

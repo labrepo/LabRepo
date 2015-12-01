@@ -5,7 +5,7 @@
 {% block breadcrumb %}
   {% if object.experiments %}
     <li>
-      {% for experiment in object.experiments %}
+      {% for experiment in object.experiments.all %}
         <a href="{{ experiment.get_absolute_url }}"><i class="fa fa-eyedropper"></i> {% trans experiment.title %}</a>
         &nbsp;
       {% endfor %}
@@ -52,7 +52,7 @@
             <div class="col-sm-4 title-desc">{% trans 'experiments'|upper %}</div>
             <div class="col-sm-8">
               <ul class="list-group">
-                {% for expriment in object.experiments %}
+                {% for expriment in object.experiments.all %}
                   <li class="list-group-item">{{ expriment }}</li>
                 {% endfor %}
               </ul>
@@ -61,7 +61,7 @@
               <div class="col-sm-4 title-desc">{% trans 'parent'|upper %}</div>
               <div class="col-sm-8">
                 <ul class="list-group">
-                  {% for unit in object.parent %}
+                  {% for unit in object.parent.all %}
                     <li class="list-group-item">{{ unit }}</li>
                   {% endfor %}
                 </ul>
@@ -77,7 +77,7 @@
               <div class="col-sm-4 title-desc">{% trans 'tags'|upper %}</div>
               <div class="col-sm-8">
                 <ul class="list-group">
-                  {% for tag in object.tags %}
+                  {% for tag in object.tags.all %}
                     <li class="list-group-item">{{ tag }}</li>
                   {% endfor %}
                 </ul>

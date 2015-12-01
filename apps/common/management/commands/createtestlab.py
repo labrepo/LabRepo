@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
 
 from experiments.factories import ExperimentFactory
-from labs.documents import Lab
+from labs.models import Lab
 from labs.factories import LabFactory
 from measurements.factories import MeasurementTypeFactory
 from profiles.factories import UserFactory

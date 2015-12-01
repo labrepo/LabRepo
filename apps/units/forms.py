@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-from mongodbforms import CharField, embeddedformset_factory, EmbeddedDocumentFormSet
-
+from django.forms import CharField
 from django import forms
+
 from common.forms import BaseForm
 from common.widgets import CKEditorUploadWidget
-from .documents import Unit
-from measurements.documents import Measurement
-from experiments.documents import Experiment
-from labs.documents import Lab
-from tags.documents import Tag
-from measurements.forms import MeasurementAdminForm
+from measurements.models import Measurement
+from experiments.models import Experiment
+from labs.models import Lab
+from tags.models import Tag
+# from measurements.forms import MeasurementAdminForm
+
+from .models import Unit
 
 
 class UnitForm(BaseForm):
@@ -18,7 +19,7 @@ class UnitForm(BaseForm):
         super(UnitForm, self).__init__(*args, **kwargs)
 
     class Meta:
-        document = Unit
+        model = Unit
         exclude = ('lab', 'active', 'measurements')
 
 
@@ -30,7 +31,7 @@ class UnitPopupForm(BaseForm):
         lab_pk = kwargs.pop('lab_pk')
         exp_pk = kwargs.pop('exp_pk')
         lab = Lab.objects.get(pk=lab_pk)
-        experiment = Experiment.objects.get(pk=exp_pk)
+        model = Experiment.objects.get(pk=exp_pk)
 
         super(UnitPopupForm, self).__init__(*args, **kwargs)
 
@@ -43,7 +44,7 @@ class UnitPopupForm(BaseForm):
         self.fields['description'].widget.attrs['class'] += ' summernote '
 
     class Meta:
-        document = Unit
+        model = Unit
         exclude = ('lab', 'active', 'measurements')
 
 
@@ -68,34 +69,34 @@ class UnitTabForm(BaseForm):
         self.fields['parent'].queryset = Unit.objects.filter(lab=lab, active=True)
 
     class Meta:
-        document = Unit
+        model = Unit
         fields = ('description', 'sample', 'parent')
 
+#
+# class UnitEmbeddedDocumentFormSet(EmbeddedDocumentFormSet):
+#     def __init__(self, data=None, files=None, save_as_new=False, prefix=None, queryset=[], parent_document=None,
+#                  **kwargs):
+#         if 'instance' in kwargs:
+#             parent_document = kwargs.pop('instance')
+#         super(UnitEmbeddedDocumentFormSet, self).__init__(data, files, save_as_new, prefix, queryset, parent_document,
+#                                                           **kwargs)
+#
+#     def save_object(self, form):
+#         if not hasattr(self, 'changed_objects'):
+#             self.changed_objects = []
+#         if not hasattr(self, 'deleted_objects'):
+#             self.deleted_objects = []
+#         if not hasattr(self, 'new_objects'):
+#             self.new_objects = []
+#         obj = super(UnitEmbeddedDocumentFormSet, self).save_object(form)
+#         if form.cleaned_data.get("DELETE", False):
+#             self.deleted_objects.append(obj)
+#         elif form.instance:
+#             self.changed_objects.append((obj, form.changed_data))
+#         else:
+#             self.new_objects.append(obj)
+#         return obj
 
-class UnitEmbeddedDocumentFormSet(EmbeddedDocumentFormSet):
-    def __init__(self, data=None, files=None, save_as_new=False, prefix=None, queryset=[], parent_document=None,
-                 **kwargs):
-        if 'instance' in kwargs:
-            parent_document = kwargs.pop('instance')
-        super(UnitEmbeddedDocumentFormSet, self).__init__(data, files, save_as_new, prefix, queryset, parent_document,
-                                                          **kwargs)
 
-    def save_object(self, form):
-        if not hasattr(self, 'changed_objects'):
-            self.changed_objects = []
-        if not hasattr(self, 'deleted_objects'):
-            self.deleted_objects = []
-        if not hasattr(self, 'new_objects'):
-            self.new_objects = []
-        obj = super(UnitEmbeddedDocumentFormSet, self).save_object(form)
-        if form.cleaned_data.get("DELETE", False):
-            self.deleted_objects.append(obj)
-        elif form.instance:
-            self.changed_objects.append((obj, form.changed_data))
-        else:
-            self.new_objects.append(obj)
-        return obj
-
-
-MeasurementFormSet = embeddedformset_factory(Measurement, parent_document=Unit, form=MeasurementAdminForm,
-                                             formset=UnitEmbeddedDocumentFormSet)
+# MeasurementFormSet = embeddedformset_factory(Measurement, parent_document=Unit, form=MeasurementAdminForm,
+#                                              formset=UnitEmbeddedDocumentFormSet)

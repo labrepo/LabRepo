@@ -2,9 +2,9 @@ from django.dispatch import receiver
 
 from elasticutils.contrib.django import MappingType, Indexable
 from mongoengine import post_save, pre_delete
-
-from .documents import Unit
 from measurements.search_indexes import MeasurementMappingType
+
+from .models import Unit
 
 
 class UnitMappingType(MappingType, Indexable):

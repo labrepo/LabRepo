@@ -8,15 +8,12 @@ from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView, RedirectView, FormView
 from django.utils.translation import ugettext_lazy as _
 from django.template.loader import render_to_string
-
-from mongoengine import Q
+from django.db.models import Q
 
 from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckEditPermissionMixin, CheckViewPermissionMixin,
                            CheckDeletePermissionMixin, InviteFormMixin, CheckLabPermissionMixin, AjaxableResponseMixin)
 from filemanager.views import check_directory
-# from mongodbforms import embeddedformset_factory, EmbeddedDocumentForm
-from mongodbforms import CharField, embeddedformset_factory, EmbeddedDocumentFormSet, EmbeddedDocumentForm
-from labs.documents import Lab, LabStorage
+from labs.models import Lab, LabStorage
 from labs.forms import LabForm, LabStorageForm
 from fabfile import create_test_lab
 
@@ -37,8 +34,8 @@ class LabCreateView(LoginRequiredMixin, InviteFormMixin, ActiveTabMixin, CreateV
         :param form: :class:`labs.forms.LabForm` instance
         :return: redirect to laboratories list
         """
-        self.object = form.save(commit=False)
-        if not self.request.user in self.object.investigator:
+        self.object = form.save()           # todo (commit=False)
+        if not self.request.user in self.object.investigator.all():
             self.object.investigator.append(self.request.user)
         self.object.save()
         check_directory(os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, unicode(self.object.id) + '/'))
@@ -164,9 +161,8 @@ class LabStorageCreate(AjaxableResponseMixin, CheckLabPermissionMixin, CreateVie
 
     def form_valid(self, form):
         lab_storage = form.save(commit=False)
+        lab_storage.lab = self.lab
         lab_storage.save()
-        self.lab.storages.append(lab_storage)
-        self.lab.save()
         return HttpResponseRedirect(self.get_success_url())
 
 

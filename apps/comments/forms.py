@@ -2,9 +2,8 @@
 
 from django import forms
 
-from comments.documents import Comment
+from comments.models import Comment
 from common.forms import BaseForm
-from common.widgets import CKEditorUploadWidget
 
 
 class CommentForm(BaseForm):
@@ -21,10 +20,11 @@ class CommentForm(BaseForm):
         self.fields['text'].widget.attrs['class'] += ' summernote '
 
     object_id = forms.CharField(max_length=255, widget=forms.HiddenInput())
+    instance_type = forms.CharField(max_length=255, widget=forms.HiddenInput())
 
     class Meta:
-        document = Comment
-        fields = ('text', 'instance_type')
+        model = Comment
+        fields = ('text', )
         widgets = {
             'instance_type': forms.HiddenInput(),
         }

@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from common.forms import BaseForm
-from labs.documents import Lab, LabStorage
+from labs.models import Lab, LabStorage
 
 
 class LabBaseForm(BaseForm):
@@ -25,7 +25,7 @@ class LabForm(LabBaseForm):
     Form for create/edit laboratory
     """
     class Meta:
-        document = Lab
+        model = Lab
         fields = ('name', 'investigator', 'members', 'guests')
 
     def __init__(self, *args, **kwargs):
@@ -38,7 +38,8 @@ class LabForm(LabBaseForm):
 
     def clean(self):
         data = super(LabForm, self).clean()
-        if self.instance and self.instance.is_member(self.user):
+
+        if self.instance.id and self.instance.is_member(self.user):
             if 'investigator' in self.changed_data and self.instance.investigator != data['investigator']:
                 self._errors['investigator'] = self.error_class([_('You have not permission change lab\'s investigator')])
                 del data['investigator']
@@ -52,7 +53,7 @@ class LabStorageForm(BaseForm):
     password = forms.CharField(widget=forms.PasswordInput(), required=False)
 
     class Meta:
-        document = LabStorage
+        model = LabStorage
         fields = ('type', 'readonly', 'username', 'host', 'password', 'path', 'folder_name', 'key_file')
 
     def __init__(self, *args, **kwargs):
@@ -65,14 +66,14 @@ class LabStorageForm(BaseForm):
 
 
 class LabAdminForm(LabBaseForm):
-
-    class Meta:
-        document = Lab
-
-    def clean(self):
-        data = super(LabAdminForm, self).clean()
-        is_test = data.get('is_test')
-        labs = self._meta.document.objects.filter(is_test=True)
-        if labs and is_test and (labs.count() > 1 or (self.instance and labs[0].pk != self.instance.pk)):
-            self._errors['is_test'] = self.error_class(['There was only one test lab'])
-        return data
+    pass
+    # class Meta:
+    #     document = Lab
+    #
+    # def clean(self):
+    #     data = super(LabAdminForm, self).clean()
+    #     is_test = data.get('is_test')
+    #     labs = self._meta.document.objects.filter(is_test=True)
+    #     if labs and is_test and (labs.count() > 1 or (self.instance and labs[0].pk != self.instance.pk)):
+    #         self._errors['is_test'] = self.error_class(['There was only one test lab'])
+    #     return data

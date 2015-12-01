@@ -11,7 +11,7 @@
         </button>
         <h3 class="modal-title" id="Modal">{% trans modal_title|title %}</h3>
       </div>
-      <form method="post" class="modal-form {{ class }}" action="{{ action }}" data-field="{{ fields }}">
+      <form method="post" class="modal-form {{ class }}" action="{{ action }}" enctype="multipart/form-data" data-field="{{ fields }}">
         <div class="modal-body">
           {% csrf_token %}
           {% if extra_form %}{{ extra_form|as_bootstrap }}{% endif %}

@@ -55,6 +55,23 @@ $(function () {
     }
 });
 
+function getTableData(url){
+    var get_data = null;
+    jQuery.ajaxSetup({async:false});
+    $.get(url, function(data){
+        get_data = data;
+    })
+    jQuery.ajaxSetup({async:true});
+    f = []
+    for (var i in get_data){
+        var array = $.map(get_data[i], function(value, index) {
+            return [value];
+        });
+        f[i] = array
+    }
+    return f;
+}
+
 function addHandsonTable(selector) {
     var table = $(selector),
         title = table.data('title'),
@@ -63,7 +80,8 @@ function addHandsonTable(selector) {
             return match.toUpperCase();
         },
         column = table.data('column'),
-        data = table.data('content'),
+
+        data = getTableData(table.data('content-url')),
         colWidths = [],
 
         showMessageChild = function (hasError, messages) {
@@ -270,20 +288,38 @@ function addHandsonTable(selector) {
     handsontable = table.data('handsontable');
 
     $('#save').click(function () {
-        var dataPost = {};
-        var data = handsontable.getData();
 
+        var dataPost = [];
+        var data = handsontable.getData();
         for (var i = 0, max = data.length; i < max; i += 1) {
+            d = {}
             for (var key in data[i]) {
                 if (data[i].hasOwnProperty(key) && data[i][key]) {
-                    dataPost["data-" + i + "-" + Object.keys(title).filter(function (item) {
+                    d[Object.keys(title).filter(function (item) {
                         return title[item] === headers[key]
                     })[0]] = data[i][key];
                 }
             }
+            for (var key in d) {
+                if (key.substr(-3) == '_pk') {
+                    delete d[key.slice(0, -3)]
+                    d[key.slice(0, -3)] = d[key]
+                    delete d[key]
+                }
+            }
+            dataPost.push(d);
         }
+
+        for (var key in dataPost) {
+            if(key.substr(-3)== '_pk') {
+                delete dataPost[key.slice(0, -3)]
+                dataPost[key.slice(0, -3)] = dataPost[key]
+                delete dataPost[key]
+            }
+        }
+
         dataPost.length = data.length;
-        $.post(table.data('url'), dataPost).done(function (res) {
+        $.post(table.data('update-url'), JSON.stringify(dataPost)).done(function (res) {
             $('td').removeClass('error').removeAttr('title');
             var messages = [],
                 hasError = false;

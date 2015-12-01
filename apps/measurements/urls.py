@@ -1,12 +1,13 @@
 from django.conf.urls import patterns, url
+
 from . import views
 
 
 urlpatterns = patterns('',
-    url(r'^measurement_type/list/$', views.MeasurementTypeCreateView.as_view(), name='measurement_type_list'),
-    url(r'^measurement_type/create/$', views.MeasurementTypeCreateView.as_view(), name='measurement_type_create'),
-    url(r'^measurement_type/append/$', views.MeasurementTypeAppendView.as_view(), name='measurement_type_append'),
-    url(r'^measurement_type/delete/$', views.MeasurementTypeDeleteView.as_view(), name='measurement_type_delete'),
+    # url(r'^measurement_type/list/$', views.MeasurementTypeCreateView.as_view(), name='measurement_type_list'),
+    # url(r'^measurement_type/create/$', views.MeasurementTypeCreateView.as_view(), name='measurement_type_create'),
+    # url(r'^measurement_type/append/$', views.MeasurementTypeAppendView.as_view(), name='measurement_type_append'),
+    # url(r'^measurement_type/delete/$', views.MeasurementTypeDeleteView.as_view(), name='measurement_type_delete'),
 
     url(r'^(?P<unit_pk>[\d\w]+)/create/$', views.MeasurementCreateView.as_view(), name='create'),
     url(r'^(?P<unit_pk>[\d\w]+)/delete/$', views.MeasurementDeleteView.as_view(), name='delete'),

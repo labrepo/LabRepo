@@ -6,7 +6,7 @@
   <small>{% trans 'Dashboard' %}</small>{% endblock %}
 
 {% block manage_buttons %}
-  {% if user in lab.investigator %}
+  {% if user in lab.investigator.all %}
     <div class="btn-group pull-right">
       <button class="btn btn-danger btn-flat" data-href="{% url 'labs:delete' lab_pk=lab.pk %}"
               data-toggle="modal" data-target="#confirm-delete">
@@ -19,7 +19,7 @@
       </a>
     </div>
   {% endif %}
-  {% if user in lab.investigator or user in lab.members %}
+  {% if user in lab.investigator.all or user in lab.members.all %}
     <div class="btn-group">
       <a href="{% url 'experiments:create' lab_pk=lab.pk %}" class="btn bg-olive btn-flat">
         <i class="fa fa-plus"></i> {% trans 'Create Experiment'|title %}
@@ -90,7 +90,7 @@
       <div class="box-header"><h3 class="box-title">{% trans 'storages'|title %}</h3></div>
       <div class="box-body">
         <div class="list-group">
-          {% for storage in lab.storages %}
+          {% for storage in lab.storages.all %}
           <div class="storage">
             <span class="list-group-item list-group-item-sm">{{ storage }}
               <span class="pull-right">

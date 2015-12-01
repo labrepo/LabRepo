@@ -1,0 +1,9 @@
+---
+- name: Install postgres
+  apt: name=postgresql=9.3+154 state=present
+  sudo: yes
+
+- name: Install postgres-contrib
+  apt: name=postgresql-contrib=9.3+154 state=present
+  sudo: yes
+

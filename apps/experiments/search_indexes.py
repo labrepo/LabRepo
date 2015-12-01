@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.dispatch import receiver
+from django.db.models.signals import pre_save, post_save, pre_delete
 
 from elasticutils.contrib.django import MappingType, Indexable
-from mongoengine import post_save, pre_delete
 
-from experiments.documents import Experiment
+from experiments.models import Experiment
 
 
 class ExperimentMappingType(MappingType, Indexable):
@@ -135,12 +135,12 @@ class ExperimentMappingType(MappingType, Indexable):
 
 
 @receiver(post_save, sender=Experiment)
-def update_in_index(sender, document, **kw):
+def update_in_index(sender, instance, **kw):
     from common import tasks
-    if document.active:
-        tasks.index_objects.delay(ExperimentMappingType, [document.id])
+    if instance.active:
+        tasks.index_objects.delay(ExperimentMappingType, [instance.id])
     else:
-        tasks.unindex_objects.delay(ExperimentMappingType, [document.id])
+        tasks.unindex_objects.delay(ExperimentMappingType, [instance.id])
 
 
 @receiver(pre_delete, sender=Experiment)

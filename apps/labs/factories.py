@@ -1,9 +1,8 @@
 import factory
 
 from django.contrib.webdesign import lorem_ipsum
-from mongoengine.django.auth import User
 
-from labs.documents import Lab
+from labs.models import Lab
 
 
 class LabFactory(factory.DjangoModelFactory):
@@ -13,7 +12,29 @@ class LabFactory(factory.DjangoModelFactory):
     def name(self):
         return lorem_ipsum.words(5, False)
 
-    @factory.lazy_attribute
-    def owners(self):
-        return User.objects.order_by('?')[0]
+    @factory.post_generation
+    def investigator(self, create, extracted, **kwargs):
+        if not create:
+            return
 
+        if extracted:
+            for user in extracted:
+                self.investigator.add(user)
+
+    @factory.post_generation
+    def members(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for user in extracted:
+                self.members.add(user)
+
+    @factory.post_generation
+    def guests(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for user in extracted:
+                self.guests.add(user)

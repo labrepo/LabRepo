@@ -1,9 +1,9 @@
-from mongoengine import Q
-
+from django.db.models import Q
 from django.conf import settings
-from experiments.documents import Experiment
-from labs.documents import Lab
-from django.http import HttpResponse
+
+from experiments.models import Experiment
+from labs.models import Lab
+
 
 
 def menu_processor(request):
@@ -18,8 +18,7 @@ def menu_processor(request):
             experiments = experiments.filter(Q(owners=user) | Q(editors=user) | Q(viewers=user))
         return {'experiments_list': experiments,
                 'lab': lab,
-                'labs_list': Lab.objects.filter((Q(investigator=user) | Q(members=user) | Q(guests=user)),
-                                                pk__not__in=[lab_pk])
+                'labs_list': Lab.objects.filter((Q(investigator=user) | Q(members=user) | Q(guests=user))).exclude(pk__in=[lab_pk])
                 }
     return {}
 

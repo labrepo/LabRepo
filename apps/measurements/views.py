@@ -19,13 +19,15 @@ from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckViewPermissi
                            CheckDeletePermissionMixin, RecentActivityMixin,
                            CommentMixin, LabQueryMixin, DataMixin, AjaxableResponseMixin, DeleteDataMixin,
                            CheckEditPermissionMixin, InitialLabMixin)
+
 from common.serializer import JsonDocumentEncoder
-from dashboard.documents import RecentActivity
-from history.documents import History
-from .documents import Measurement, MeasurementType
-from .forms import MeasurementForm, MeasurementTypeForm, MeasurementUpdateForm, MeasurementDescriptionForm
-from labs.documents import Lab
-from units.documents import Unit
+from dashboard.models import RecentActivity
+from history.models import History
+from labs.models import Lab
+from units.models import Unit
+
+from .models import Measurement
+from .forms import MeasurementForm, MeasurementUpdateForm, MeasurementDescriptionForm
 
 
 class MeasurementCreateView(LoginRequiredMixin, CheckEditPermissionMixin, AjaxableResponseMixin, RecentActivityMixin,
@@ -240,66 +242,66 @@ class MeasurementDetailView(LoginRequiredMixin, CheckViewPermissionMixin, Initia
         return messages.add_message(self.request, messages.SUCCESS, _('Measurement was updated successfully.'))
 
 
-class MeasurementTypeCreateView(LoginRequiredMixin, DataMixin, AjaxableResponseMixin, LabQueryMixin,
-                                InitialLabMixin, RecentActivityMixin, MultipleObjectMixin, CreateView):
-    """
-     View for creating a new measurement type
-    """
-    model = MeasurementType
-    form_class = MeasurementTypeForm
-    template_name = 'measurement/measurement_type_list.html'
-    active_tab = 'measurement types'
-    title = {
-        'pk': 'pk', 'description': 'description', 'units': 'units', 'measurement_type': 'measurement_type'
-    }
-    title_fields = ['pk', 'description', 'units', 'measurement_type']
-    headers = ['pk', ugettext('description'), ugettext('the units'), ugettext('measurement type')]
-
-    def get_context_data(self, **kwargs):
-        ctx = {'active_tab': self.active_tab}
-        ctx['data'] = json.dumps(self.get_queryset().filter(active=True).values_list(*self.title_fields), cls=JsonDocumentEncoder,
-                                 fields=self.title_fields)
-        ctx['column'] = json.dumps([{'editor': 'text', 'display': 'none'}, {}, {}, {}])
-        ctx['title'] = json.dumps(dict(zip(self.title_fields, self.headers)))
-        ctx['headers'] = json.dumps(self.headers)
-        ctx['is_member'] = True
-        return ctx
-
-
-class MeasurementTypeAppendView(LoginRequiredMixin, AjaxableResponseMixin, RecentActivityMixin, CreateView):
-    """
-     View for creating a new measurement type
-    """
-    model = MeasurementType
-    form_class = MeasurementTypeForm
-    template_name = 'measurement/measurement_type_list.html'
-
-    def get_form_kwargs(self):
-        kwargs = super(MeasurementTypeAppendView, self).get_form_kwargs()
-        kwargs['lab_pk'] = self.kwargs.get('lab_pk')
-        return kwargs
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
-        self.object.save()
-        self.save_recent_activity(RecentActivity.ADD)
-        return self.render_data()
-
-    def get_success_url(self):
-        return reverse('measurements:measurement_type_list', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
-
-
-class MeasurementTypeDeleteView(LoginRequiredMixin, DeleteDataMixin, AjaxableResponseMixin, ActiveTabMixin, RecentActivityMixin, DeleteView):
-    """
-    View for removing an existing measurement type
-    """
-    model = MeasurementType
-    active_tab = 'measurement types'
-
-    def get_success_url(self):
-        return reverse('measurements:measurement_type_list', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
-
+# class MeasurementTypeCreateView(LoginRequiredMixin, DataMixin, AjaxableResponseMixin, LabQueryMixin,
+#                                 InitialLabMixin, RecentActivityMixin, MultipleObjectMixin, CreateView):
+#     """
+#      View for creating a new measurement type
+#     """
+#     model = MeasurementType
+#     form_class = MeasurementTypeForm
+#     template_name = 'measurement/measurement_type_list.html'
+#     active_tab = 'measurement types'
+#     title = {
+#         'pk': 'pk', 'description': 'description', 'units': 'units', 'measurement_type': 'measurement_type'
+#     }
+#     title_fields = ['pk', 'description', 'units', 'measurement_type']
+#     headers = ['pk', ugettext('description'), ugettext('the units'), ugettext('measurement type')]
+#
+#     def get_context_data(self, **kwargs):
+#         ctx = {'active_tab': self.active_tab}
+#         ctx['data'] = json.dumps(self.get_queryset().filter(active=True).values_list(*self.title_fields), cls=JsonDocumentEncoder,
+#                                  fields=self.title_fields)
+#         ctx['column'] = json.dumps([{'editor': 'text', 'display': 'none'}, {}, {}, {}])
+#         ctx['title'] = json.dumps(dict(zip(self.title_fields, self.headers)))
+#         ctx['headers'] = json.dumps(self.headers)
+#         ctx['is_member'] = True
+#         return ctx
+#
+#
+# class MeasurementTypeAppendView(LoginRequiredMixin, AjaxableResponseMixin, RecentActivityMixin, CreateView):
+#     """
+#      View for creating a new measurement type
+#     """
+#     model = MeasurementType
+#     form_class = MeasurementTypeForm
+#     template_name = 'measurement/measurement_type_list.html'
+#
+#     def get_form_kwargs(self):
+#         kwargs = super(MeasurementTypeAppendView, self).get_form_kwargs()
+#         kwargs['lab_pk'] = self.kwargs.get('lab_pk')
+#         return kwargs
+#
+#     def form_valid(self, form):
+#         self.object = form.save(commit=False)
+#         self.object.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
+#         self.object.save()
+#         self.save_recent_activity(RecentActivity.ADD)
+#         return self.render_data()
+#
+#     def get_success_url(self):
+#         return reverse('measurements:measurement_type_list', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
+#
+#
+# class MeasurementTypeDeleteView(LoginRequiredMixin, DeleteDataMixin, AjaxableResponseMixin, ActiveTabMixin, RecentActivityMixin, DeleteView):
+#     """
+#     View for removing an existing measurement type
+#     """
+#     model = MeasurementType
+#     active_tab = 'measurement types'
+#
+#     def get_success_url(self):
+#         return reverse('measurements:measurement_type_list', kwargs={'lab_pk': self.kwargs.get('lab_pk')})
+#
 
 class MeasurementHistoryRevert(LoginRequiredMixin, AjaxableResponseMixin, DataMixin, View):
     """

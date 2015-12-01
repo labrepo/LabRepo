@@ -3,8 +3,8 @@ import factory
 
 from django.contrib.webdesign import lorem_ipsum
 
-from .documents import Tag
-from labs.documents import Lab
+from .models import Tag
+from labs.models import Lab
 
 
 class TagFactory(factory.DjangoModelFactory):
@@ -17,10 +17,6 @@ class TagFactory(factory.DjangoModelFactory):
     @factory.lazy_attribute
     def color(self):
         return '#333333'
-
-    @factory.lazy_attribute
-    def params(self):
-        return json.loads(json.dumps(dict(zip(range(0, 5), range(5, 10)))))
 
     @factory.lazy_attribute
     def lab(self):

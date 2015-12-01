@@ -28,9 +28,8 @@ from django.views.generic import View
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 
+from labs.models import Lab
 from .decorators import filemanager_require_auth
-from labs.documents import Lab
-
 
 encode_json = json.JSONEncoder().encode
 
@@ -66,7 +65,7 @@ class FileManagerMixin(object):
         local_fs = OSFS(self.UPLOAD_ROOT)
         self.fs.mountdir('.', local_fs)
         if not self.fs.exists(file_path) or not file_path:
-            for storage in self.lab.storages:
+            for storage in self.lab.storages.all():
                 if file_path.startswith(storage.get_folder_name()) or not file_path:
                     try:
                         if storage.key_file:
@@ -502,7 +501,7 @@ def pyfs_file(lab_pk, file_path):
         fs.mountdir('.', local_fs)
         lab = Lab.objects.get(pk=lab_pk)
         if not fs.exists(relative_dir_path):
-            for storage in lab.storages:
+            for storage in lab.storages.all():
                 if relative_dir_path.startswith(storage.get_folder_name()):
                     try:
                         if storage.key_file:
@@ -544,7 +543,7 @@ def pyfs_file_ang(lab_pk, file_path):
         fs.mountdir('.', local_fs)
         lab = Lab.objects.get(pk=lab_pk)
         if not fs.exists(relative_dir_path):
-            for storage in lab.storages:
+            for storage in lab.storages.all():
                 if relative_dir_path.startswith(storage.get_folder_name()):
                     try:
                         if storage.key_file:

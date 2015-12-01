@@ -1,0 +1,1 @@
+from backends.registration.documents import RegistrationProfile

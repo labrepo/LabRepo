@@ -2,18 +2,18 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from mongoengine import Q
+from django.db.models import Q
 
 from common.forms import BaseForm, SelectFormMixin, CheckOwnerEditMixin
 from common.widgets import DateTimeWidget, CKEditorUploadWidget
-from experiments.documents import Experiment
-from units.documents import Unit
+from experiments.models import Experiment
+from units.models import Unit
 
 
 class ExperimentForm(SelectFormMixin, CheckOwnerEditMixin, BaseForm):
 
     class Meta:
-        document = Experiment
+        model = Experiment
         fields = ('title', 'owners', 'editors', 'viewers', 'start', 'end', 'description', 'status')
 
     def __init__(self, *args, **kwargs):
@@ -38,7 +38,7 @@ class ExperimentForm(SelectFormMixin, CheckOwnerEditMixin, BaseForm):
 class ExperimentUpdateForm(BaseForm):
 
     class Meta:
-        document = Experiment
+        model = Experiment
         fields = ('start', 'end')
 
 
@@ -50,8 +50,8 @@ class UpdateUnitsForm(BaseForm):
     units = forms.ModelMultipleChoiceField(queryset=Unit.objects.none())
 
     class Meta:
-        document = Experiment
-        fields = ('',)
+        model = Experiment
+        fields = ('experiment',)
 
     def __init__(self, *args, **kwargs):
         self.lab = kwargs['initial']['lab']
@@ -80,8 +80,8 @@ class AddUnitToExperimentForm(BaseForm):
     units = forms.ModelMultipleChoiceField(queryset=Unit.objects.none())
 
     class Meta:
-        document = Experiment
-        fields = ('',)
+        model = Experiment
+        fields = ('experiment',)
 
     def __init__(self, *args, **kwargs):
         self.lab = kwargs['initial']['lab']
@@ -101,7 +101,7 @@ class AddUnitToExperimentForm(BaseForm):
         self.fields['experiment'].help_text = ''
         self.fields['units'].help_text = ''
 
-        self.fields['units'].queryset = Unit.objects.filter(lab=self.lab, experiments__ne=experiment, active=True)
+        self.fields['units'].queryset = Unit.objects.filter(lab=self.lab, active=True).exclude(experiments=experiment)
         self.fields['units'].label = ''
         self.fields['units'].error_messages['required'] = _('You didn\'t select any units.')
         self.fields['units'].widget.attrs['class'] += ' select2'

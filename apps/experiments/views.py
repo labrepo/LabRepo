@@ -14,18 +14,18 @@ from django.utils.safestring import mark_safe
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, View
 from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
-from comments.documents import Comment
+from comments.models import Comment
 from common.decorators import get_obj_or_404
 
 from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPermissionMixin, JsTreeMixin,
                            LabQueryMixin, CheckDeletePermissionMixin, RecentActivityMixin, CommentMixin,
                            AjaxableResponseMixin, InviteFormMixin, CheckLabPermissionMixin,
                            FormInitialMixin, LoginRequiredMixin)
-from dashboard.documents import RecentActivity
-from experiments.documents import Experiment
+from dashboard.models import RecentActivity
+from experiments.models import Experiment
 from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm, AddUnitToExperimentForm
-from tags.documents import Tag
-from units.documents import Unit
+from tags.models import Tag
+from units.models import Unit
 from units.forms import UnitForm, UnitPopupForm
 from filemanager.views import get_upload
 
@@ -47,12 +47,15 @@ class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMi
         :param form: :class:`experiments.forms.ExperimentForm` instance
         :return: redirect to detail laboratory's information
         """
-        self.object = form.save(commit=False)
-        if not self.request.user in self.object.owners:
-            self.object.owners.append(self.request.user)
+        self.object = form.save(commit=False) # todo (commit=False)
         self.object.lab = self.lab
-        if not set(self.lab.investigator) & set(self.object.owners):
-            self.object.owners.extend(list(set(self.lab.investigator) - set(self.object.owners)))
+        self.object.save()
+        if not self.request.user in self.object.owners.all():
+            self.object.owners.add(self.request.user)
+        if not set(self.lab.investigator.all()) & set(self.object.owners.all()):
+            a = set(self.lab.investigator.all()) - set(self.object.owners.all())
+            a = list(a)
+            self.object.owners.add(*a)
 
         try:
             self.object.wooflo_key = get_wooflo_key(self.object)
@@ -60,7 +63,7 @@ class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMi
             pass
 
         self.object.save()
-        self.save_recent_activity(RecentActivity.ADD, experiment=unicode(self.object.pk))
+        # self.save_recent_activity(RecentActivity.ADD, experiment=unicode(self.object.pk))
         self.get_success_message()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -89,8 +92,8 @@ class ExperimentUpdateView(CheckLabPermissionMixin, InviteFormMixin, CheckEditPe
         """
         lab = self.object.lab
         self.object = form.save(commit=False)
-        if not set(lab.investigator) & set(self.object.owners):
-            self.object.owners.extend(list(set(lab.investigator) - set(self.object.owners)))
+        if not set(lab.investigator.all()) & set(self.object.owners.all()):
+            self.object.owners.add(list(set(lab.investigator) - set(self.object.owners)))
         self.object.lab = lab
         self.object.save()
         self.save_recent_activity(RecentActivity.UPDATE, experiment=unicode(self.object.pk))
@@ -187,7 +190,7 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
             nodes.append(node)
             if not unit.parent:
                 continue
-            for parent in unit.parent:
+            for parent in unit.parent.all():
                 if parent in units:
                     link = {
                         'target': index,

@@ -4,14 +4,16 @@ from django.core.urlresolvers import reverse
 from django.db.models import BLANK_CHOICE_DASH
 from django.http import Http404
 from django.utils.encoding import smart_text
-
-from mongodbforms.documentoptions import Relation
-from mongoengine import ReferenceField, QuerySet
-from mongoengine.django.auth import User
+from profiles.models import LabUser as User
+# from mongodbforms.documentoptions import Relation
+# from mongoengine import ReferenceField, QuerySet
+# from mongoengine.django.auth import User
 from mongoengine import post_save, pre_delete
 from experiments.search_indexes import ExperimentMappingType
 from profiles.search_indexes import ProfileMappingType
+from django.contrib.auth.models import User
 
+User.USERNAME_FIELD = 'email'
 
 @property
 def full_name(self):
@@ -29,12 +31,12 @@ def get_absolute_url(self):
 
 
 def create_test_lab(self):
-    from labs.documents import Lab
-    from experiments.documents import Experiment
-    from comments.documents import Comment
-    from measurements.documents import Measurement, MeasurementType
-    from units.documents import Unit
-    from tags.documents import Tag
+    from labs.models import Lab
+    from experiments.models import Experiment
+    from comments.models import Comment
+    from measurements.models import Measurement, MeasurementType
+    from units.models import Unit
+    from tags.models import Tag
 
     try:
         lab = Lab.objects.get(is_test=True)
@@ -112,11 +114,11 @@ def create_test_lab(self):
                 comment.save()
         return lab
 
-User.add_to_class('full_name', full_name)
-User.add_to_class('get_absolute_url', get_absolute_url)
-User.add_to_class('has_usable_password', has_usable_password)
-User.add_to_class('create_test_lab', create_test_lab)
-User._meta['virtual_fields'] = []
+# User.add_to_class('full_name', full_name)
+# User.add_to_class('get_absolute_url', get_absolute_url)
+# User.add_to_class('has_usable_password', has_usable_password)
+# User.add_to_class('create_test_lab', create_test_lab)
+# User._meta['virtual_fields'] = []
 
 
 @receiver(post_save, sender=User)
@@ -167,9 +169,9 @@ def values_list(self, *fields, **kwargs):
     return super(QuerySet, self).values_list(*fields)
 
 
-Relation.get_related_field = get_related_field
-ReferenceField.get_choices = get_choices
-ReferenceField.null = False  # todo change
-QuerySet.ordered = True
-QuerySet.distinct = distinct
-QuerySet.values_list = values_list
+# Relation.get_related_field = get_related_field
+# ReferenceField.get_choices = get_choices
+# ReferenceField.null = False  # todo change
+# QuerySet.ordered = True
+# QuerySet.distinct = distinct
+# QuerySet.values_list = values_list

@@ -1,4 +1,4 @@
-from mongoengine.django.auth import User
+from profiles.models import LabUser
 
 from django.conf import settings
 from django.core.mail import EmailMessage
@@ -8,8 +8,8 @@ from django.views.generic import CreateView, UpdateView, DetailView
 from django.utils.translation import ugettext_lazy as _
 
 from common.mixins import LoginRequiredMixin, ActiveTabMixin, AjaxableResponseMixin
-from labs.documents import Lab
-from profiles.documents import TempPassword
+from labs.models import Lab
+from profiles.models import TempPassword
 from profiles.forms import InviteUserForm, UserUpdateForm
 
 
@@ -17,7 +17,7 @@ class InviteTechnician(LoginRequiredMixin, AjaxableResponseMixin, CreateView):
     """
     View for inviting users and send mail to him
     """
-    model = User
+    model = LabUser
     template_name = 'profiles/profile_form.html'
     form_class = InviteUserForm
     success_url = reverse_lazy('labs:list')
@@ -42,7 +42,7 @@ class ProfileFormView(LoginRequiredMixin, ActiveTabMixin, UpdateView):
     """
     View for update a user's profile
     """
-    model = User
+    model = LabUser
     template_name = 'profiles/profile_update.html'
     form_class = UserUpdateForm
     active_tab = 'profiles'
@@ -60,6 +60,6 @@ class ProfileDetailView(LoginRequiredMixin, ActiveTabMixin, DetailView):
     """
     View for detail a user's profile
     """
-    model = User
+    model = LabUser
     template_name = 'profiles/profile_update.html'
     active_tab = 'profiles'

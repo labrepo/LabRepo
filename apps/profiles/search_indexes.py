@@ -1,5 +1,5 @@
 from elasticutils.contrib.django import MappingType, Indexable
-from mongoengine.django.auth import User
+from profiles.models import LabUser
 
 
 class ProfileMappingType(MappingType, Indexable):
@@ -9,7 +9,7 @@ class ProfileMappingType(MappingType, Indexable):
     @classmethod
     def get_model(cls):
         """Returns the Django model this MappingType relates to User"""
-        return User
+        return LabUser
 
     @classmethod
     def get_mapping_type_name(cls):

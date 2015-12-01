@@ -1,17 +1,17 @@
+from django.test import TestCase
 from django.contrib.webdesign import lorem_ipsum
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from common.testcase import BaseTestCase
-from experiments.documents import Experiment
+from experiments.models import Experiment
 from experiments.factories import ExperimentFactory
 from labs.factories import LabFactory
 from profiles.factories import UserFactory
 from units.factories import UnitFactory
 
 
-class ExperimentTest(BaseTestCase):
+class ExperimentTest(TestCase):
 
     def setUp(self):
         self.owner = UserFactory()
@@ -122,7 +122,7 @@ class ExperimentTest(BaseTestCase):
 
     def test_detail_with_owner(self):
         experiment = ExperimentFactory(lab=self.lab, owners=[self.owner.pk])
-        unit = UnitFactory(experiments=[experiment], lab=self.lab, user=self.owner)
+        unit = UnitFactory(experiments=[experiment], lab=self.lab)
         url = reverse('experiments:detail', kwargs={'lab_pk': self.lab.pk, 'pk': experiment.pk})
 
         resp = self.client.get(url, follow=True)
@@ -191,4 +191,4 @@ class ExperimentTest(BaseTestCase):
         resp = self.client.post(url, data, follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'You have not permission change owners', 1)
-        self.assertEqual(Experiment.objects.first().owners, [self.owner])
+        self.assertEqual(list(Experiment.objects.all().first().owners.all()), [self.owner])

@@ -11,7 +11,8 @@ from django.contrib.auth import (models as auth_app, get_permission_codename,
 from django.core import exceptions
 from django.core.management.base import CommandError
 from django.db import DEFAULT_DB_ALIAS, router
-from django.db.models import get_model, get_models, signals, UnavailableApp
+from django.db.models import get_model, get_models, signals
+from django.db.models.loading import UnavailableApp
 from django.utils.encoding import DEFAULT_LOCALE_ENCODING
 from django.utils import six
 from django.utils.six.moves import input
@@ -64,7 +65,7 @@ def create_permissions(app, created_models, verbosity, db=DEFAULT_DB_ALIAS, **kw
     except UnavailableApp:
         return
 
-    if not router.allow_syncdb(db, auth_app.Permission):
+    if not router.allow_migrate(db, auth_app.Permission):
         return
 
     from django.contrib.contenttypes.models import ContentType

@@ -5,7 +5,7 @@
   <small>{% trans 'Details' %}</small>{% endblock %}
 
 {% block manage_buttons %}
-  {% if user in object.investigator %}
+  {% if user in object.investigator.all %}
     <div class="btn-group pull-right">
       <button class="btn btn-danger btn-flat" data-href="{% url 'labs:delete' lab_pk=object.pk %}"
               data-toggle="modal" data-target="#confirm-delete">
@@ -18,7 +18,7 @@
       </a>
     </div>
   {% endif %}
-  {% if user in object.investigator or user in object.members %}
+  {% if user in object.investigator.all or user in object.members.all %}
     <div class="btn-group">
       <a href="{% url 'experiments:create' lab_pk=object.pk %}" class="btn bg-olive btn-flat">
         <i class="fa fa-plus"></i> {% trans 'Create Experiment'|title %}
@@ -37,13 +37,13 @@
 {% block content %}
   <div class="row">
     <div class="col-lg-3 col-xs-6">
-      {% include 'small-box_collapse.html' with obj_list=object.investigator title_box='investigators' color='yellow' icon='users' %}
+      {% include 'small-box_collapse.html' with obj_list=object.investigator.all title_box='investigators' color='yellow' icon='users' %}
     </div>
     <div class="col-lg-3 col-xs-6">
-      {% include 'small-box_collapse.html' with obj_list=object.guests title_box='guests' color='red' icon='users' %}
+      {% include 'small-box_collapse.html' with obj_list=object.guests.all title_box='guests' color='red' icon='users' %}
     </div>
     <div class="col-lg-3 col-xs-6">
-      {% include 'small-box_collapse.html' with obj_list=object.memebers title_box='members' color='aqua' icon='users' %}
+      {% include 'small-box_collapse.html' with obj_list=object.memebers.all title_box='members' color='aqua' icon='users' %}
     </div>
     <div class="col-lg-3 col-xs-6">
       {% include 'small-box_collapse.html' with obj_list=experiments_list title_box='experiments' color='olive' icon='flask' %}
@@ -61,7 +61,7 @@
         <dl class="dl-horizontal">
           <dt> {% trans 'Investigators' %}:</dt>
           <dd>
-            {% for person in object.investigator %}
+            {% for person in object.investigator.all %}
               <a href="{{ person.get_absolute_url }}">
                 <i class="fa fa-user"></i>
                 {{ person.full_name }}
@@ -73,7 +73,7 @@
           </dd>
           <dt> {% trans 'Members' %}:</dt>
           <dd>
-            {% for person in object.members %}
+            {% for person in object.members.all %}
               <a href="{{ person.get_absolute_url }}">
                 <i class="fa fa-user"></i>
                 {{ person.full_name }}
@@ -85,7 +85,7 @@
           </dd>
           <dt> {% trans 'Guests' %}:</dt>
           <dd>
-            {% for person in object.guests %}
+            {% for person in object.guests.all %}
               <a href="{{ person.get_absolute_url }}">
                 <i class="fa fa-user"></i>
                 {{ person.full_name }}
@@ -107,7 +107,7 @@
         <div class="col-sm-4 title-desc">{% trans 'investigators'|title %}</div>
         <div class="col-sm-8">
           <ul class="list-group">
-            {% for member in object.investigator %}
+            {% for member in object.investigator.all %}
               <li class="list-group-item list-group-item-sm">
                 <a href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></li>
             {% endfor %}
@@ -119,7 +119,7 @@
         <div class="col-sm-4 title-desc">{% trans 'members'|title %}</div>
         <div class="col-sm-8">
           <ul class="list-group">
-            {% for member in object.members %}
+            {% for member in object.members.all %}
               <li class="list-group-item list-group-item-sm"><a
                   href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></li>
             {% endfor %}
@@ -131,7 +131,7 @@
         <div class="col-sm-4 title-desc">{% trans 'guests'|title %}</div>
         <div class="col-sm-8">
           <ul class="list-group">
-            {% for member in object.guests %}
+            {% for member in object.guests.all %}
               <li class="list-group-item list-group-item-sm"><a
                   href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></li>
             {% endfor %}
@@ -169,7 +169,7 @@
       <div class="box-header"><h3 class="box-title">{% trans 'storages'|title %}</h3></div>
       <div class="box-body">
         <div class="list-group">
-          {% for storage in object.storages %}
+          {% for storage in object.storages.all %}
           <div class="storage">
             <span class="list-group-item list-group-item-sm">{{ storage }}
               <span class="pull-right">

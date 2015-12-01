@@ -1,8 +1,7 @@
-from mongodbforms import DocumentForm
-from mongoengine.django.auth import User
+from django import forms
 from django.utils.translation import ugettext_lazy as _
-from units.documents import Unit
-
+from units.models import Unit
+from profiles.models import LabUser
 
 class FormMixin(object):
 
@@ -21,10 +20,10 @@ class SelectFormMixin(object):
         self.fields['editors'].widget.attrs['data-dependent'] = 'owners,viewers'
         self.fields['viewers'].widget.attrs['data-dependent'] = 'editors,owners'
         lab = self.initial['lab']
-        people = [obj.pk for obj in lab.investigator + lab.members + lab.guests]
-        self.fields['owners'].queryset = User.objects.filter(pk__in=people)
-        self.fields['editors'].queryset = User.objects.filter(pk__in=people)
-        self.fields['viewers'].queryset = User.objects.filter(pk__in=people)
+        people = [obj.pk for obj in list(lab.investigator.all()) + list(lab.members.all()) + list(lab.guests.all())]
+        self.fields['owners'].queryset = LabUser.objects.filter(pk__in=people)
+        self.fields['editors'].queryset = LabUser.objects.filter(pk__in=people)
+        self.fields['viewers'].queryset = LabUser.objects.filter(pk__in=people)
 
     def clean(self):
         data = super(SelectFormMixin, self).clean()
@@ -40,7 +39,7 @@ class SelectFormMixin(object):
 class CheckOwnerEditMixin(object):
     def clean(self):
         data = super(CheckOwnerEditMixin, self).clean()
-        if self.instance and self.instance.is_editor(self.user):
+        if self.instance.pk and self.instance.is_editor(self.user):
             if 'owners' in self.changed_data and self.instance.owners != data['owners']:
                 self._errors['owners'] = self.error_class([_('You have not permission change owners')])
                 del data['owners']
@@ -58,12 +57,13 @@ class CheckUnitMixin(object):
         self.fields['units'].queryset = unit_queryset.filter(pk__in=units)
 
 
-class BaseForm(FormMixin, DocumentForm):
-    def _post_clean(self):
-        self._meta._dont_save = []
-        super(BaseForm, self)._post_clean()
+class BaseForm(FormMixin, forms.ModelForm):
+    pass
+    # def _post_clean(self):
+        # self._meta._dont_save = []
+        # super(BaseForm, self)._post_clean()
 
-    def __init__(self, *args, **kwargs):
-        super(BaseForm, self).__init__(*args, **kwargs)
-        if not isinstance(self.instance, self._meta.document):
-            self.instance = self._meta.document()
+    # def __init__(self, *args, **kwargs):
+    #     super(BaseForm, self).__init__(*args, **kwargs)
+    #     if not isinstance(self.instance, self._meta.document):
+    #         self.instance = self._meta.document()

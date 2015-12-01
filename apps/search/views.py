@@ -1,20 +1,19 @@
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin
+from django.db.models import Q
 
-from mongoengine import Q
-from mongoengine.django.auth import User
-
+from profiles.models import LabUser as User
 from comments.search_indexes import CommentMappingType
 from common.mixins import LoginRequiredMixin
-from experiments.documents import Experiment
+from experiments.models import Experiment
 from experiments.search_indexes import ExperimentMappingType
-from .forms import SearchForm
-from labs.documents import Lab
+from labs.models import Lab
 from measurements.search_indexes import MeasurementMappingType
 from profiles import ProfileMappingType
-from unit_collections.forms import CollectionForm, UpdateUnitsCollectionForm
+# from unit_collections.forms import CollectionForm, UpdateUnitsCollectionForm
 from experiments.forms import UpdateUnitsForm
 from units.search_indexes import UnitMappingType
+from .forms import SearchForm
 
 
 class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):

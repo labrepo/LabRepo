@@ -4,11 +4,12 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
 from django.views.generic import View
 
-from .forms import RegistrationEmailForm
-from .documents import RegistrationProfile
 from registration.views import ActivationView as BaseActivationView
 from registration.views import RegistrationView as BaseRegistrationView
 from registration import signals
+
+from .forms import RegistrationEmailForm
+from .documents import RegistrationProfile
 
 
 class RegistrationView(BaseRegistrationView):
@@ -52,7 +53,7 @@ class RegistrationView(BaseRegistrationView):
     """
     form_class = RegistrationEmailForm
 
-    def register(self, request, **cleaned_data):
+    def register(self, form, **kwargs):
         """
         Given a username, email address and password, register a new
         user account, which will initially be inactive.
@@ -76,20 +77,20 @@ class RegistrationView(BaseRegistrationView):
         class of this backend as the sender.
 
         """
-        email, password = cleaned_data['email'], cleaned_data['password1']
+        email, password = form.cleaned_data['email'], form.cleaned_data['password1']
         username = email.split('@')[0]
 
         if Site._meta.installed:  # todo change
             site = Site.objects.get_current()
         else:
-            site = RequestSite(request)
+            site = RequestSite(self.request)
         new_user = RegistrationProfile.create_inactive_user(username, email, password, site)
         signals.user_registered.send(sender=self.__class__,
                                      user=new_user,
-                                     request=request)
+                                     request=self.request)
         return new_user
 
-    def registration_allowed(self, request):
+    def registration_allowed(self):
         """
         Indicate whether account registration is currently permitted,
         based on the value of the setting ``REGISTRATION_OPEN``. This
@@ -104,7 +105,7 @@ class RegistrationView(BaseRegistrationView):
         """
         return getattr(settings, 'REGISTRATION_OPEN', True)
 
-    def get_success_url(self, request, user):
+    def get_success_url(self, user):
         """
         Return the name of the URL to redirect to after successful
         user registration.

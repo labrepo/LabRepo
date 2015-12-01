@@ -4,10 +4,8 @@ from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
-# from mongoengine.django.auth import User
-from profiles.models import LabUser
+from profiles.models import LabUser, TempPassword
 from common.forms import BaseForm
-from profiles.documents import TempPassword
 
 
 class InviteUserForm(BaseForm):
@@ -18,7 +16,7 @@ class InviteUserForm(BaseForm):
         self.fields['email'].label = _('email address').capitalize()
 
     class Meta:
-        document = LabUser
+        model = LabUser
         fields = ('email',)
         using = 'mongodb'
 
@@ -46,7 +44,7 @@ class UserUpdateForm(BaseForm):
         self.fields['plot_key'].widget = forms.widgets.TextInput()
 
     class Meta:
-        document = LabUser
+        model = LabUser
         fields = ('first_name', 'last_name', 'plot_un', 'plot_key')
 
 
@@ -57,7 +55,7 @@ class ChangeUserForm(BaseForm):
                     "using <a href=\"password/\">this form</a>."))
 
     class Meta:
-        document = LabUser
+        model = LabUser
         exclude = ('user_permissions', 'username')
 
     def clean_password(self):

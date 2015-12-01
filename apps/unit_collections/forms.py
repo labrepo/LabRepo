@@ -2,7 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from mongoengine import Q
+from django.db.models import Q
 
 from unit_collections.documents import Collection
 from common.forms import BaseForm, SelectFormMixin, CheckOwnerEditMixin, CheckUnitMixin
@@ -11,7 +11,7 @@ from common.forms import BaseForm, SelectFormMixin, CheckOwnerEditMixin, CheckUn
 class CollectionForm(SelectFormMixin, CheckUnitMixin, CheckOwnerEditMixin, BaseForm):
 
     class Meta:
-        document = Collection
+        model = Collection
         fields = ('title', 'units', 'owners', 'editors', 'viewers', 'description')
 
     def __init__(self, *args, **kwargs):
@@ -39,7 +39,7 @@ class UpdateUnitsCollectionForm(CheckUnitMixin, BaseForm):
     collection = forms.ModelChoiceField(queryset=Collection.objects.none())
 
     class Meta:
-        document = Collection
+        model = Collection
         fields = ('units',)
 
     def __init__(self, *args, **kwargs):

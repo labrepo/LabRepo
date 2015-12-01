@@ -1,18 +1,22 @@
 import os
 import json
+import shutil
 
+from django.test import TestCase
 from django.contrib.webdesign import lorem_ipsum
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from labs.documents import Lab
-from common.testcase import BaseTestCase
+from labs.models import Lab
 from profiles.factories import UserFactory
 from profiles.factories import UserFactory
 
 
-class TestFilemanagerBackendTest(BaseTestCase):
+class TestFilemanagerBackendTest(TestCase):
     def setUp(self):
+        self.old_setting = settings.FILEMANAGER_UPLOAD_ROOT
+        settings.FILEMANAGER_UPLOAD_ROOT = settings.FILEMANAGER_UPLOAD_ROOT + '_test/'
+
         self.owner = UserFactory()
 
         url = reverse('labs:create')
@@ -27,15 +31,19 @@ class TestFilemanagerBackendTest(BaseTestCase):
 
         with open(os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, unicode(self.lab.pk) + '/', 'testfile1.txt'), 'w') as f:
             f.write('test file content')
-        os.makedirs(os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, unicode(self.lab.pk) + '/', 'test dir'))
-        with open(os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, unicode(self.lab.pk) + '/', 'test dir', 'testfile2.txt'), 'w') as f:
+        inner_directory = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, unicode(self.lab.pk) + '/', 'test dir')
+        if not os.path.exists(inner_directory):
+            os.makedirs(inner_directory)
+        with open(os.path.join(inner_directory, 'testfile2.txt'), 'w') as f:
             f.write('test file content in dir')
 
         self.client.logout()
 
     def tearDown(self):
         super(TestFilemanagerBackendTest, self).tearDown()
-        print('td')
+        shutil.rmtree(os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, unicode(self.lab.pk) + '/'))
+        settings.FILEMANAGER_UPLOAD_ROOT = self.old_setting
+
 
     def get_directory_content(self, directory='/'):
         if directory == '/' or not directory:

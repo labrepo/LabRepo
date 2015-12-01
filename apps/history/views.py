@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView
 from mongoreversion.models import ContentType
 
 from common.mixins import LoginRequiredMixin, CheckViewPermissionMixin
-from history.documents import History
+from history.models import History
 
 
 class HistoryListView(LoginRequiredMixin, ListView):

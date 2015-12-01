@@ -6,9 +6,9 @@ from django.forms import HiddenInput, TextInput, Textarea
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
-from .documents import Tag
 from common.forms import BaseForm
 
+from .models import Tag
 
 class DictWidget(HiddenInput):
 
@@ -55,7 +55,7 @@ class TagForm(TagBaseForm):
     def __init__(self, *args, **kwargs):
         super(TagForm, self).__init__(*args, **kwargs)
         self.lab_pk = self.initial.pop('lab_pk')
-        self.fields['parent'].queryset = self.instance._meta.document.objects.filter(lab=self.lab_pk)
+        self.fields['parent'].queryset = Tag.objects.filter(lab__pk=self.lab_pk)
         if kwargs.get('instance'):
             self.fields['parent'].queryset = self.fields['parent'].queryset.filter(
                 pk__nin=[child.pk for child in kwargs.get('instance').get_children()])
@@ -63,7 +63,7 @@ class TagForm(TagBaseForm):
         # self.fields['params'].label = _(u'params')
 
     class Meta:
-        document = Tag
+        model = Tag
         widgets = {
             'details': Textarea(attrs={'rows': 1}),
             # 'params': DictWidget(),
@@ -88,4 +88,4 @@ class TagForm(TagBaseForm):
 
 class TagAdminForm(TagBaseForm):
     class Meta:
-        document = Tag
+        model = Tag

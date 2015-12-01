@@ -3,8 +3,6 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-from mongoadmin.sites import site
-
 
 admin.autodiscover()
 
@@ -15,10 +13,10 @@ js_info_dict = {
 urlpatterns = patterns(
     '',
     url(r'^accounts/', include('common.backends.registration.urls')),
-    url(r'^(?P<lab_pk>[\d\w]+)/history/', include('history.urls', namespace='history')),
+    # url(r'^(?P<lab_pk>[\d\w]+)/history/', include('history.urls', namespace='history')),
     url(r'^', include('labs.urls', namespace='labs')),
     url(r'^(?P<lab_pk>[\d\w]+)/experiments/', include('experiments.urls', namespace='experiments')),
-    url(r'^(?P<lab_pk>[\d\w]+)/collections/', include('unit_collections.urls', namespace='collections')),
+    # url(r'^(?P<lab_pk>[\d\w]+)/collections/', include('unit_collections.urls', namespace='collections')),
     url(r'^(?P<lab_pk>[\d\w]+)/units/', include('units.urls', namespace='units')),
     url(r'^(?P<lab_pk>[\d\w]+)/dashboard/', include('dashboard.urls', namespace='dashboard')),
     url(r'^(?P<lab_pk>[\d\w]+)/comment/', include('comments.urls', namespace='comment')),
@@ -31,7 +29,7 @@ urlpatterns = patterns(
     url(r'^ckeditor/', include('ckeditor.urls')),
     url('', include('social.apps.django_app.urls', namespace='social')),
     url(r'^admin/rosetta/', include('rosetta.urls')),
-    url(r'^admin/', include(site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict, name='js_catalog'),
 )
 

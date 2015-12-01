@@ -4,10 +4,8 @@ import factory
 
 from django.contrib.webdesign import lorem_ipsum
 
-from mongoengine.django.auth import User
-
-from experiments.documents import Experiment
-from labs.documents import Lab
+from experiments.models import Experiment
+from labs.models import Lab
 
 
 class ExperimentFactory(factory.DjangoModelFactory):
@@ -16,10 +14,6 @@ class ExperimentFactory(factory.DjangoModelFactory):
     @factory.lazy_attribute
     def lab(self):
         return Lab.objects.order_by('?')[0]
-
-    @factory.lazy_attribute
-    def owners(self):
-        return User.objects.order_by('?')[0]
 
     @factory.lazy_attribute
     def start(self):
@@ -40,3 +34,30 @@ class ExperimentFactory(factory.DjangoModelFactory):
     @factory.lazy_attribute
     def status(self):
         return Experiment.STATUS[random.randint(0, 2)][0]
+
+    @factory.post_generation
+    def owners(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for user in extracted:
+                self.owners.add(user)
+
+    @factory.post_generation
+    def editors(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for user in extracted:
+                self.editors.add(user)
+
+    @factory.post_generation
+    def viewers(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for user in extracted:
+                self.viewers.add(user)

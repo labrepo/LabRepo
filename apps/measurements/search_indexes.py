@@ -1,6 +1,6 @@
 from elasticutils.contrib.django import MappingType, Indexable
 
-from units.documents import Unit
+from units.models import Unit
 
 
 class MeasurementMappingType(MappingType, Indexable):

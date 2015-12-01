@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, include, url
 from . import views
 
 
@@ -17,4 +17,6 @@ urlpatterns = patterns('',
     url(r'^remove-url/(?P<pk>[\d\w]+)$', views.DeleteLinkView.as_view(), name='unit-remove-url'),
 
     url(r'^detail_json/(?P<pk>[\d\w]+)/$', views.UnitDetailJSONView.as_view(), name='detail-json'),
+
+    url(r'^api/', include('units.api.urls')),
 )

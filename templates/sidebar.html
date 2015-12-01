@@ -77,16 +77,8 @@
               <!--<i class="fa fa-tags"></i> {% trans 'Tags' %}-->
             <!--</a>-->
           <!--</li>-->
-          <!--<li class="{% if active_tab == 'collections' %}active{% endif %}">-->
-            <!--<a href="{% url 'collections:list' lab_pk=lab.pk %}">-->
-              <!--<i class="fa fa-cubes"></i> {% trans 'collections'|title %}-->
-            <!--</a>-->
-          <!--</li>-->
-          <!--<li class="{% if active_tab == 'measurement types' %}active{% endif %}">-->
-            <!--<a href="{% url 'measurements:measurement_type_list' lab_pk=lab.pk %}">-->
-              <!--{% trans 'Measurement type' %}-->
-            <!--</a>-->
-          <!--</li>-->
+
+
         <!--</ul>-->
       <!--</li>-->
       <li class="{% if not active_tab and not object %} active{% endif %}">

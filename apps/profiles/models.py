@@ -1,13 +1,38 @@
 from django.utils.translation import ugettext_lazy as _, ugettext
-from mongoengine.django.auth import User
+from django.contrib.auth.models import AbstractUser
+from django.core.urlresolvers import reverse
+from django.db import models
 
-import mongoengine as me
 
 
-class LabUser(User):
+
+class LabUser(AbstractUser):
     """Extend Mongo Engine User model"""
-    plot_un = me.StringField(required=False, verbose_name=_('Plot.ly username(un)'))
-    plot_key = me.StringField(required=False, verbose_name=_('Plot.ly key'))
+    plot_un = models.CharField(max_length=512, blank=False, null=True, verbose_name=_('Plot.ly username(un)'))
+    plot_key = models.CharField(max_length=512, blank=False, null=True, verbose_name=_('Plot.ly key'))
 
-LabUser._default_manager = LabUser.objects
-User._default_manager = User.objects
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    # avatar = models.ImageField(upload_to='avatars',
+    #                            blank=False, null=True,
+    #                            # size=None,
+    #                            # thumbnail_size=(200, 200, True),
+    #                            # collection_name='avatars',
+    #                            verbose_name=_('Avatar'))
+
+    def get_username(self):
+        return self.email.split('@')[0]
+
+    class Meta:
+        unique_together = ('email', )
+
+
+class TempPassword(models.Model):
+    user = models.ForeignKey(LabUser)
+    password = models.TextField()
+
+    def __unicode__(self):
+        return self.user.username
+
+

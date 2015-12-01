@@ -6,13 +6,14 @@ from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-from mongoengine import Q
+from django.db.models import Q
 
 from common.mixins import ActiveTabMixin, LoginRequiredMixin, AjaxableResponseMixin
-from dashboard.documents import RecentActivity
-from experiments.documents import Experiment
-from labs.documents import Lab
+from dashboard.models import RecentActivity
+from experiments.models import Experiment
+from labs.models import Lab
 from labs.forms import LabStorageForm
+
 
 class DashboardView(ActiveTabMixin, LoginRequiredMixin, ListView):
     model = RecentActivity
@@ -23,7 +24,7 @@ class DashboardView(ActiveTabMixin, LoginRequiredMixin, ListView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        user = [self.request.user]
+        user = [self.request.user.pk]
         if not Lab.objects.filter(Q(investigator__in=user) | Q(members__in=user) | Q(guests__in=user)):
             raise PermissionDenied
         return super(DashboardView, self).dispatch(*args, **kwargs)
@@ -61,7 +62,7 @@ class RecentActivityView(LoginRequiredMixin, AjaxableResponseMixin, ListView):
         queryset = self.model.objects.filter(lab_id=self.kwargs.get('lab_pk'))
         if self.kwargs.get('experiment_pk'):
             queryset = queryset.filter(extra__experiment=self.kwargs.get('experiment_pk'))
-        return group_by_date(queryset.select_related(max_depth=2))
+        return group_by_date(queryset.select_related(depth=2))
 
     def get_context_data(self, **kwargs):
         ctx = super(RecentActivityView, self).get_context_data(**kwargs)
@@ -83,7 +84,7 @@ class MeasurementRecentActivityView(LoginRequiredMixin, AjaxableResponseMixin, L
         queryset = self.model.objects.filter(lab_id=self.kwargs.get('lab_pk'), instance_type='Measurement')
         if self.kwargs.get('experiment_pk'):
             queryset = queryset.filter(extra__experiment=self.kwargs.get('experiment_pk'))
-        return group_by_date(queryset.select_related(max_depth=2))
+        return group_by_date(queryset.select_related(depth=2))
 
     def get_context_data(self, **kwargs):
         ctx = super(MeasurementRecentActivityView, self).get_context_data(**kwargs)

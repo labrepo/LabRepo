@@ -48,7 +48,7 @@
                     <dl class="dl-horizontal">
                       <dt><i class="fa fa-users"></i> {% trans 'Investigators' %}:</dt>
                       <dd>
-                        {% for person in object.investigator %}
+                        {% for person in object.investigator.all %}
                           <a href="{{ person.get_absolute_url }}">
                             <i class="fa fa-user"></i>
                             {{ person.full_name }}
@@ -60,7 +60,7 @@
                       </dd>
                       <dt><i class="fa fa-users"></i> {% trans 'Members' %}:</dt>
                       <dd>
-                        {% for person in object.members %}
+                        {% for person in object.members.all %}
                           <a href="{{ person.get_absolute_url }}">
                             <i class="fa fa-user"></i>
                             {{ person.full_name }}
@@ -72,7 +72,7 @@
                       </dd>
                       <dt><i class="fa fa-users"></i> {% trans 'Guests' %}:</dt>
                       <dd>
-                        {% for person in object.guests %}
+                        {% for person in object.guests.all %}
                           <a href="{{ person.get_absolute_url }}">
                             <i class="fa fa-user"></i>
                             {{ person.full_name }}

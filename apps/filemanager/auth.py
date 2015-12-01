@@ -1,4 +1,4 @@
-from labs.documents import Lab
+from labs.models import Lab
 
 
 def allow_all(request, **kwargs):

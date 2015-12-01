@@ -4,6 +4,7 @@ import os
 
 from django.conf import settings
 
+import elasticutils
 from elasticutils.utils import chunked
 from celery.task import task
 

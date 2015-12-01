@@ -73,38 +73,35 @@
                       <div class="col-sm-3 title-desc">{% trans 'owners'|upper %}</div>
                       <div class="col-sm-9">
                         <ul class="list-group">
-                          {% for member in object.owners %}
+                          {% for member in object.owners.all %}
                           <li class="list-group-item list-group-item-sm">
                             <a href="{{ member.get_absolute_url }}">{{ member.full_name }}</a>
                           </li>
-                          {% endfor %}
-                          {% if not object.owners %}
+                          {% empty %}
                           <li class="list-group-item">&nbsp;</li>
-                          {% endif %}
+                          {% endfor %}
                         </ul>
                       </div>
                       <div class="col-sm-3 title-desc external-event">{% trans 'editors'|upper %}</div>
                       <div class="col-sm-9">
                         <ul class="list-group">
-                          {% for member in object.editors %}
+                          {% for member in object.editors.all %}
                           <li class="list-group-item list-group-item-sm"><a
                                   href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></li>
-                          {% endfor %}
-                          {% if not object.editors %}
+                          {% empty %}
                           <li class="list-group-item list-group-item-sm">&nbsp;</li>
-                          {% endif %}
+                          {% endfor %}
                         </ul>
                       </div>
                       <div class="col-sm-3 title-desc">{% trans 'viewers'|upper %}</div>
                       <div class="col-sm-9">
                         <ul class="list-group">
-                          {% for member in object.viewers %}
+                          {% for member in object.viewers.all %}
                           <li class="list-group-item list-group-item-sm"><a
                                   href="{{ member.get_absolute_url }}">{{ member.full_name }}</a></li>
-                          {% endfor %}
-                          {% if not object.viewers %}
+                          {% empty %}
                           <li class="list-group-item list-group-item-sm">&nbsp;</li>
-                          {% endif %}
+                          {% endfor %}
                         </ul>
                       </div>
                       <div class="col-sm-9">

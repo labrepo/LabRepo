@@ -1,20 +1,21 @@
 import hashlib
 import random
-import mongoengine as me
 
-from profiles.models import LabUser
+from django.db import models
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
-# from mongoengine.django.auth import User
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
+
 from registration.models import SHA1_RE
 
+from profiles.models import LabUser
 
-class RegistrationProfile(me.Document):
-    user = me.ReferenceField(LabUser)
-    activation_key = me.StringField(max_length=40)
+
+class RegistrationProfile(models.Model):
+    user = models.ForeignKey(LabUser, related_name='registration_profile')
+    activation_key = models.CharField(max_length=40)
 
     ACTIVATED = u"ALREADY_ACTIVATED"
 
@@ -154,7 +155,7 @@ class RegistrationProfile(me.Document):
         user. To disable this, pass ``send_email=False``.
 
         """
-        new_user = LabUser.create_user(username, password, email)
+        new_user = LabUser.objects.create_user(username=email, password=password, email=email)
         new_user.is_active = False
         new_user.save()
 

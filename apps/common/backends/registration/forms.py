@@ -8,7 +8,7 @@ from django.template import loader
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import ugettext_lazy as _
-# from mongoengine.django.auth import User
+
 from profiles.models import LabUser
 from common.forms import FormMixin
 
@@ -59,7 +59,7 @@ class RegistrationEmailForm(FormMixin, forms.Form):
         site.
 
         """
-        if LabUser.objects(email__iexact=self.cleaned_data['email']):
+        if LabUser.objects.filter(email__iexact=self.cleaned_data['email']).exists():
             raise forms.ValidationError(_("This email address is already in use. Please supply a different email address."))
         return self.cleaned_data['email']
 

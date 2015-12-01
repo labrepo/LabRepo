@@ -68,13 +68,11 @@ THIRD_PARTY_APPS = (
     'ckeditor',
     'django_forms_bootstrap',
     'djcelery',
-    'mongoadmin',
-    'mongodbforms',
-    'mongoengine.django.mongo_auth',
     'rosetta',
     'registration',
-    'social.apps.django_app.me',
+    'social.apps.django_app.default',
     'widget_tweaks',
+    'rest_framework',
 )
 LOCAL_APPS = (
     'comments',
@@ -84,18 +82,17 @@ LOCAL_APPS = (
     'history',
     'labs',
     'measurements',
+    'dashboard',
     'profiles',
     'search',
     'tags',
-    'unit_collections',
+    # 'unit_collections',
     'units',
     'uploader',
 )
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-
-MONGOADMIN_OVERRIDE_ADMIN = True
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -104,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'units.middleware.DisableCSRF'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -162,9 +160,9 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = rel('public', 'media')
 
-SESSION_ENGINE = 'mongoengine.django.sessions'
+# SESSION_ENGINE = 'mongoengine.django.sessions'
 
-SOCIAL_AUTH_STORAGE = 'social.apps.django_app.me.models.DjangoStorage'
+# SOCIAL_AUTH_STORAGE = 'social.apps.django_app.me.models.DjangoStorage'
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 # SOCIAL_AUTH_FACEBOOK_KEY = '460569577381739'
@@ -186,11 +184,11 @@ AUTHENTICATION_BACKENDS = (
     'social.backends.facebook.FacebookOAuth2',
     'social.backends.google.GoogleOAuth2',
     'social.backends.linkedin.LinkedinOAuth2',
-    'common.backends.auth.auth.MongoEngineEmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
-AUTH_USER_MODEL = 'mongo_auth.MongoUser'
-MONGOENGINE_USER_DOCUMENT = 'profiles.models.LabUser'
+AUTH_USER_MODEL = 'profiles.LabUser'
+# MONGOENGINE_USER_DOCUMENT = 'profiles.models.LabUser'
 
 # registration
 ACCOUNT_ACTIVATION_DAYS = 1

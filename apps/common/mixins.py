@@ -5,14 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
+from django.contrib.contenttypes.models import ContentType
 
-from mongoengine import ListField, Document
-
-from comments.documents import Comment
+from comments.models import Comment
 from comments.forms import CommentForm
 from common.decorators import get_obj_or_404
-from dashboard.documents import RecentActivity
-from labs.documents import Lab
+from dashboard.models import RecentActivity
+from labs.models import Lab
 from profiles.forms import InviteUserForm
 
 
@@ -102,13 +101,14 @@ class RecentActivityMixin(object):
         kwargs['object_name'] = obj.__unicode__()
         if obj:
             return RecentActivity.objects.create(
-                lab_id=self.kwargs.get('lab_pk'),
+                lab_id=Lab.objects.get(pk=self.kwargs.get('lab_pk')),
                 init_user=self.request.user,
-                instance_type=obj._meta.object_name,
-                object_id=obj.pk,
-                action_flag=action_flag,
                 content_object=obj,
-                extra=kwargs
+                # instance_type=obj._meta.object_name,
+                # object_id=obj.pk,
+                action_flag=action_flag,
+                # content_object=obj,
+                # extra=kwargs
             )
 
 
@@ -125,7 +125,8 @@ class CommentMixin(object):
         return {'instance_type': self.model._meta.object_name, 'object_id': self.object.pk}
 
     def get_list_comment(self):
-        return Comment.objects.filter(instance_type=self.model._meta.object_name, object_id=self.object.pk).order_by('action_time')
+        content_type = ContentType.objects.get_for_model(self.model)
+        return Comment.objects.filter(instance_type=content_type, object_id=self.object.pk).order_by('action_time')
 
     def get_context_data(self, **kwargs):
         ctx = super(CommentMixin, self).get_context_data(**kwargs)
@@ -169,14 +170,25 @@ class DataMixin(object):
 
     def get_data(self, data_list, i):
         data = {}
+        data_list = data_list.copy()
         for key in data_list.keys():
             if key.startswith("data-" + str(i) + '-'):
+                if key.endswith('[]'):
+                    array = True
+                else:
+                    array = False
                 k = key.replace("data-" + str(i) + '-', '').replace('[]', '').lower()
-                if k in self.title:
-                    if isinstance(getattr(self.model, self.title[k], None), ListField):
-                        data[self.title[k]] = data_list.getlist(key)
-                    else:
-                        data[self.title[k]] = data_list[key]
+                if array:
+                    data[k] = data_list.getlist(key)
+                else:
+                    data[k] = data_list.get(key)
+
+                # k = key.replace("data-" + str(i) + '-', '').replace('[]', '').lower()
+                # if k in self.title:
+                #     if isinstance(getattr(self.model, self.title[k], None), ListField):
+                #         data[self.title[k]] = data_list.getlist(key)
+                #     else:
+                #         data[self.title[k]] = data_list[key]
         return data
 
     def is_changed(self, data):
@@ -222,7 +234,7 @@ class DataMixin(object):
             if data:
                 self.kwargs['pk'] = data.get('pk', None)
                 self.object = self.get_object()
-                #TODO: remove descriptio
+                #TODO: remove description
                 if getattr(self.object, 'description', '') and not 'description' in self.title:
                     data['description'] = self.object.description
 
@@ -276,7 +288,7 @@ class JsTreeMixin(object):
 
     def get_jstree_data(self, object_list, fields=('id', 'parent', 'details'), parent_id='#'):
         result = []
-        for obj in object_list:
+        for obj in object_list.all():
             data = dict(zip(['id', 'parent', 'text'], map(lambda x: getattr(obj, x), fields)))
             data['parent'] = unicode(getattr(data['parent'], 'id', parent_id))
             data['id'] = unicode(data['id'])

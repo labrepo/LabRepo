@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-from bson import ObjectId
 
 import bs4
 import requests
@@ -23,8 +22,11 @@ from django.views.generic.detail import SingleObjectMixin
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import formats
+from django.core import serializers
 
-from mongoengine import Q
+from preserialize.serialize import serialize
+
+from django.db.models import Q
 
 from common.decorators import get_obj_or_404
 from common.mixins import (ActiveTabMixin, LoginRequiredMixin, AjaxableResponseMixin,
@@ -32,20 +34,19 @@ from common.mixins import (ActiveTabMixin, LoginRequiredMixin, AjaxableResponseM
                            InitialLabMixin)
 from common.serializer import JsonDocumentEncoder
 from uploader.views import FileUploadMixinView, DropboxFileUploadMixinView, LocalFileUploadMixinView
-from dashboard.documents import RecentActivity
-from .documents import Unit, UnitFile, UnitLink
-from experiments.documents import Experiment
+from dashboard.models import RecentActivity
+from .models import Unit, UnitFile, UnitLink
+from experiments.models import Experiment
 from .forms import UnitForm, UnitUpdateForm, UnitTabForm
-from labs.documents import Lab
-from measurements.documents import MeasurementType
-from tags.documents import Tag
-from unit_collections.documents import Collection
+from labs.models import Lab
+from tags.models import Tag
+# from unit_collections.models import Collection
 
 logger = logging.getLogger(__name__)
 
 
-class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, AjaxableResponseMixin,
-                     JsTreeMixin, ModelFormMixin, MultipleObjectTemplateResponseMixin, BaseListView, View):
+class UnitCreateView(LoginRequiredMixin, JsTreeMixin, ModelFormMixin, MultipleObjectTemplateResponseMixin,
+                     BaseListView, View):
     """
      View for creating a new unit
     """
@@ -78,32 +79,11 @@ class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, Ajaxabl
     @method_decorator(login_required)
     @method_decorator(get_obj_or_404)
     def dispatch(self, *args, **kwargs):
+        self.user = self.request.user
         self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
         if not self.lab.is_assistant(self.request.user):
             raise PermissionDenied
         return super(UnitCreateView, self).dispatch(*args, **kwargs)
-
-    def get_units(self):
-        """
-        Filter units depending on user's permission
-        """
-        self.user = self.request.user
-        if self.kwargs.get('experiment_pk'):
-            experiments = [self.kwargs.get('experiment_pk')]
-        else:
-            experiments = self.get_experiments().values_list('id')
-        self.object_list = self.object_list.filter(lab=self.lab, experiments__in=experiments, active=True)
-        queryset = []
-        for unit in self.object_list:
-            if unit.is_assistant(self.user):
-                record = []
-                for field in self.title_fields[:-1]:
-                    if hasattr(unit, field):
-                        record.append(getattr(unit, field, None))
-                record.append(unit.is_member(self.user) or unit.is_owner(self.user))
-                queryset.append(JsonDocumentEncoder(fields=self.title_fields,
-                                                    extra_fields=self.extra_title).encode_object(record))
-        return queryset
 
     def get_experiments(self):
         experiments = Experiment.objects.filter(lab=self.lab, active=True)
@@ -113,8 +93,6 @@ class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, Ajaxabl
 
     def get_context_data(self, **kwargs):
         ctx = {'active_tab': self.active_tab}
-        units_list = self.get_units()
-        ctx['data'] = json.dumps(units_list)
         lab = self.kwargs['lab_pk']
         experiments = self.get_experiments().values_list('pk', 'title')
         if 'experiment_pk' in self.kwargs:
@@ -141,9 +119,120 @@ class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, Ajaxabl
         ])
         ctx['title'] = json.dumps(dict(zip(self.title_fields + self.extra_title, self.headers)))
         ctx['headers'] = json.dumps(self.headers)
-        ctx['is_member'] = bool(filter(lambda x: x[self.headers.index('readonly')], units_list) or len(experiments))
+        # ctx['is_member'] = bool(filter(lambda x: x[self.headers.index('readonly')], units_list) or len(experiments))
+        ctx['is_member'] = bool(len(experiments))
         return ctx
 
+
+#
+# class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, AjaxableResponseMixin,
+#                      JsTreeMixin, ModelFormMixin, MultipleObjectTemplateResponseMixin, BaseListView, View):
+#     """
+#      View for creating a new unit
+#     """
+#     model = Unit
+#     form_class = UnitForm
+#     update_form_class = UnitUpdateForm
+#     template_name = 'units/unit_list.html'
+#     active_tab = 'units'
+#     title = {
+#         'pk': 'pk', 'sample': 'sample', 'experiments_pk': 'experiments', 'parent_pk': 'parent', 'tags_pk': 'tags',
+#         'change reasons': 'comment',
+#     }
+#     title_fields = ['pk', 'sample', 'experiments', 'parent', 'tags', 'readonly']
+#     extra_title = ['change reasons', 'experiments_pk', 'parent_pk', 'tags_pk']
+#     headers = ['pk', ugettext('sample'), ugettext('experiments'), ugettext('parents'), ugettext('tags'), 'readonly',
+#                ugettext('change reasons'), 'experiments_pk', 'parent_pk', 'tags_pk']
+#
+#     @method_decorator(get_obj_or_404)
+#     def form_valid(self, form):
+#         self.object = form.save(commit=False)
+#         self.object.lab = self.lab
+#         user = self.request.user
+#         if not (self.object.is_member(user) or self.object.is_owner(user)):
+#             return {'errors': {'non_field_error': 'Permission denied'}, 'success': False}
+#         self.object = self.object.save(user=self.request.user, revision_comment=form.cleaned_data.get('comment'))
+#         self.save_recent_activity(self.flag, unit=self.object.pk,
+#                                   experiment=[unicode(obj.pk) for obj in self.object.experiments])
+#         return {'pk': unicode(self.object.pk), 'success': True}
+#
+#     @method_decorator(login_required)
+#     @method_decorator(get_obj_or_404)
+#     def dispatch(self, *args, **kwargs):
+#         self.user = self.request.user
+#         self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
+#         if not self.lab.is_assistant(self.request.user):
+#             raise PermissionDenied
+#         return super(UnitCreateView, self).dispatch(*args, **kwargs)
+#
+#     # def get_units(self):
+#     #     """
+#     #     Filter units depending on user's permission
+#     #     """
+#     #     self.user = self.request.user
+#     #     if self.kwargs.get('experiment_pk'):
+#     #         experiments = [self.kwargs.get('experiment_pk')]
+#     #     else:
+#     #         experiments = self.get_experiments().values_list('id')
+#     #     self.object_list = self.object_list.filter(lab=self.lab, experiments__in=experiments, active=True)
+#     #     queryset = []
+#     #     for unit in self.object_list:
+#     #         if unit.is_assistant(self.user):
+#     #             record = []
+#     #             for field in self.title_fields[:-1]:
+#     #                 if hasattr(unit, field):
+#     #                     field_data = getattr(unit, field, None)
+#     #                     if field_data.__class__.__name__ == 'ManyRelatedManager':
+#     #                         field_data = field_data.all()
+#     #                         field_data = serializers.serialize('json', field_data)
+#     #                     record.append(field_data)
+#     #             record.append(unit.is_member(self.user) or unit.is_owner(self.user))
+#     #             queryset.append(JsonDocumentEncoder(fields=self.title_fields,
+#     #                                                 extra_fields=self.extra_title).encode_object(record))
+#     #     return queryset
+#
+#     def get_experiments(self):
+#         experiments = Experiment.objects.filter(lab=self.lab, active=True)
+#         if self.lab.is_guest(self.user):
+#             experiments = experiments.filter(Q(owners=self.user) | Q(editors=self.user) | Q(viewers=self.user))
+#         return experiments
+#
+#     def get_context_data(self, **kwargs):
+#         ctx = {'active_tab': self.active_tab}
+#         # units_list = self.get_units()
+#         # print(units_list)
+#         # ctx['data'] = json.dumps(units_list)
+#
+#         lab = self.kwargs['lab_pk']
+#         experiments = self.get_experiments().values_list('pk', 'title')
+#         if 'experiment_pk' in self.kwargs:
+#             ctx['experiment'] = Experiment.objects.get(pk=self.kwargs.get('experiment_pk'))
+#         units = Unit.objects.filter(lab=lab, active=True).values_list('pk', 'sample')
+#         tags = Tag.objects.filter(lab=lab)
+#         ctx['column'] = json.dumps([
+#             {'editor': 'text', 'display': 'none'},
+#             {},
+#             {
+#                 'editor': 'multi-select', 'selectOptions': [[unicode(e[0]), e[1]] for e in experiments],
+#                 # 'validator_string': u'|'.join([e[1] for e in experiments]), 'allowInvalid': True
+#             },
+#             {'editor': 'multi-select', 'selectOptions': [[unicode(e[0]), e[1]] for e in units],
+#              # 'validator_string': '[%s]*' % u'|'.join([e[1] for e in units]), 'allowInvalid': True
+#             },
+#             {'editor': 'jstree', 'selectOptions': self.get_jstree_data(tags), 'renderer': 'renderTags'},
+#             # {'editor': 'text'},
+#             {'editor': 'text', 'display': 'none', 'readonly': True},
+#             {'editor': 'text'},
+#             {'editor': 'text', 'display': 'none'},
+#             {'editor': 'text', 'display': 'none'},
+#             {'editor': 'text', 'display': 'none'},
+#         ])
+#         ctx['title'] = json.dumps(dict(zip(self.title_fields + self.extra_title, self.headers)))
+#         ctx['headers'] = json.dumps(self.headers)
+#         # ctx['is_member'] = bool(filter(lambda x: x[self.headers.index('readonly')], units_list) or len(experiments))
+#         ctx['is_member'] = bool(len(experiments))
+#         return ctx
+#
 
 class UnitUpdateView(UnitCreateView):
     """
@@ -173,7 +262,7 @@ class UnitDeleteView(LoginRequiredMixin, RecentActivityMixin, ActiveTabMixin, Aj
                 else:
                     self.object.active = False
                     self.object.save(user=self.request.user)
-                    Collection.objects.update(pull__units=self.object)
+                    # Collection.objects.update(pull__units=self.object)
                     self.save_recent_activity(RecentActivity.DELETE, unit=pk,
                                               experiment=[unicode(obj.pk) for obj in self.object.experiments])
                     removed.append(pk)
@@ -306,7 +395,7 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         ctx.update(self.kwargs)
 
         if self.object.measurements:
-            measurements = self.object.measurements.as_table()
+            measurements = self.object.measurements.all().as_table()
         else:
             measurements = [
                 ['', ''], ['', '']
@@ -317,8 +406,16 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
             ctx['revisions'] = json.dumps([self.rev_as_json(rev) for rev in self.object.measurements.revisions()])
 
         ctx['sample'] = self.object.sample
-        ctx['unit_data'] = self.object.to_json()
-
+        # ctx['unit_data'] = self.object.to_json()
+        # ctx['unit_data'] = json.dumps(self.object)
+        ctx['unit_data'] = json.dumps(serialize(self.object, fields=['id', 'sample', 'experiments', 'lab', 'parent', 'tags'],
+                                                 related={'parent': {'fields': ['id'], 'merge': True},
+                                                          'experiments': {'fields': ['id'], 'merge': True},
+                                                          'lab': {'fields': ['id'], 'merge': True},
+                                                          'tags': {'fields': ['id'], 'merge': True}
+                                                 }))
+        # and now dump to JSON
+        # ctx['unit_data'] = json.dumps(actual_data)
         ctx['tags'] = json.dumps(self.get_tree_element(self.object))
 
         ctx['description'] = render_to_string('units/tabs/unit_description.html', context)

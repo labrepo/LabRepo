@@ -1,27 +1,19 @@
-from django.contrib.webdesign import lorem_ipsum
 import factory
 
-from experiments.documents import Experiment
-from labs.documents import Lab
+from django.contrib.webdesign import lorem_ipsum
+
+from labs.models import Lab
 from measurements.factories import MeasurementFactory
-from tags.factories import TagFactory
-from units.documents import Unit
+from units.models import Unit
 
 
 class UnitFactory(factory.DjangoModelFactory):
     FACTORY_FOR = Unit
 
     @factory.lazy_attribute
-    def parent(self):
-        return []
-
-    @factory.lazy_attribute
     def measurements(self):
-        return MeasurementFactory(lab=self.lab, user=self.user)
-
-    @factory.lazy_attribute
-    def experiments(self):
-        return [Experiment.objects.order_by('?')[0]]
+        return MeasurementFactory()
+        # return MeasurementFactory(lab=self.lab, user=self.user)
 
     @factory.lazy_attribute
     def lab(self):
@@ -31,6 +23,11 @@ class UnitFactory(factory.DjangoModelFactory):
     def sample(self):
         return lorem_ipsum.words(1, False)
 
-    @factory.lazy_attribute
-    def tags(self):
-        return [TagFactory()]
+    @factory.post_generation
+    def experiments(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for experiment in extracted:
+                self.experiments.add(experiment)
