@@ -6,8 +6,8 @@ from django.db import models
 
 class LabUser(AbstractUser):
     """Extend Mongo Engine User model"""
-    plot_un = models.CharField(max_length=512, blank=False, null=True, verbose_name=_('Plot.ly username(un)'))
-    plot_key = models.CharField(max_length=512, blank=False, null=True, verbose_name=_('Plot.ly key'))
+    plot_un = models.CharField(max_length=512, blank=True, null=True, verbose_name=_('Plot.ly username(un)'))
+    plot_key = models.CharField(max_length=512, blank=True, null=True, verbose_name=_('Plot.ly key'))
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

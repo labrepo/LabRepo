@@ -30,7 +30,7 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
 
     def form_valid(self, form):
 
-        model_name = form.cleaned_data['instance_type']
+        model_name = form.cleaned_data['instance_type']  # todo type__model
         if model_name == 'Experiment':
             model = Experiment
         if model_name == 'Unit':
@@ -47,7 +47,7 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
                                                     obj=self.object.content_object)
 
         # publish message in the redis queue if experiment's comment
-        if self.object.instance_type == 'Experiment':
+        if model_name == 'Experiment':
             r = redis.StrictRedis(host='localhost', port=6379, db=3)
             p = r.pubsub()
             channel = '{}'.format(self.object.object_id)

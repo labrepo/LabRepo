@@ -123,5 +123,5 @@ class MessagesHandler(tornado.websocket.WebSocketHandler):
 
 application = tornado.web.Application([
     (r"/", MessagesHandler),
-    (r'/chat/(?P<channel>\d\w+)/', MessagesHandler),
+    (r'/chat/(?P<channel>\d+)/', MessagesHandler),
 ])

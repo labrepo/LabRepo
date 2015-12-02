@@ -23,8 +23,8 @@ class Comment(models.Model):
     text = models.TextField()
 
     class Meta:
-        verbose_name = ugettext('comment')
-        verbose_name_plural = ugettext('comments')
+        verbose_name = _('comment')
+        verbose_name_plural = _('comments')
         ordering = ['-action_time']
 
     def __unicode__(self):
@@ -39,7 +39,6 @@ class Comment(models.Model):
     #         return get_document(self.instance_type).objects.get(pk=self.object_id)
     #     except DoesNotExist:
     #         return None
-
 
 
 @receiver(post_save, sender=Comment)

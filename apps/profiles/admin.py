@@ -1,6 +1,12 @@
+from django.contrib import admin
+from .models import LabUser
+
+
+admin.site.register(LabUser)
+
 # from django.contrib.auth.admin import sensitive_post_parameters_m, csrf_protect_m, UserAdmin
 # from django.conf import settings
-# from django.contrib import admin
+
 # from django.contrib.auth.forms import AdminPasswordChangeForm
 # from django.contrib.auth.models import Group
 # from django.contrib import messages
