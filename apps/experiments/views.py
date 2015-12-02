@@ -22,7 +22,7 @@ from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPe
                            AjaxableResponseMixin, InviteFormMixin, CheckLabPermissionMixin,
                            FormInitialMixin, LoginRequiredMixin)
 from dashboard.models import RecentActivity
-from experiments.models import Experiment
+from experiments.models import Experiment, ExperimentReadCommentEntry
 from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm, AddUnitToExperimentForm
 from tags.models import Tag
 from units.models import Unit
@@ -226,6 +226,8 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
 
         UPLOAD_URL, UPLOAD_ROOT = get_upload(self.request, lab_pk=self.lab.pk, *args, **kwargs)
         ctx['UPLOAD_URL'] = UPLOAD_URL
+        print(ExperimentReadCommentEntry.objects.filter(user=self.request.user, experiment=self.object))
+        ctx['experiment_unread_comments'] = self.comments()
         return ctx
 
     # def get_list_comment(self):
@@ -233,7 +235,19 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
     #     queryset = list(super(ExperimentDetailView, self).get_list_comment())
     #     queryset += list(Comment.objects.filter(instance_type='Unit', object_id__in=self.units.values_list('pk')))
     #     return queryset
-
+    def comments(self):
+        from django.core.exceptions import ObjectDoesNotExist
+        try:
+            latest_comment = Comment.objects.filter(instance_type__model='experiment', object_id=self.object.id).exclude(init_user=self.request.user).latest('id').id
+        except Comment.DoesNotExist:
+            return False
+        try:
+            if ExperimentReadCommentEntry.objects.get(user=self.request.user, experiment=self.object).comment.id < latest_comment:
+                return True
+            else:
+                return False
+        except ExperimentReadCommentEntry.DoesNotExist:
+            return True
 
 class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitialMixin, AjaxableResponseMixin,
                           RecentActivityMixin, ModelFormMixin, ProcessFormView, View):
@@ -289,3 +303,19 @@ def get_wooflo_key(experiment):
     r = s.post('http://wooflo.magic60.ru/projects', files={'value_1': (None, '12345')}, headers=headers, data=payload)
     return r.json()['pk']
 
+
+class ExperimentReadComment(LoginRequiredMixin, CheckLabPermissionMixin, AjaxableResponseMixin, View):
+    """
+    Update last read comment for this experiment for current user
+    """
+    def post(self, *args, **kwargs):
+        comment_id = self.request.POST.get('comment')
+        experiment = Experiment.objects.get(id=kwargs.get('pk'))
+
+        entry = ExperimentReadCommentEntry.objects.update_or_create(
+            user=self.request.user,
+            experiment=experiment,
+            defaults={
+                'comment': Comment.objects.get(pk=comment_id)
+            })
+        return self.render_to_json_response({'message': 'ok'})

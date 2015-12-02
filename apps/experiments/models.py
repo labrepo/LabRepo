@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 from labs.models import Lab
+from comments.models import Comment
 
 
 class Experiment(models.Model):
@@ -101,3 +102,12 @@ class Experiment(models.Model):
         :rtype: bool
         """
         return self.is_experiment_assistant(user) or self.is_member(user)
+
+
+class ExperimentReadCommentEntry(models.Model):
+    """
+    Stores information about experiment comment read status for every user
+    """
+    experiment = models.ForeignKey(Experiment)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='experiments_read')
+    comment = models.ForeignKey(Comment, null=True, blank=True)

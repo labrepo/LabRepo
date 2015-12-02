@@ -10,4 +10,6 @@ urlpatterns = patterns('',
     url(r'^detail/(?P<pk>[\d\w]+)/$', views.ExperimentDetailView.as_view(), name='detail'),
 
     url(r'^add_units/$', views.ExperimentAddUnits.as_view(), name='add-units'),
+
+    url(r'^read/(?P<pk>[\d\w]+)$', views.ExperimentReadComment.as_view(), name='read-comments'),
 )
