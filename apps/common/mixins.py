@@ -100,13 +100,20 @@ class RecentActivityMixin(object):
         obj = kwargs.get('obj', getattr(self, 'object', None))
         kwargs['object_name'] = obj.__unicode__()
         if obj:
-            return RecentActivity.objects.create(
+            ra = RecentActivity.objects.create(
                 lab_id=Lab.objects.get(pk=self.kwargs.get('lab_pk')),
                 init_user=self.request.user,
                 content_object=obj,
                 action_flag=action_flag,
                 value=kwargs.get('value', None),
             )
+            if kwargs.get('experiment', None):
+                experiments = kwargs.get('experiment', None)
+                if type(experiments) is not list:
+                    experiments = [experiments]
+                for exp in experiments:
+                    ra.experiments.add(exp)
+            return ra
 
 
 class InitialLabMixin(object):

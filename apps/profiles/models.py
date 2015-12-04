@@ -22,6 +22,7 @@ class LabUser(AbstractUser):
     def get_username(self):
         return self.email.split('@')[0]
 
+    @property
     def full_name(self):
         return self.first_name + ' ' + self.last_name
 

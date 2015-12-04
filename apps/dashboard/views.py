@@ -61,7 +61,7 @@ class RecentActivityView(LoginRequiredMixin, AjaxableResponseMixin, ListView):
     def get_queryset(self):
         queryset = self.model.objects.filter(lab_id=self.kwargs.get('lab_pk'))
         if self.kwargs.get('experiment_pk'):
-            queryset = queryset.filter(extra__experiment=self.kwargs.get('experiment_pk'))
+            queryset = queryset.filter(experiments__pk=self.kwargs.get('experiment_pk'))
         return group_by_date(queryset.select_related())
 
     def get_context_data(self, **kwargs):
@@ -83,8 +83,8 @@ class MeasurementRecentActivityView(LoginRequiredMixin, AjaxableResponseMixin, L
     def get_queryset(self):
         queryset = self.model.objects.filter(lab_id=self.kwargs.get('lab_pk'), content_type__model='measurement')
 
-        # if self.kwargs.get('experiment_pk'): # todo
-        #     queryset = queryset.filter(extra__experiment=self.kwargs.get('experiment_pk'))
+        if self.kwargs.get('experiment_pk'):
+            queryset = queryset.filter(experiments__pk=self.kwargs.get('experiment_pk'))
         return group_by_date(queryset.select_related())
 
     def get_context_data(self, **kwargs):
@@ -105,9 +105,9 @@ class CommentRecentActivityView(LoginRequiredMixin, AjaxableResponseMixin, ListV
     paginate_by = 1
 
     def get_queryset(self):
-        queryset = self.model.objects.filter(lab_id=self.kwargs.get('lab_pk'), content_type__model='comment')
-        # if self.kwargs.get('experiment_pk'):
-        #     queryset = queryset.filter(extra__experiment=unicode(self.kwargs.get('experiment_pk')))
+        queryset = self.model.objects.filter(lab_id=self.kwargs.get('lab_pk')).filter(Q(content_type__model='comment') | Q(action_flag=RecentActivity.COMMENT))
+        if self.kwargs.get('experiment_pk'):
+            queryset = queryset.filter(experiments__pk=unicode(self.kwargs.get('experiment_pk')))
         return group_by_date(queryset.select_related())
 
     def get_context_data(self, **kwargs):

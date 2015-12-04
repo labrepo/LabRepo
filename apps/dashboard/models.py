@@ -22,7 +22,7 @@ class RecentActivity(models.Model):
         (COMMENT, _('commented'))
     )
     lab_id = models.ForeignKey(Lab)
-    # experiment = models.ForeignKey(Experiment, null=True, blank=True) # todo
+    experiments = models.ManyToManyField(Experiment, blank=True)
     value = models.TextField(null=True, blank=True)
     init_user = models.ForeignKey(settings.AUTH_USER_MODEL)
 

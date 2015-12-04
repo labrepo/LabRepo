@@ -44,7 +44,8 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
         self.object.save()
         resent_activity = self.save_recent_activity(RecentActivity.COMMENT,
                                                     value=self.object.text,
-                                                    obj=self.object.content_object)
+                                                    obj=self.object.content_object,
+                                                    experiment=self.object.content_object)
 
         # publish message in the redis queue if experiment's comment
         if model_name == 'Experiment':

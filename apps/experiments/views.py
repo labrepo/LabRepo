@@ -96,7 +96,7 @@ class ExperimentUpdateView(CheckLabPermissionMixin, InviteFormMixin, CheckEditPe
             self.object.owners.add(list(set(lab.investigator) - set(self.object.owners)))
         self.object.lab = lab
         self.object.save()
-        self.save_recent_activity(RecentActivity.UPDATE)
+        self.save_recent_activity(RecentActivity.UPDATE, experiment=self.object)
         self.get_success_message()
         return HttpResponseRedirect(self.get_success_url())
 
