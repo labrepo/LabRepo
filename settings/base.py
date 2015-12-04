@@ -66,6 +66,7 @@ DEFAULT_APPS = (
 )
 THIRD_PARTY_APPS = (
     'ckeditor',
+    'reversion',
     'django_forms_bootstrap',
     'djcelery',
     'rosetta',
@@ -104,29 +105,32 @@ MIDDLEWARE_CLASSES = (
     'units.middleware.DisableCSRF'
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'common.context_processors.menu_processor',
-    'common.context_processors.sidebar_processor',
-    'common.context_processors.js_variables_processor',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.contrib.messages.context_processors.messages',
-    'social.apps.django_app.context_processors.backends',
-    'social.apps.django_app.context_processors.login_redirect',
-    'django.core.context_processors.request',
-)
-
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    'django.template.loaders.eggs.Loader',
-)
-
-TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\', '/'),)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+           os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\', '/'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'common.context_processors.menu_processor',
+                'common.context_processors.sidebar_processor',
+                'common.context_processors.js_variables_processor',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect',
+                'django.template.context_processors.request',
+            ],
+        },
+    },
+]
 
 ROOT_URLCONF = 'common.urls'
 

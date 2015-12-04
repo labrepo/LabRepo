@@ -1,6 +1,6 @@
 import factory
 
-from django.contrib.webdesign import lorem_ipsum
+from django.utils import lorem_ipsum
 
 from labs.models import Lab
 

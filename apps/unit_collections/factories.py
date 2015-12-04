@@ -1,7 +1,7 @@
 import random
 import factory
 
-from django.contrib.webdesign import lorem_ipsum
+from django.utils import lorem_ipsum
 from mongoengine.django.auth import User
 
 from labs.documents import Lab

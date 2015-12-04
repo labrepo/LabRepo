@@ -16,8 +16,8 @@ class Lab(models.Model):
     """
     name = models.CharField(verbose_name=_('name'), max_length=255)
     investigator = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='labs_investigator', verbose_name=_('investigators'))
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='labs_members', verbose_name=_('members'), blank=True, null=True)
-    guests = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='labs_guests', blank=True, null=True, verbose_name=_('guests'))
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='labs_members', verbose_name=_('members'), blank=True)
+    guests = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='labs_guests', blank=True, verbose_name=_('guests'))
     is_test = models.BooleanField(default=False, verbose_name=_('test lab'))
     # storages = models.ListField(models.ReferenceField(LabStorage), verbose_name=_('storages'))
 

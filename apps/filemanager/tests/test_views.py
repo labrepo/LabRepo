@@ -3,7 +3,7 @@ import json
 import shutil
 
 from django.test import TestCase
-from django.contrib.webdesign import lorem_ipsum
+from django.utils import lorem_ipsum
 from django.core.urlresolvers import reverse
 from django.conf import settings
 

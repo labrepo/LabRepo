@@ -88,4 +88,5 @@ class TagForm(TagBaseForm):
 
 class TagAdminForm(TagBaseForm):
     class Meta:
+        exclude = ('pk', )
         model = Tag

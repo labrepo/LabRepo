@@ -30,9 +30,9 @@ class Unit(models.Model): #todo history
     """
     lab = models.ForeignKey(Lab, verbose_name=_('lab'))
     experiments = models.ManyToManyField(Experiment, verbose_name=_('experiments'))
-    parent = models.ManyToManyField('self', null=True, blank=True, related_name='children', db_index=True)
+    parent = models.ManyToManyField('self', blank=True, related_name='children', db_index=True)
     sample = models.CharField(max_length=4096, verbose_name=_('sample'))
-    tags = models.ManyToManyField(Tag, null=True, blank=True, verbose_name=_('tags'))
+    tags = models.ManyToManyField(Tag, blank=True, verbose_name=_('tags'))
     active = models.BooleanField(default=True, verbose_name=_('active'))
     # measurements = models.ListField(models.EmbeddedDocumentField(Measurement), verbose_name=_('measurements'))
     # files = models.ListField(models.FileField(), verbose_name=_('files'))

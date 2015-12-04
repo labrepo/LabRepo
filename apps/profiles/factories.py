@@ -1,7 +1,7 @@
 import factory
 
 from django.contrib.auth.hashers import make_password
-from django.contrib.webdesign import lorem_ipsum
+from django.utils import lorem_ipsum
 
 from profiles.models import LabUser
 

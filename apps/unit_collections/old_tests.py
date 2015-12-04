@@ -1,6 +1,6 @@
 import json
 
-from django.contrib.webdesign import lorem_ipsum
+from django.utils import lorem_ipsum
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _, ugettext
 
