@@ -1,5 +1,28 @@
 from rest_framework import serializers
 from units.models import Unit
+from reversion import revisions as reversion
+
+
+class RevisionCommentField(serializers.Field):
+    """
+    Serializes latest revision comment for object from django-revision
+    """
+    def __init__(self, **kwargs):
+        super(RevisionCommentField, self).__init__(**kwargs)
+        self.value = None
+
+    def to_representation(self, obj):
+        return obj
+
+    def to_internal_value(self, data):
+        self.value = data
+        return data
+
+    def get_attribute(self, obj):
+        if self.value:
+            return self.value
+        else:
+            return u'{}'.format(list(reversion.get_for_object(obj))[0].revision.comment)
 
 
 class UnitSerializer(serializers.ModelSerializer):
@@ -8,6 +31,7 @@ class UnitSerializer(serializers.ModelSerializer):
     experiments_names = serializers.SerializerMethodField('get_experiments_titles')
     parents_names = serializers.SerializerMethodField('get_parents_titles')
     tags_names = serializers.SerializerMethodField('get_tags_titles')
+    change_reasons = RevisionCommentField(required=False)
 
     def get_full_name(self, obj):
         return True
@@ -23,4 +47,4 @@ class UnitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Unit
-        fields = ('id', 'sample', 'experiments_names', 'parents_names', 'tags_names',  'readonly', 'description', 'experiments', 'parent', 'tags', 'lab' )
+        fields = ('id', 'sample', 'experiments_names', 'parents_names', 'tags_names',  'readonly', 'change_reasons', 'experiments', 'parent', 'tags', 'lab' )

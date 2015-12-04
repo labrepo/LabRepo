@@ -301,6 +301,11 @@ function addHandsonTable(selector) {
                 }
             }
             for (var key in d) {
+                if (key.indexOf(' ') >= 0) {
+                    d[key.split(' ').join('_')] = d[key]
+                    delete d[key]
+                }
+
                 if (key.substr(-3) == '_pk') {
                     delete d[key.slice(0, -3)]
                     d[key.slice(0, -3)] = d[key]

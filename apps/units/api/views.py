@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.db.models import Q
 
 from rest_framework import generics
+from reversion import revisions as reversion
 
 from common.mixins import LoginRequiredMixin, AjaxableResponseMixin, CheckLabPermissionMixin, RecentActivityMixin
 from dashboard.models import RecentActivity
@@ -70,9 +71,12 @@ class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivity
                 self.flag = RecentActivity.ADD
 
             if serializer.is_valid():
-                unit = serializer.save()
-                self.save_recent_activity(self.flag, obj=unit)
-                results.append((index, {'pk': unit.pk, 'success': True}))
+                with reversion.create_revision():
+                    unit = serializer.save()
+                    reversion.set_user(self.request.user)
+                    reversion.set_comment(serializer.data.get('change_reasons'))
+                    self.save_recent_activity(self.flag, obj=unit)
+                    results.append((index, {'pk': unit.pk, 'success': True}))
             else:
                 results.append((index, {'errors': u'{}'.format(serializer.errors), 'success': False}))
         return self.render_to_json_response(results)

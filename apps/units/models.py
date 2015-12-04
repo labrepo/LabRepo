@@ -11,7 +11,7 @@ from experiments.models import Experiment
 from tags.models import Tag
 from measurements.models import Measurement
 from experiments.models import Experiment
-from history.models import HistoryDocument
+
 from measurements.models import Measurement
 from tags.models import Tag
 
