@@ -11,11 +11,6 @@ class UnitFactory(factory.DjangoModelFactory):
     FACTORY_FOR = Unit
 
     @factory.lazy_attribute
-    def measurements(self):
-        return MeasurementFactory()
-        # return MeasurementFactory(lab=self.lab, user=self.user)
-
-    @factory.lazy_attribute
     def lab(self):
         return Lab.objects.order_by('?')[0]
 

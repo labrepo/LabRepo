@@ -71,7 +71,8 @@ class UnitCreateView(LoginRequiredMixin, JsTreeMixin, ModelFormMixin, MultipleOb
         user = self.request.user
         if not (self.object.is_member(user) or self.object.is_owner(user)):
             return {'errors': {'non_field_error': 'Permission denied'}, 'success': False}
-        self.object = self.object.save(user=self.request.user, revision_comment=form.cleaned_data.get('comment'))
+        # self.object = self.object.save(user=self.request.user, revision_comment=form.cleaned_data.get('comment'))
+        self.object = self.object.save()
         self.save_recent_activity(self.flag, unit=self.object.pk,
                                   experiment=[unicode(obj.pk) for obj in self.object.experiments])
         return {'pk': unicode(self.object.pk), 'success': True}
@@ -261,10 +262,11 @@ class UnitDeleteView(LoginRequiredMixin, RecentActivityMixin, ActiveTabMixin, Aj
                     removed.append({'errors': {'non_field_error': 'Permission denied'}, 'success': False})
                 else:
                     self.object.active = False
-                    self.object.save(user=self.request.user)
+                    # self.object.save(user=self.request.user)
+                    self.object.save()
                     # Collection.objects.update(pull__units=self.object)
                     self.save_recent_activity(RecentActivity.DELETE, unit=pk,
-                                              experiment=[unicode(obj.pk) for obj in self.object.experiments])
+                                              experiment=[unicode(obj.pk) for obj in self.object.experiments.all()])
                     removed.append(pk)
             except self.model.DoesNotExist:
                 pass
@@ -284,9 +286,10 @@ class UnitDeleteOneView(LoginRequiredMixin, RecentActivityMixin, ActiveTabMixin,
         if not self.object.is_owner(self.request.user):
             raise PermissionDenied
         self.object.active = False
-        self.object.save(user=self.request.user)
+        self.object.save()
+        # self.object.save(user=self.request.user)
         self.save_recent_activity(RecentActivity.DELETE, unit=pk,
-                                  experiment=[unicode(obj.pk) for obj in self.object.experiments])
+                                  experiment=[unicode(obj.pk) for obj in self.object.experiments.all()])
         self.get_success_message()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -321,8 +324,9 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.save(user=self.request.user)
-        self.save_recent_activity(RecentActivity.UPDATE, unit=self.object.pk, experiment=[unicode(obj.pk) for obj in self.object.experiments])
+        # self.object.save(user=self.request.user)
+        self.object.save()
+        self.save_recent_activity(RecentActivity.UPDATE, unit=self.object.pk, experiment=[unicode(obj.pk) for obj in self.object.experiments.all()])
         self.get_success_message()
         return HttpResponseRedirect(self.get_success_url())
 
