@@ -9,6 +9,6 @@ admin.autodiscover()
 
 
 urlpatterns = patterns('',
-    url(r'^(?P<class_name>\w+)/(?P<pk>[\d\w]+)/$', HistoryListView.as_view(), name='list'),
-    url(r'^(?P<pk>[\d\w]+)/$', HistoryDetailView.as_view(), name='detail'),
+    url(r'^(?P<class_name>\w+)/(?P<pk>[\d]+)/$', HistoryListView.as_view(), name='list'),
+    url(r'^(?P<pk>[\d]+)/$', HistoryDetailView.as_view(), name='detail'),
 )

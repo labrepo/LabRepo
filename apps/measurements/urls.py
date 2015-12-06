@@ -12,10 +12,10 @@ urlpatterns = patterns('',
     url(r'^(?P<unit_pk>[\d]+)/create/$', views.MeasurementCreateView.as_view(), name='create'),
     url(r'^(?P<unit_pk>[\d]+)/delete/$', views.MeasurementDeleteView.as_view(), name='delete'),
     url(r'^(?P<unit_pk>[\d]+)/list/$', views.MeasurementCreateView.as_view(), name='list'),
-    url(r'^(?P<unit_pk>[\d]+)/(?P<pk>[\d\w]+)/detail/$', views.MeasurementDetailView.as_view(), name='detail'),
-    url(r'^(?P<unit_pk>[\d]+)/(?P<pk>[\d\w]+)/delete/$', views.MeasurementDeleteOneView.as_view(), name='delete-one'),
+    url(r'^(?P<unit_pk>[\d]+)/(?P<pk>[\d]+)/detail/$', views.MeasurementDetailView.as_view(), name='detail'),
+    url(r'^(?P<unit_pk>[\d]+)/(?P<pk>[\d]+)/delete/$', views.MeasurementDeleteOneView.as_view(), name='delete-one'),
 
-    url(r'^(?P<unit_pk>[\d]+)/revert/(?P<revision_pk>[\d\w]+)/$', views.MeasurementHistoryRevert.as_view(), name='measurement-revert'),
+    url(r'^(?P<unit_pk>[\d]+)/revert/(?P<revision_pk>[\d]+)/$', views.MeasurementHistoryRevert.as_view(), name='measurement-revert'),
 
     url(r'^api/', include('measurements.api.urls')),
 )

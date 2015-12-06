@@ -7,13 +7,13 @@ from .views import (DashboardView, RecentActivityView, MeasurementRecentActivity
 urlpatterns = patterns(
     '',
     url(r'^$', DashboardView.as_view(), name='dashboard'),
-    url(r'^experiment/all/activity/(?P<experiment_pk>[\d\w]+)/$',
+    url(r'^experiment/all/activity/(?P<experiment_pk>[\d]+)/$',
         RecentActivityView.as_view(),
         name='experiment-all-activity'),
-    url(r'^experiment/measurement/activity/(?P<experiment_pk>[\d\w]+)/$',
+    url(r'^experiment/measurement/activity/(?P<experiment_pk>[\d]+)/$',
         MeasurementRecentActivityView.as_view(),
         name='experiment-measurement-activity'),
-    url(r'^experiment/comment/activity/(?P<experiment_pk>[\d\w]+)/$',
+    url(r'^experiment/comment/activity/(?P<experiment_pk>[\d]+)/$',
         CommentRecentActivityView.as_view(),
         name='experiment-comment-activity'),
 
