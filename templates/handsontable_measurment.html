@@ -18,7 +18,7 @@
   {% if unit_pk %}
     {% if object.experiments %}
       <li>
-        {% for experiment in object.experiments %}
+        {% for experiment in object.experiments.all %}
           <a href="{{ experiment.get_absolute_url }}">
             <i class="fa fa-eyedropper"></i> {% trans experiment.title|title %}
           </a>&nbsp;

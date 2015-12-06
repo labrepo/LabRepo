@@ -54,28 +54,30 @@ class MeasurementCreateView(LoginRequiredMixin, CheckEditPermissionMixin, Ajaxab
         ctx = {'active_tab': self.active_tab, 'object': self.object}
         user = self.request.user
         ctx.update(self.kwargs)
-        if self.object.measurements:
-            measurements = self.object.measurements.as_table()
+        if self.object.measurement:
+            measurements = self.object.measurement.as_table()
         else:
             measurements = [
                 ['', ''], ['', '']
             ]
-        if self.object.measurements:
-            ctx['revisions'] = self.object.measurements.revisions()
-        ctx['data'] = json.dumps(measurements, cls=JsonDocumentEncoder, fields=self.title_field, extra_fields=self.extra_title)
-        measurement_type = MeasurementType.objects.filter(lab=self.kwargs['lab_pk'], active=True).values_list('pk', 'measurement_type')
+        # if self.object.measurement:
+        #     ctx['revisions'] = self.object.measurement.revisions()
+        # ctx['data'] = json.dumps(measurements, cls=JsonDocumentEncoder, fields=self.title_field, extra_fields=self.extra_title)
+        # print ctx['data']
+        # measurement_type = MeasurementType.objects.filter(lab=self.kwargs['lab_pk'], active=True).values_list('pk', 'measurement_type')
         ctx['column'] = json.dumps([
             {'editor': 'text', 'display': 'none'},
-            {'editor': 'datetime'},
-            {'editor': 'select2', 'selectOptions': [[unicode(e[0]), e[1]] for e in measurement_type],
-             'allowInvalid': True, 'append_url': reverse('measurements:measurement_type_append', kwargs={'lab_pk': self.kwargs['lab_pk']})},
-            {}, {},
             {'editor': 'text', 'display': 'none'},
-            {'editor': 'text', 'display': 'none', 'default_value': (self.object.is_member(user) or self.object.is_owner(user)) or '', 'readonly': True},
+            # {'editor': 'datetime'},
+            # {'editor': 'select2', 'selectOptions': [[unicode(e[0]), e[1]] for e in measurement_type],
+            #  'allowInvalid': True, 'append_url': reverse('measurements:measurement_type_append', kwargs={'lab_pk': self.kwargs['lab_pk']})},
+            # {}, {},
+            # {'editor': 'text', 'display': 'none'},
+            # {'editor': 'text', 'display': 'none', 'default_value': (self.object.is_member(user) or self.object.is_owner(user)) or '', 'readonly': True},
         ])
         ctx['title'] = json.dumps(dict(zip(self.title_field + self.extra_title, self.headers)))
         ctx['headers'] = json.dumps(self.headers)
-        ctx['extra_form'] = MeasurementTypeForm(lab_pk=self.kwargs['lab_pk'])
+        # ctx['extra_form'] = MeasurementTypeForm(lab_pk=self.kwargs['lab_pk'])
         ctx['is_member'] = self.object.is_member(user) or self.object.is_owner(user)
         return ctx
 
@@ -88,61 +90,61 @@ class MeasurementCreateView(LoginRequiredMixin, CheckEditPermissionMixin, Ajaxab
             self.flag = RecentActivity.ADD
         return super(BaseDetailView, self).get_object()
 
-    def is_changed(self, data):
-        return True
-
-    def post(self, request, *args, **kwargs):
-
-        self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
-        data_list = dict(self.request.POST.iterlists())
-        table_data = [[None] * int(data_list['width'][0]) for x in xrange(int(data_list['length'][0]))]
-        headers = [None] * int(data_list['width'][0])
-
-        for key in data_list.keys():
-            if key.startswith("row-0"):
-                index = int(re.search(r'row-0-col-(.+?)', key).group(1))
-                headers[index] =  data_list[key][0]
-            elif key.startswith("row-"):
-                row_index = int(re.search(r'row-(.+)-col-.+', key).group(1))
-                col_index = int(re.search(r'row-.+-col-(.+?)', key).group(1))
-                table_data[row_index][col_index] = data_list[key][0]
-
-        self.object = self.get_object()
-        user = request.user
-        if self.object and not (self.object.is_member(user) or self.object.is_owner(user)):
-            return self.render_to_json_response({'errors': {'non_field_error': 'Permission denied'}, 'success': False})
-        if self.object.measurements:
-            # create history revision for measurement
-            measurements = self.object.measurements
-            if measurements.headers != headers or measurements.table_data != table_data[1:]:
-                # if measurment table data changed
-                measurement_old = Measurement.objects.get(pk=self.object.measurements.pk)
-                measurement_old.headers = headers
-                measurement_old.table_data = table_data[1:]
-                measurement_old.save(user=self.request.user, revision_comment=u'update')
-                revision = measurement_old.latest_revision
-                self.object.update(set__measurements=measurement_old)
-                response = {'success': True,
-                            'revision_pk': str(revision.id),
-                            'revision_timestamp': formats.date_format(revision.timestamp, 'DATETIME_FORMAT'),
-                            'revision_url': reverse('measurements:measurement-revert', kwargs={'lab_pk': self.object.lab.pk, 'unit_pk': self.object.id, 'revision_pk': revision.pk}),
-                            }
-
-            else:
-                response = {'success': True, 'message': 'nothing has changed'}
-        else:
-            # create new measurement
-            measurement = Measurement(table_data=table_data[1:], headers=headers).save(user=self.request.user)
-            self.object.measurements = measurement
-            self.object = self.object.save(user=self.request.user)
-            revision = measurement.latest_revision
-            response = {'success': True,
-                        'revision_pk': str(revision.id),
-                        'revision_timestamp': formats.date_format(revision.timestamp, 'DATETIME_FORMAT'),
-                        'revision_url': reverse('measurements:measurement-revert', kwargs={'lab_pk': self.object.lab.pk, 'unit_pk': self.object.id, 'revision_pk': revision.pk}),
-                        }
-
-        return self.render_to_json_response(response)
+    # def is_changed(self, data):
+    #     return True
+    #
+    # def post(self, request, *args, **kwargs):
+    #
+    #     self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
+    #     data_list = dict(self.request.POST.iterlists())
+    #     table_data = [[None] * int(data_list['width'][0]) for x in xrange(int(data_list['length'][0]))]
+    #     headers = [None] * int(data_list['width'][0])
+    #
+    #     for key in data_list.keys():
+    #         if key.startswith("row-0"):
+    #             index = int(re.search(r'row-0-col-(.+?)', key).group(1))
+    #             headers[index] = data_list[key][0]
+    #         elif key.startswith("row-"):
+    #             row_index = int(re.search(r'row-(.+)-col-.+', key).group(1))
+    #             col_index = int(re.search(r'row-.+-col-(.+?)', key).group(1))
+    #             table_data[row_index][col_index] = data_list[key][0]
+    #
+    #     self.object = self.get_object()
+    #     user = request.user
+    #     if self.object and not (self.object.is_member(user) or self.object.is_owner(user)):
+    #         return self.render_to_json_response({'errors': {'non_field_error': 'Permission denied'}, 'success': False})
+    #     if self.object.measurements:
+    #         # create history revision for measurement
+    #         measurements = self.object.measurements
+    #         if measurements.headers != headers or measurements.table_data != table_data[1:]:
+    #             # if measurment table data changed
+    #             measurement_old = Measurement.objects.get(pk=self.object.measurements.pk)
+    #             measurement_old.headers = headers
+    #             measurement_old.table_data = table_data[1:]
+    #             measurement_old.save(user=self.request.user, revision_comment=u'update')
+    #             revision = measurement_old.latest_revision
+    #             self.object.update(set__measurements=measurement_old)
+    #             response = {'success': True,
+    #                         'revision_pk': str(revision.id),
+    #                         'revision_timestamp': formats.date_format(revision.timestamp, 'DATETIME_FORMAT'),
+    #                         'revision_url': reverse('measurements:measurement-revert', kwargs={'lab_pk': self.object.lab.pk, 'unit_pk': self.object.id, 'revision_pk': revision.pk}),
+    #                         }
+    #
+    #         else:
+    #             response = {'success': True, 'message': 'nothing has changed'}
+    #     else:
+    #         # create new measurement
+    #         measurement = Measurement(table_data=table_data[1:], headers=headers).save(user=self.request.user)
+    #         self.object.measurements = measurement
+    #         self.object = self.object.save(user=self.request.user)
+    #         revision = measurement.latest_revision
+    #         response = {'success': True,
+    #                     'revision_pk': str(revision.id),
+    #                     'revision_timestamp': formats.date_format(revision.timestamp, 'DATETIME_FORMAT'),
+    #                     'revision_url': reverse('measurements:measurement-revert', kwargs={'lab_pk': self.object.lab.pk, 'unit_pk': self.object.id, 'revision_pk': revision.pk}),
+    #                     }
+    #
+    #     return self.render_to_json_response(response)
 
     # def form_valid(self, form):
     #     if not self.kwargs.get('pk'):

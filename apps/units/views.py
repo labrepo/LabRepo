@@ -335,7 +335,7 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         return ctx
 
     def get_measurement(self):
-        return self.object.measurements
+        return self.object.measurement
         # result = self.model._get_collection().aggregate([
         #     {'$unwind': "$measurements"},
         #     {'$match': {'$and': [{'measurements.active': True}, {'_id': ObjectId(self.kwargs.get('pk'))}]}},

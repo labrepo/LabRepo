@@ -3,8 +3,9 @@
 {% load static i18n %}
 
 {% block urls %}
-  data-url='{% url "measurements:create" unit_pk=unit_pk lab_pk=lab.pk %}'
+  data-url='{% url "measurements:api-table" lab_pk=lab.pk pk=object.measurement.pk %}'
   data-remove-url='{% url "measurements:delete" unit_pk=unit_pk lab_pk=lab.pk %}'
+  data-content-url='{% url "measurements:api-table" lab_pk=lab.pk pk=object.measurement.pk %}'
 {% endblock %}
 
 {% block script %}

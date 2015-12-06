@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+import json
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.db.models.signals import pre_save, post_save, pre_delete
-
+from units.models import Unit
+from jsonfield import JSONField
 # from history.documents import HistoryDocument
 
 
@@ -19,14 +21,10 @@ class Measurement(models.Model):
        ['b1','b2']
     ]
     """
-    # created_at = me.DateTimeField(required=True, verbose_name=_('created at'))
-    # measurement_type = me.ReferenceField('MeasurementType', required=True, verbose_name=_('measurement type'))
-    # value = me.FloatField(required=True, verbose_name=_('value'))
-    # description = me.StringField(required=False, verbose_name=_('description'))
-    # unit = models.OneToOneField(Unit, related_name='measurement', verbose_name=_('table data'))
-    table_data = models.TextField(verbose_name=_('table data'))
-    headers = models.TextField(verbose_name=_('headers'))
+    table_data = JSONField(default=['', ''], verbose_name=_('table data'))
+    headers = JSONField(default=['', ''], verbose_name=_('headers'))
     active = models.BooleanField(default=True, verbose_name=_('active'))
+    unit = models.OneToOneField(Unit)
 
     # meta = {'related_fkey_lookups': [], 'local_fields': [], 'virtual_fields': [], 'auto_created': False,
     #         'create_revision_after_save': True, 'versioned': True, 'verbose_name': ugettext('measurement'),

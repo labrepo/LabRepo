@@ -55,19 +55,25 @@ $(function () {
     }
 });
 
-function getTableData(url){
+function getTableData(url) {
     var get_data = null;
-    jQuery.ajaxSetup({async:false});
-    $.get(url, function(data){
+    jQuery.ajaxSetup({async: false});
+    $.get(url, function (data) {
         get_data = data;
     })
-    jQuery.ajaxSetup({async:true});
+
+    jQuery.ajaxSetup({async: true});
     f = []
-    for (var i in get_data){
-        var array = $.map(get_data[i], function(value, index) {
-            return [value];
-        });
-        f[i] = array
+    if (get_data.constructor === Array){
+        for (var i in get_data) {
+            var array = $.map(get_data[i], function (value, index) {
+                return [value];
+            });
+            f[i] = array
+        }
+    } else {
+        f[0] = get_data['headers']
+        Array.prototype.push.apply(f, get_data['table_data'])
     }
     return f;
 }
@@ -409,8 +415,8 @@ function addHandsonTableEditable(selector) {
             return match.toUpperCase();
         },
         column = table.data('column'),
-        data = table.data('content'),
-
+//        data = table.data('content'),
+        data = getTableData(table.data('content-url')),
         colWidths = [],
 
         showMessageChild = function (hasError, messages) {
@@ -554,33 +560,18 @@ function addHandsonTableEditable(selector) {
         var data = handsontable.getData();
         headers = getColumnHeaders(table);
 
-        //remove empty row from end
-        for(var i = data.length-1; i > 1; i -= 1){
-            var flag_empty = true;
-            for(var j = 0, max2 = data[i].length; j < max2; j += 1){
-                if(data[i][j] ){
-                    flag_empty = false
-                    break
-                }
-            }
-            if (flag_empty) {
-                data.splice(-1, 1)
-            } else {
-                break
-            }
-        }
-
-        //fill data post object
-        for (var i = 0, max = data.length; i < max; i += 1) {
-            for (var key in data[i]) {
-                if (data[i].hasOwnProperty(key) && data[i][key]) {
-                    dataPost["row-" + i +  "-col-" + key] = data[i][key];
-                }
-            }
-        }
         dataPost.length = data.length;
         dataPost.width = data[0].length;
-        $.post(table.data('url'), dataPost).done(function (res) {
+        dataPost.headers = data[0];
+        dataPost.table_data = data.slice(1);
+
+        $.ajax({
+            url: table.data('url'),
+            type: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(dataPost)
+        }).done(function (res) {
             $('td').removeClass('error').removeAttr('title');
             var messages = [],
                 hasError = false;

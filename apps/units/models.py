@@ -5,14 +5,14 @@ from urllib import urlencode
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _, ugettext
+from django.db.models import signals
 
 from labs.models import Lab
 from experiments.models import Experiment
 from tags.models import Tag
-from measurements.models import Measurement
+# from measurements.models import Measurement
 from experiments.models import Experiment
 
-from measurements.models import Measurement
 from tags.models import Tag
 
 
@@ -30,14 +30,10 @@ class Unit(models.Model): #todo history
     """
     lab = models.ForeignKey(Lab, verbose_name=_('lab'))
     experiments = models.ManyToManyField(Experiment, verbose_name=_('experiments'))
-    parent = models.ManyToManyField('self', blank=True, related_name='children', db_index=True)
+    parent = models.ManyToManyField('self', blank=True, null=True, related_name='children', db_index=True)
     sample = models.CharField(max_length=4096, verbose_name=_('sample'))
-    tags = models.ManyToManyField(Tag, blank=True, verbose_name=_('tags'))
+    tags = models.ManyToManyField(Tag, blank=True, null=True, verbose_name=_('tags'))
     active = models.BooleanField(default=True, verbose_name=_('active'))
-    # measurements = models.ListField(models.EmbeddedDocumentField(Measurement), verbose_name=_('measurements'))
-    # files = models.ListField(models.FileField(), verbose_name=_('files'))
-    # measurements = models.ManyToManyField(Measurement)
-    measurements = models.OneToOneField(Measurement,null=True, blank=True,  related_name='unit', verbose_name=_('measurements'))
     description = models.TextField(null=True, blank=True, verbose_name=_('description'))
 
     # meta = {'create_revision_after_save': True, 'versioned': True, 'related_fkey_lookups': [], 'local_fields': [],
@@ -102,6 +98,14 @@ class Unit(models.Model): #todo history
     def get_parent_string(self):
         return ', '.join([x.sample for x in self.parent.all()])
 
+
+def create_measurement(sender, instance, created, **kwargs):
+    """Create Measurement for every new Unit."""
+    from measurements.models import Measurement
+    if created:
+        Measurement.objects.create(unit=instance)
+
+signals.post_save.connect(create_measurement, sender=Unit)
 
 
 class UnitFile(models.Model):  # todo upd docs

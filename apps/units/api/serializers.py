@@ -21,8 +21,9 @@ class RevisionCommentField(serializers.Field):
     def get_attribute(self, obj):
         if self.value:
             return self.value
-        else:
-            return u'{}'.format(list(reversion.get_for_object(obj))[0].revision.comment)
+        elif list(reversion.get_for_object(obj)):
+                return u'{}'.format(list(reversion.get_for_object(obj))[0].revision.comment)
+        return ""
 
 
 class UnitSerializer(serializers.ModelSerializer):
@@ -44,6 +45,12 @@ class UnitSerializer(serializers.ModelSerializer):
 
     def get_tags_titles(self, obj):
         return obj.tags.all().values_list('details')
+
+    def create(self, validated_data):
+        if validated_data.get('change_reasons', None):
+            del validated_data['change_reasons']
+
+        return super(UnitSerializer, self).create(validated_data)
 
     class Meta:
         model = Unit
