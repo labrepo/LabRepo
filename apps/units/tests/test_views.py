@@ -276,11 +276,12 @@ class UnitTest(TestCase):
         self.client.login(username=self.owner.email, password='qwerty')
         resp = self.client.get(url, follow=True)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.content, 200)
+        self.assertContains(resp, unit.sample)
 
         self.client.login(username=self.member.email, password='qwerty')
         resp = self.client.get(url, follow=True)
-        self.assertEqual(resp.status_code, unit.sample)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, unit.sample)
 
         self.client.login(username=self.guest.email, password='qwerty')
         resp = self.client.get(url, follow=True)
