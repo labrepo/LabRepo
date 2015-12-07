@@ -23,33 +23,28 @@ def serialize(instance, lab_pk):
     instance -- File doc instance
     """
     if instance.file:
-        url = reverse('upload:file-download', kwargs={  #TODO: add app label
-            'lab_pk': lab_pk,
-            'document_name': instance._class_name,
-            'pk': instance.pk})
+        url = instance.file.url
     else:
         url = instance.outer_url
 
     if instance.thumbnail:
-        thumbnail_url = reverse('upload:file-thumb', kwargs={  #TODO: add app label
-            'lab_pk': lab_pk,
-            'document_name': instance._class_name,
-            'file_name': instance.name,
-            'pk': instance.pk})
+        thumbnail_url = instance.thumbnail.url
     else:
         thumbnail_url = instance.get_outer_thumb()
 
-    delete_url = reverse('upload:file-delete', kwargs={  #TODO: add app label
+    delete_url = reverse('upload:file-delete', kwargs={
         'lab_pk': lab_pk,
-        'document_name': instance._class_name,
-        'pk': instance.pk})
+        'app_name': instance.__class__._meta.app_label,
+        'model_name': instance.__class__.__name__,
+        'pk': instance.pk
+    })
 
     return {
         'url': url,
-        'name': instance.name,
+        'name': instance.filename,
         'type': instance.content_type,
         'thumbnailUrl': thumbnail_url,
-        'size': instance.size,
+        'size': instance.file.size,
         'timestamp': formats.date_format(instance.timestamp, "DATE_FORMAT"),
         'deleteUrl': delete_url,
         'deleteType': 'DELETE',

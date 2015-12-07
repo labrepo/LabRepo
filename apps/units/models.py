@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import urlparse
 from urllib import urlencode
 
@@ -124,14 +125,15 @@ class UnitFile(models.Model):  # todo upd docs
     """
     parent = models.ForeignKey(Unit, verbose_name=_('unit'))
     file = models.FileField(upload_to='unit_files')
-    # name = me.StringField()
-    # size = me.IntField()
-    # content_type = me.StringField()
+    content_type = models.CharField(max_length=256, null=True, blank=True)
     outer_url = models.URLField()
     thumbnail = models.FileField(upload_to='unit_thumbs')
     outer_thumbnail_url = models.URLField()
     timestamp = models.DateTimeField(auto_now=True)
-    # meta = {'abstract': True}
+
+    @property
+    def filename(self):
+        return os.path.basename(self.file.name)
 
     def get_outer_thumb(self, size=256):
         if self.outer_thumbnail_url:
@@ -143,13 +145,6 @@ class UnitFile(models.Model):  # todo upd docs
                 return parsed_url.geturl()
 
             return self.outer_thumbnail_url
-
-    # def delete(self):
-    #     """
-    #     Remove file from GridFS
-    #     """
-    #     self.file.delete()
-    #     super(BaseFile, self).delete()
 
 
 class UnitLink(models.Model):
