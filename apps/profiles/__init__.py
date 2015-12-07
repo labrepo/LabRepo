@@ -3,15 +3,15 @@ from django.contrib.auth.hashers import is_password_usable
 from django.core.urlresolvers import reverse
 from django.db.models import BLANK_CHOICE_DASH
 from django.http import Http404
+from django.db.models.query import QuerySet
 from django.utils.encoding import smart_text
+from django.db.models.signals import pre_save, post_save, pre_delete
+from django.contrib.auth.models import User
+
 from profiles.models import LabUser as User
-# from mongodbforms.documentoptions import Relation
-# from mongoengine import ReferenceField, QuerySet
-# from mongoengine.django.auth import User
-from mongoengine import post_save, pre_delete
 from experiments.search_indexes import ExperimentMappingType
 from profiles.search_indexes import ProfileMappingType
-from django.contrib.auth.models import User
+
 
 User.USERNAME_FIELD = 'email'
 
@@ -122,18 +122,18 @@ def create_test_lab(self):
 
 
 @receiver(post_save, sender=User)
-def update_in_index(sender, document, **kw):
+def update_in_index(sender, instance, **kw):
     from common import tasks
     tasks.create_mapping(ExperimentMappingType)
     tasks.create_mapping(ProfileMappingType)
     # create mapping
-    tasks.index_objects.delay(ProfileMappingType, [document.id])
+    tasks.index_objects.delay(ProfileMappingType, [instance.id])
 
 
 @receiver(pre_delete, sender=User)
-def remove_from_index(sender, document, **kw):
+def remove_from_index(sender, instance, **kw):
     from common import tasks
-    tasks.unindex_objects.delay(ProfileMappingType, [document.id])
+    tasks.unindex_objects.delay(ProfileMappingType, [instance.id])
 
 
 def get_related_field(self):

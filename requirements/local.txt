@@ -1,4 +1,5 @@
 -r base.txt
+fabtools
 django-debug-toolbar==0.9.4
 Fabric==1.8.3
 django_extensions==1.3.3

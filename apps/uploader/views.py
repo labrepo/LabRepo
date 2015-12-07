@@ -16,8 +16,6 @@ from django.http import StreamingHttpResponse
 from django.core.servers.basehttp import FileWrapper
 from django.core.exceptions import PermissionDenied
 
-from mongoengine.base.common import get_document
-
 from filemanager.views import pyfs_file, pyfs_file_ang
 from .response import JSONResponse, response_mimetype
 from .serialize import serialize
@@ -251,6 +249,7 @@ class FileDeleteView(View):
 
 
 class DownloadFileView(View):
+    #TODO: is it needed?
     """
     Send file to browser.
     """

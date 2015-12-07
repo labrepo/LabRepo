@@ -5,7 +5,6 @@ from django.test import TestCase
 
 from comments.models import Comment
 from comments.factories import CommentFactory
-from common.testcase import BaseTestCase
 from dashboard.models import RecentActivity
 from experiments.factories import ExperimentFactory
 from labs.factories import LabFactory

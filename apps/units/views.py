@@ -24,7 +24,7 @@ from django.template.loader import render_to_string
 from django.utils import formats
 from django.core import serializers
 
-from preserialize.serialize import serialize
+from preserialize.serialize import serialize  # todo change with drf serizlizer
 
 from django.db.models import Q
 
@@ -32,7 +32,7 @@ from common.decorators import get_obj_or_404
 from common.mixins import (ActiveTabMixin, LoginRequiredMixin, AjaxableResponseMixin,
                            RecentActivityMixin, CheckViewPermissionMixin, CommentMixin, DataMixin, JsTreeMixin,
                            InitialLabMixin)
-from common.serializer import JsonDocumentEncoder
+# from common.serializer import JsonDocumentEncoder
 from uploader.views import FileUploadMixinView, DropboxFileUploadMixinView, LocalFileUploadMixinView
 from dashboard.models import RecentActivity
 from .models import Unit, UnitFile, UnitLink
@@ -405,7 +405,7 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
                 ['', ''], ['', '']
             ]
 
-        ctx['measurements'] = json.dumps(measurements, cls=JsonDocumentEncoder, )
+        ctx['measurements'] = json.dumps(measurements)
         if self.object.measurements:
             ctx['revisions'] = json.dumps([self.rev_as_json(rev) for rev in self.object.measurements.revisions()])
 

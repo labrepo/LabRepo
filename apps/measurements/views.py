@@ -20,7 +20,7 @@ from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckViewPermissi
                            CommentMixin, LabQueryMixin, DataMixin, AjaxableResponseMixin, DeleteDataMixin,
                            CheckEditPermissionMixin, InitialLabMixin)
 
-from common.serializer import JsonDocumentEncoder
+
 from dashboard.models import RecentActivity
 from history.models import History
 from labs.models import Lab

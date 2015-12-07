@@ -10,7 +10,6 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import mongoengine
 import djcelery
 
 from django.core.urlresolvers import reverse_lazy
@@ -164,8 +163,6 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = rel('public', 'media')
 
-# SESSION_ENGINE = 'mongoengine.django.sessions'
-
 # SOCIAL_AUTH_STORAGE = 'social.apps.django_app.me.models.DjangoStorage'
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
@@ -192,7 +189,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 AUTH_USER_MODEL = 'profiles.LabUser'
-# MONGOENGINE_USER_DOCUMENT = 'profiles.models.LabUser'
 
 # registration
 ACCOUNT_ACTIVATION_DAYS = 1

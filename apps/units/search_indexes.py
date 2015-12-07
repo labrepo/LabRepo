@@ -1,7 +1,7 @@
 from django.dispatch import receiver
 
 from elasticutils.contrib.django import MappingType, Indexable
-from mongoengine import post_save, pre_delete
+from django.db.models.signals import pre_save, post_save, pre_delete
 from measurements.search_indexes import MeasurementMappingType
 
 from .models import Unit
@@ -94,21 +94,21 @@ class UnitMappingType(MappingType, Indexable):
 
 
 @receiver(post_save, sender=Unit)
-def update_in_index(sender, document, **kw):
+def update_in_index(sender, instance, **kw):
     from common import tasks
-    if document.active:
+    if instance.active:
         tasks.create_mapping(UnitMappingType)
         tasks.create_mapping(MeasurementMappingType)
-        tasks.index_objects.delay(UnitMappingType, [document.id])
+        tasks.index_objects.delay(UnitMappingType, [instance.id])
         # for measurement in document.measurements:
         #     tasks.index_objects.delay(MeasurementMappingType, [measurement.id])
     else:
-        tasks.unindex_objects.delay(UnitMappingType, [document.id])
+        tasks.unindex_objects.delay(UnitMappingType, [instance.id])
         # tasks.unindex_objects.delay(MeasurementMappingType, [measurement.id for measurement in document.measurements])
 
 
 @receiver(pre_delete, sender=Unit)
-def remove_from_index(sender, document, **kw):
+def remove_from_index(sender, instance, **kw):
     from common import tasks
-    tasks.unindex_objects.delay(UnitMappingType, [document.id])
+    tasks.unindex_objects.delay(UnitMappingType, [instance.id])
     # tasks.unindex_objects.delay(MeasurementMappingType, [measurement.id for measurement in document.measurements])
