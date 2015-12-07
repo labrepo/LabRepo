@@ -234,7 +234,7 @@ class FileManagerView(FileManagerMixin, View):
                 filename = smart_str(os.path.basename(download_path))
 
                 size = self.fs.getsize(relative_dir_path)
-                response = HttpResponse(mimetype=content_type)
+                response = HttpResponse(content_type=content_type)
                 response['Content-Length'] = size
                 file_object = self.fs.open(relative_dir_path, 'rb')
                 response['Content-Disposition'] = 'attachment; filename=%s' % filename
@@ -578,7 +578,7 @@ class FileManagerDownloadView(FileManagerMixin, View):
         filename = smart_str(os.path.basename(fs_path))
 
         size = self.fs.getsize(fs_path)
-        response = HttpResponse(mimetype=content_type)
+        response = HttpResponse(content_type=content_type)
         response['Content-Length'] = size
         file_object = self.fs.open(fs_path, 'rb')
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
@@ -823,7 +823,7 @@ class AngFileManagerDownloadView(AngularFileManagerMixin, FileManagerMixin, View
         filename = smart_str(os.path.basename(download_path))
 
         size = self.fs.getsize(relative_dir_path)
-        response = HttpResponse(mimetype=content_type)
+        response = HttpResponse(content_type=content_type)
         response['Content-Length'] = size
         file_object = self.fs.open(relative_dir_path, 'rb')
         response['Content-Disposition'] = 'attachment; filename=%s' % filename

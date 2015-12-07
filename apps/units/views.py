@@ -398,16 +398,14 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         ctx = {}
         ctx.update(self.kwargs)
 
-        if self.object.measurements:
-            measurements = self.object.measurements.all().as_table()
-        else:
+        try:
+            measurements = self.object.measurement.as_table()
+            ctx['measurements'] = json.dumps(measurements)
+            ctx['revisions'] = json.dumps([self.rev_as_json(rev) for rev in self.object.measurements.revisions()])
+        except AttributeError:
             measurements = [
                 ['', ''], ['', '']
             ]
-
-        ctx['measurements'] = json.dumps(measurements)
-        if self.object.measurements:
-            ctx['revisions'] = json.dumps([self.rev_as_json(rev) for rev in self.object.measurements.revisions()])
 
         ctx['sample'] = self.object.sample
         # ctx['unit_data'] = self.object.to_json()

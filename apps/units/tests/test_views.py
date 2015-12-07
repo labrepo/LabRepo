@@ -265,6 +265,31 @@ class UnitTest(TestCase):
         resp = self.client.get(url, follow=True)
         self.assertEqual(resp.status_code, 403)
 
+    def test_detail_json(self):
+        unit = UnitFactory(experiments=[self.experiment], lab=self.lab)
+        url = reverse('units:detail-json', kwargs={'pk': unit.pk, 'lab_pk': self.lab.pk})
+
+        resp = self.client.get(url, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, _('Login'))
+
+        self.client.login(username=self.owner.email, password='qwerty')
+        resp = self.client.get(url, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content, 200)
+
+        self.client.login(username=self.member.email, password='qwerty')
+        resp = self.client.get(url, follow=True)
+        self.assertEqual(resp.status_code, unit.sample)
+
+        self.client.login(username=self.guest.email, password='qwerty')
+        resp = self.client.get(url, follow=True)
+        self.assertEqual(resp.status_code, 403)
+
+        self.client.login(username=self.user4.email, password='qwerty')
+        resp = self.client.get(url, follow=True)
+        self.assertEqual(resp.status_code, 403)
+
     def test_list(self):
         # unit = UnitFactory.create_batch(2, experiments=[self.experiment], lab=self.lab)
         url = reverse('units:list', kwargs={'lab_pk': self.lab.pk})

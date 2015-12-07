@@ -44,7 +44,6 @@ class TestFilemanagerBackendTest(TestCase):
         shutil.rmtree(os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, unicode(self.lab.pk) + '/'))
         settings.FILEMANAGER_UPLOAD_ROOT = self.old_setting
 
-
     def get_directory_content(self, directory='/'):
         if directory == '/' or not directory:
             return os.listdir(os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, unicode(self.lab.pk) + '/'))
@@ -205,3 +204,4 @@ class TestFilemanagerBackendTest(TestCase):
         self.assertNotIn('test dir', self.get_directory_content('/'))
 
         # TODO: remove not empty dir
+        # TODO: download
