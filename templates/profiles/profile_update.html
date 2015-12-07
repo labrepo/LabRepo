@@ -59,6 +59,13 @@
             <i class="fa fa-area-chart"></i> {{ object.plot_key|default:"" }}
           </dd>
 
+          <dt>{% trans 'Avatar' %}</dt>
+          <dd>
+            {% if object.avatar %}
+            <i class="fa fa-avatar"></i> <img src="{{ object.avatar.url}}" width="200"/>
+            {% endif %}
+          </dd>
+
         </dl>
       </div>
     </div>

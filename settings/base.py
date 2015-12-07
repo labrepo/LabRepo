@@ -73,6 +73,7 @@ THIRD_PARTY_APPS = (
     'social.apps.django_app.default',
     'widget_tweaks',
     'rest_framework',
+    'imagekit',
 )
 LOCAL_APPS = (
     'comments',

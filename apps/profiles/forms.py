@@ -45,7 +45,7 @@ class UserUpdateForm(BaseForm):
 
     class Meta:
         model = LabUser
-        fields = ('first_name', 'last_name', 'plot_un', 'plot_key')
+        fields = ('first_name', 'last_name', 'plot_un', 'plot_key', 'avatar')
 
 
 class ChangeUserForm(BaseForm):

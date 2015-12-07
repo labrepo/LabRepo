@@ -11,7 +11,11 @@
                 data-toggle="modal"
                 data-href="{% url 'comment:delete' lab_pk=lab.pk pk=comment.pk %}" ><i class="fa fa-times"></i></button>
     </div>
-  <img class="img-circle img-sm" src="{% static 'img/gravatar.png' %}" alt="user image">
+  {% if comment.init_user.avatar %}
+    <img class="img-circle img-sm" src="{{ comment.init_user.avatar_thumbnail.url }}" alt="user image">
+  {% else %}
+    <img class="img-circle img-sm" src="{% static 'img/gravatar.png' %}" alt="user image">
+  {% endif %}
   <div class="comment-text">
     <span class="username">
       {{ comment.init_user.full_name }}

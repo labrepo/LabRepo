@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractUser
 from django.core.urlresolvers import reverse
 from django.db import models
 
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
+
 
 class LabUser(AbstractUser):
     """Extend Mongo Engine User model"""
@@ -12,12 +15,14 @@ class LabUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
-    # avatar = models.ImageField(upload_to='avatars',
-    #                            blank=False, null=True,
-    #                            # size=None,
-    #                            # thumbnail_size=(200, 200, True),
-    #                            # collection_name='avatars',
-    #                            verbose_name=_('Avatar'))
+    avatar = models.ImageField(upload_to='avatars',
+                               blank=True, null=True,
+                               verbose_name=_('Avatar'))
+
+    avatar_thumbnail = ImageSpecField(source='avatar',
+                                      processors=[ResizeToFill(80, 80)],
+                                      format='JPEG',
+                                      options={})
 
     def get_username(self):
         return self.email.split('@')[0]
