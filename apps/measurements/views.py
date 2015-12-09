@@ -76,7 +76,7 @@ class MeasurementCreateView(LoginRequiredMixin, CheckEditPermissionMixin, Ajaxab
             # {'editor': 'text', 'display': 'none', 'default_value': (self.object.is_member(user) or self.object.is_owner(user)) or '', 'readonly': True},
         ])
         ctx['title'] = json.dumps(dict(zip(self.title_field + self.extra_title, self.headers)))
-        ctx['headers'] = json.dumps(self.headers)
+        # ctx['headers'] = json.dumps(self.headers)
         # ctx['extra_form'] = MeasurementTypeForm(lab_pk=self.kwargs['lab_pk'])
         ctx['is_member'] = self.object.is_member(user) or self.object.is_owner(user)
         return ctx

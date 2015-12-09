@@ -21,7 +21,7 @@ class Measurement(models.Model):
        ['b1','b2']
     ]
     """
-    table_data = JSONField(default=['', ''], verbose_name=_('table data'))
+    table_data = JSONField(default=[['', '']], verbose_name=_('table data'))
     headers = JSONField(default=['', ''], verbose_name=_('headers'))
     active = models.BooleanField(default=True, verbose_name=_('active'))
     unit = models.OneToOneField(Unit)
