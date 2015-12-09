@@ -11,7 +11,7 @@ from reversion import revisions as reversion
 
 from common.mixins import LoginRequiredMixin, AjaxableResponseMixin, CheckLabPermissionMixin, RecentActivityMixin
 from dashboard.models import RecentActivity
-from units.api.serializers import UnitSerializer
+from units.api.serializers import UnitSerializer, UnitTableSerializer
 from units.models import Unit
 from experiments.models import Experiment
 from labs.models import Lab
@@ -19,7 +19,7 @@ from labs.models import Lab
 
 class UnitListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListAPIView):
 
-    serializer_class = UnitSerializer
+    serializer_class = UnitTableSerializer
 
     def get_queryset(self, **kwargs):
         if self.kwargs.get('experiment_pk'):
@@ -32,13 +32,13 @@ class UnitListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListAPI
         return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'], experiments__in=experiments, active=True)
 
 
-class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin, AjaxableResponseMixin, View):
+class UnitTableView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin, AjaxableResponseMixin, View):
 
-    serializer_class = UnitSerializer
+    serializer_class = UnitTableSerializer
 
     @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
-        return super(UnitUpdateView, self).dispatch(*args, **kwargs)
+        return super(UnitTableView, self).dispatch(*args, **kwargs)
 
     def post(self, *args, **kwargs):
         results = []
@@ -50,7 +50,7 @@ class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivity
 
             # check permission
             permission = False
-            for experiment in Experiment.objects.filter(pk__in=unit_data['experiments']):
+            for experiment in Experiment.objects.filter(pk__in=unit_data.get('experiments', [])):
                 if experiment.is_owner(self.request.user) or experiment.is_editor(self.request.user):
                     permission = True
                     break
@@ -74,12 +74,22 @@ class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivity
                 with reversion.create_revision():
                     unit = serializer.save()
                     reversion.set_user(self.request.user)
-                    reversion.set_comment(serializer.data.get('change_reasons'))
+                    reversion.set_comment(serializer.data.get('change_reasons', ''))
                     self.save_recent_activity(self.flag, obj=unit)
                     results.append((index, {'pk': unit.pk, 'success': True}))
             else:
-                results.append((index, {'errors': u'{}'.format(serializer.errors), 'success': False}))
+                results.append((index, {'errors': serializer.errors, 'success': False}))
         return self.render_to_json_response(results)
 
     def get_queryset(self, **kwargs):
         return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'])
+
+
+class UnitCreateView(LoginRequiredMixin, CheckLabPermissionMixin, generics.CreateAPIView):
+
+    serializer_class = UnitSerializer
+
+
+class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, generics.UpdateAPIView):
+
+    serializer_class = UnitSerializer

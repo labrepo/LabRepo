@@ -30,22 +30,25 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
 
     def form_valid(self, form):
 
-        model_name = form.cleaned_data['instance_type']  # todo type__model
-        if model_name == 'Experiment':
-            model = Experiment
-        if model_name == 'Unit':
-            model = Unit
+
 
         self.object = Comment(
             text=form.cleaned_data['text']
         )
+        model_name = form.cleaned_data['instance_type']  # todo type__model
+        if model_name == 'Experiment':
+            model = Experiment
+            experiment = self.object.content_object
+        if model_name == 'Unit':
+            model = Unit
+            experiment = None
         self.object.init_user = self.request.user
         self.object.content_object = model.objects.get(id=form.cleaned_data['object_id'])
         self.object.save()
         resent_activity = self.save_recent_activity(RecentActivity.COMMENT,
                                                     value=self.object.text,
                                                     obj=self.object.content_object,
-                                                    experiment=self.object.content_object)
+                                                    experiment=experiment)
 
         # publish message in the redis queue if experiment's comment
         if model_name == 'Experiment':

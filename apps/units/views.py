@@ -45,8 +45,8 @@ from tags.models import Tag
 logger = logging.getLogger(__name__)
 
 
-class UnitCreateView(LoginRequiredMixin, JsTreeMixin, ModelFormMixin, MultipleObjectTemplateResponseMixin,
-                     BaseListView, View):
+class UnitCreateView(LoginRequiredMixin, RecentActivityMixin, DataMixin, AjaxableResponseMixin,
+                     JsTreeMixin, ModelFormMixin, MultipleObjectTemplateResponseMixin, BaseListView, View):
     """
      View for creating a new unit
     """

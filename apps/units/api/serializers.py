@@ -26,7 +26,7 @@ class RevisionCommentField(serializers.Field):
         return ""
 
 
-class UnitSerializer(serializers.ModelSerializer):
+class UnitTableSerializer(serializers.ModelSerializer):
 
     readonly = serializers.SerializerMethodField('get_full_name')
     experiments_names = serializers.SerializerMethodField('get_experiments_titles')
@@ -44,14 +44,27 @@ class UnitSerializer(serializers.ModelSerializer):
         return obj.parent.all().values_list('sample')
 
     def get_tags_titles(self, obj):
-        return obj.tags.all().values_list('details')
+        result = []
+        for tag in obj.tags.all().values_list('details', 'color'):
+            result.append({
+                'text': tag[0],
+                'color': tag[1] or '#ffffff'
+            })
+        return result
 
     def create(self, validated_data):
         if validated_data.get('change_reasons', None):
             del validated_data['change_reasons']
 
-        return super(UnitSerializer, self).create(validated_data)
+        return super(UnitTableSerializer, self).create(validated_data)
 
     class Meta:
         model = Unit
         fields = ('id', 'sample', 'experiments_names', 'parents_names', 'tags_names',  'readonly', 'change_reasons', 'experiments', 'parent', 'tags', 'lab' )
+
+
+class UnitSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Unit
+        fields = ('id', 'sample', 'experiments', 'parent', 'tags', 'lab' )

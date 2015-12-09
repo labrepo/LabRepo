@@ -26,7 +26,7 @@ class TagCreateView(LoginRequiredMixin, CheckLabPermissionMixin, AjaxableRespons
     active_tab = 'tags'
     template_name = 'tags/tag_form.html'
     parent_id = '#'
-    fields = ('id', 'parent', 'details')
+    # fields = ('id', 'parent', 'details')
 
     def get_initial(self):
         initial = super(TagCreateView, self).get_initial()
@@ -67,7 +67,7 @@ class TagUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, AjaxableRespons
     form_class = TagForm
     parent_id = '#'
     template_name = 'tags/tag_form.html'
-    fields = ('id', 'parent', 'details')
+    # fields = ('id', 'parent', 'details')
 
     def get_initial(self):
         initial = super(TagUpdateView, self).get_initial()
@@ -83,7 +83,7 @@ class TagUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, AjaxableRespons
 
     def render_data(self, response=None):
         if self.request.is_ajax():
-            data = {'node': self.get_jstree_data(self.object.get_children(), self.fields, self.parent_id),
+            data = {'node': self.get_jstree_data(self.object.get_descendants(), self.fields, self.parent_id),
                     'message': self.get_success_message()}
             return self.render_to_json_response(data)
         else:

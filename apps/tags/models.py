@@ -11,7 +11,6 @@ from mptt.models import MPTTModel, TreeForeignKey
 from labs.models import Lab
 
 
-
 class Tag(MPTTModel):
     """
     The model is for storing tag.
@@ -41,14 +40,14 @@ class Tag(MPTTModel):
     def get_absolute_url(self):
         return reverse('tags:update', kwargs={'pk': self.pk, 'lab_pk': self.lab.pk})
 
-    def get_children(self):
-        return self.children(self, [])
-
-    def children(self, tag, all_child=[]):
-        all_child.append(tag)
-        for child in self.__class__.objects.filter(parent__in=[tag]):
-            all_child.extend(self.children(child, []))
-        return all_child
+    # def get_children(self):
+    #     return self.children(self, [])
+    #
+    # def children(self, tag, all_child=[]):
+    #     all_child.append(tag)
+    #     for child in self.__class__.objects.filter(parent__in=[tag]):
+    #         all_child.extend(self.children(child, []))
+    #     return all_child
 
 
 Tag._default_manager = Tag.objects

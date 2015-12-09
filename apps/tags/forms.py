@@ -57,8 +57,8 @@ class TagForm(TagBaseForm):
         self.lab_pk = self.initial.pop('lab_pk')
         self.fields['parent'].queryset = Tag.objects.filter(lab__pk=self.lab_pk)
         if kwargs.get('instance'):
-            self.fields['parent'].queryset = self.fields['parent'].queryset.filter(
-                pk__nin=[child.pk for child in kwargs.get('instance').get_children()])
+            self.fields['parent'].queryset = self.fields['parent'].queryset.exclude(
+                pk__in=[child.pk for child in kwargs.get('instance').get_descendants()])
         # self.fields['params'].initial = {"": ""}
         # self.fields['params'].label = _(u'params')
 
