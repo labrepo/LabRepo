@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load i18n static %}
+{% load i18n static upload_tags %}
 {% block wrapper_classes %}{% endblock %}
 {% block breadcrumb %}
 <li class="active" xmlns="http://www.w3.org/1999/html">{{ object }}</li>
@@ -160,7 +160,7 @@
           </div>
         </div>
 
-        <div class="tab-pane" id="unit-page">
+        <div ng-controller="UnitDetailCtrl" class="tab-pane" id="unit-page">
           <div class="row">
             <div class="col-lg-6">
               <div class="nav-tabs-custom">
@@ -183,7 +183,7 @@
                   <div class="tab-pane" id="units-list">
                     <ul class="list-group">
                         {% for unit in units %}
-                          <a href="#" data-unit-pk="{{ unit.pk }}" onclick="return false;" class="list-group-item list-group-item-sm unit-item">{{ unit }}</a>
+                          <a href="#" ng-click="getUnit({{ unit.pk }});" data-unit-pk="{{ unit.pk }}" onclick="return false;" class="list-group-item list-group-item-sm unit-item">{{ unit }}</a>
                         {% endfor %}
                     </ul>
                     <div class="btn-group">
@@ -208,8 +208,102 @@
                   <li class=""><a href="#unit-comments" data-toggle="tab"><i class="fa fa-comments"></i> {% trans 'Comments' %}</a></li>
                 </ul>
                 <div class="tab-content">
-                  <div class="tab-pane active" id="unit-desc">
-                    <div class="desc-area"></div>
+                  <div class="tab-pane active" id="unit-desc" >
+                    <div ng-show="unit">
+                      <div class="field-container">
+                        <h4>{% trans "Sample" %}</h4>
+                        <form  ng-submit="saveUnit()" method="post">
+                          <button ng-show="unit.edit_permission" ng-click="isEditorOpenSample = !isEditorOpenSample" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+                          <div ng-show="!isEditorOpenSample" class="field-text">
+                            {% verbatim %}{{ unit.sample }}{% endverbatim %}
+                          </div>
+                          <div ng-show="isEditorOpenSample" >
+                            <div class="form-group">
+                              <input required ng-model="unit.sample"/>
+                            </div>
+                            <button type="submit" ng-click="saveUnit();isEditorOpenSample = !isEditorOpenSample" class="btn btn-info">{% trans 'Save' %}</button>
+                            <button ng-click="isEditorOpenSample = !isEditorOpenSample" class="btn btn-info">{% trans 'cancel'|title %}</button>
+                          </div>
+                        </form>
+                      </div>
+
+                      <div class="field-container">
+                        <h4>{% trans "Description" %}</h4>
+                        <form  ng-submit="saveUnit()" method="post">
+                          <button ng-show="unit.edit_permission" ng-click="isEditorOpenDescription = !isEditorOpen" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+                          <div ng-show="!isEditorOpenDescription" class="field-text">
+                            {% verbatim %}{{ unit.description }}{% endverbatim %}
+                          </div>
+                          <div ng-show="isEditorOpenDescription" >
+                            <div class="form-group">
+                              <input ng-model="unit.description"/>
+                            </div>
+                            <button type="submit" ng-click="saveUnit();isEditorOpenDescription = !isEditorOpenDescription" class="btn btn-info">{% trans 'Save' %}</button>
+                            <button ng-click="isEditorOpenDescription = !isEditorOpenDescription" class="btn btn-info">{% trans 'cancel'|title %}</button>
+                          </div>
+                        </form>
+                      </div>
+
+                      <div class="field-container">
+                        <h4>{% trans "Parent" %}</h4>
+                        <form  ng-submit="saveUnit()" method="post">
+                          <button ng-show="unit.edit_permission" ng-click="isEditorOpenParent = !isEditorOpenParent" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+                          <div ng-show="!isEditorOpenParent" class="field-text">
+                            <span ng-repeat="unit_index in unit.parent"> {% verbatim %}{{ getUnitbyId(unit_index) }}{{$last ? '' : ', '}}{% endverbatim %}</span>
+                          </div>
+                          <div ng-show="isEditorOpenParent" >
+                            <div class="form-group">
+                              <select ui-select2 multiple="multiple" class="form-control" ng-model="unit.parent">
+
+                              <option ng-repeat="unit_option in units" ng-selected="unit.parent.indexOf(unit_option.id) > -1"  value="{{unit_option.id}}">{{unit_option.sample}}</option>
+                              </select>
+                            </div>
+                            <button type="submit" ng-click="saveUnit();isEditorOpenParent = !isEditorOpenParent" class="btn btn-info">{% trans 'Save' %}</button>
+                            <button ng-click="isEditorOpenParent = !isEditorOpenParent" class="btn btn-info">{% trans 'cancel'|title %}</button>
+                          </div>
+                        </form>
+                      </div>
+
+                      <div ng-controller="UnitLinkCtrl" class="box box-widget voffset4">
+                        <div class="box-header with-border">
+                          <h3 class="box-title">{% trans "Links" %}</h3>
+                          <div class="box-tools">
+                            <button class="btn btn-box-tool box-collapse" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                          </div>
+                        </div>
+                        <div class="box-body">
+                          <div class="link-list" ng-repeat="unitLink in unitLinks">
+                            <div class="box box-widget">
+                        <div class="box-header">
+                          <span class="description">{% verbatim %}{{ unitLink.timestamp }}{% endverbatim %}</span>
+                          <div class="box-tools">
+                            <button ng-click="deleteUnitLink(unitLink.id, $index)" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                          </div>
+                        </div>
+                        <div class="box-body">
+                          <div class="attachment-block clearfix">
+                              <img class="attachment-img" ng-src="{% verbatim %}{{ unitLink.image || '/static/img/no_image.png' }}{% endverbatim %}" alt="attachment image">
+                            <div class="attachment-pushed">
+                              <h4 class="attachment-heading"><a href="{% verbatim %}{{ unitLink.link }}{% endverbatim %}"><span ng-if="unitLink.title">{{ unitLink.title }}</span><span ng-if="!unitLink.title">{% verbatim %}{{ unitLink.link }}{% endverbatim %}</span></a></h4>
+                              <div class="attachment-text"><span ng-if="unitLink.description">{% verbatim %}{{ unitLink.description }}{% endverbatim %}</span><span ng-if="!unitLink.description">...</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                          </div>
+                          <form class="links-unit-form form-inline" ng-submit="createUnitLink()" method="post">
+                            <div class="form-group">
+                              <input ng-model="link" class="form-control" required type="url" name="link">
+                              <button class="btn btn-info bg-olive btn-flat" type="submit"><i class="glyphicon glyphicon-plus"></i> {% trans "Add link" %}</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+
+                  <div class="upload-area">
+                  </div>
+                    </div>
                     <!--<a style="display:none" class="btn btn-primary edit-unit">Edit</a>-->
                   </div>
 

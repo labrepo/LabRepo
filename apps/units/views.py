@@ -420,7 +420,8 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         # ctx['unit_data'] = json.dumps(actual_data)
         ctx['tags'] = json.dumps(self.get_tree_element(self.object))
 
-        ctx['description'] = render_to_string('units/tabs/unit_description.html', context)
+        # ctx['description'] = render_to_string('units/tabs/unit_description.html', context)
+        ctx['uploader'] = render_to_string('units/tabs/unit_uploader.html', context)
         ctx['comments'] = render_to_string('units/tabs/unit_comments.html', context)
 
         return self.render_to_json_response(ctx)

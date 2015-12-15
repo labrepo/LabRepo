@@ -101,9 +101,12 @@ function table_to_plot_data(table_data) {
      if (table.length){
          var options = $(table).handsontable('getDataAtRow', 0);
          $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
-         for (var i = 0, max = options.length; i < max; i += 1) {
-             $('#plot-form .asis').append('<option value="'+ i +'">' + options[i] + '</option>')
+         if(options){
+             for (var i = 0, max = options.length; i < max; i += 1) {
+                 $('#plot-form .asis').append('<option value="'+ i +'">' + options[i] + '</option>')
+             }
          }
+
      }
 
  });

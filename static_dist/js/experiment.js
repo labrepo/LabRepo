@@ -35,10 +35,18 @@ $(function() {
         window.dispatchEvent(new Event('resize'));
     })
     if ($('.graph-area').length){
-        var graph = window.graph  = new render_graph($('.graph-area').data('graph-json'), '.graph-area', update_unit_info)
+        var graph = window.graph  = new render_graph($('.graph-area').data('graph-json'), '.graph-area', update_unit_info_ang)
     }
 
 });
+
+function update_unit_info_ang(unit){
+    var scope = angular.element($("#unit-page")).scope();
+    scope.$apply(function(){
+        scope.getUnit(unit.id);
+    });
+    update_unit_info(unit)
+}
 
 function update_unit_info(unit){
     /**
@@ -89,11 +97,11 @@ function update_unit_info(unit){
 
         // show hidden tab's buttons
         $('#unit-measurements .btn').show()
-        $('#unit-desc .btn').show()
+//        $('#unit-desc .btn').show()
         $('#unit-tags .btn').show()
 
         // description
-        $('.desc-area').html(data.description)
+        $('.upload-area').html(data.uploader)
         update_uploaders()
 
         options = {
@@ -119,7 +127,7 @@ function update_unit_info(unit){
         // measurements
         var table = $("#dataTableEditable");
         var table_data = JSON.parse(data.measurements);
-        var save_url = '/' + lab_pk + '/measurements/'+ unit.id + '/create/'
+        var save_url = '/' + lab_pk + '/measurements/api/'+ unit.id + '/'
         table.data('url', save_url)
         table.handsontable('loadData', table_data);
 
@@ -167,9 +175,11 @@ $('a[href="#unit-measurements"]').on('shown.bs.tab', function (e) {
 // save unit tags
 $("#unit-tags").on("click", "#tag-save", function() {
     var selected_tags = treeElement.jstree('get_selected')
-    var save_url ='/'+ lab_pk +'/units/create/';
-    unit_data['data-0-tags_pk[]'] = selected_tags;
-    $.post(save_url, unit_data);
+    var scope = angular.element($("#unit-page")).scope();
+    scope.$apply(function(){
+        scope.unit.tags = selected_tags;
+        scope.saveUnit();
+    });
 });
 
 // revert table data on revision restore
@@ -185,111 +195,111 @@ $('body').on('click','.revert-revision', function (e) {
     return false
 });
 
-$('body').on('submit','.description-unit-form', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var $form = $(e.target);
-    var unit_data = window.unit_data
-    unit_data['data-0-description'] = $form.find('textarea[name="description"]').val();
+//$('body').on('submit','.description-unit-form', function (e) {
+//    e.preventDefault();
+//    e.stopPropagation();
+//    var $form = $(e.target);
+//    var unit_data = window.unit_data
+//    unit_data['data-0-description'] = $form.find('textarea[name="description"]').val();
+//
+//    $.post($form.attr('action'), unit_data)
+//        .fail(function (xhr) {
+//            form_fail($form, xhr)
+//        }).done(function (response) {
+//            var desc_value = $form.find('textarea[name="description"]').val()
+//            $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
+//            $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(desc_value);
+//
+//        });
+//});
 
-    $.post($form.attr('action'), unit_data)
-        .fail(function (xhr) {
-            form_fail($form, xhr)
-        }).done(function (response) {
-            var desc_value = $form.find('textarea[name="description"]').val()
-            $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
-            $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(desc_value);
+//$('body').on('submit','.sample-unit-form', function (e) {
+//    e.preventDefault();
+//    e.stopPropagation();
+//    var $form = $(e.target);
+//    var unit_data = window.unit_data
+//    var sample = $form.find('input[name="sample"]').val()
+//    unit_data['data-0-sample'] = sample;
+//
+//    $.post($form.attr('action'), unit_data)
+//        .fail(function (xhr) {
+//            form_fail($form, xhr)
+//        }).done(function (response) {
+//            $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
+//            $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(sample);
+//            graph.updateNodeText(response[0][1]['pk'], sample)
+//
+//        });
+//});
 
-        });
-});
+//$('body').on('submit','.parent-unit-form', function (e) {
+//    e.preventDefault();
+//    e.stopPropagation();
+//    var $form = $(e.target);
+//    var unit_data = window.unit_data
+//
+//    var parents = $form.find('select[name="parent"]').val()
+//    if (parents) {
+//        unit_data['data-0-parent_pk[]'] = parents;
+//    } else {
+//        delete unit_data['data-0-parent_pk[]']
+//    }
+//
+//    $.post($form.attr('action'), unit_data)
+//        .fail(function (xhr) {
+//            form_fail($form, xhr)
+//        }).done(function (response) {
+//            $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
+//            $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(parents);
+//            graph.updateParents(response[0][1]['pk'], parents)
+//        });
+//});
 
-$('body').on('submit','.sample-unit-form', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var $form = $(e.target);
-    var unit_data = window.unit_data
-    var sample = $form.find('input[name="sample"]').val()
-    unit_data['data-0-sample'] = sample;
-
-    $.post($form.attr('action'), unit_data)
-        .fail(function (xhr) {
-            form_fail($form, xhr)
-        }).done(function (response) {
-            $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
-            $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(sample);
-            graph.updateNodeText(response[0][1]['pk'], sample)
-
-        });
-});
-
-$('body').on('submit','.parent-unit-form', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var $form = $(e.target);
-    var unit_data = window.unit_data
-
-    var parents = $form.find('select[name="parent"]').val()
-    if (parents) {
-        unit_data['data-0-parent_pk[]'] = parents;
-    } else {
-        delete unit_data['data-0-parent_pk[]']
-    }
-
-    $.post($form.attr('action'), unit_data)
-        .fail(function (xhr) {
-            form_fail($form, xhr)
-        }).done(function (response) {
-            $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
-            $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(parents);
-            graph.updateParents(response[0][1]['pk'], parents)
-        });
-});
-
-$('body').on('submit','.links-unit-form', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var $form = $(e.target);
-    var link = $form.find('input[name="link"]').val();
-
-    $.post($form.attr('action'), $form.serialize())
-        .fail(function (xhr) {
-            var data = xhr.responseJSON;
-            $form.find('.has-error').removeClass('has-error').removeAttr('title');
-            for (var name in data) {
-                if (data.hasOwnProperty(name)) {
-                    var icon = $('<i>', {'class': 'fa fa-warning'}),
-                        error_message = $('span', {
-                            'class': 'text-red error-msg',
-                            'id': 'error_' + $form.find('[name="' + name + '"]').id
-                        }).text(data[name].join(', ')).append(icon);
-
-                    $form.find('[name="' + name + '"]')
-                        .after(error_message);
-                    $form.find('[name="' + name + '"]')
-                        .parents('.form-group')
-                        .addClass('has-error')
-                        .attr('title', data[name].join(', '));
-                }
-            }
-        }).done(function (response) {
-            $('.link-list').append(response.html);
-            $form.find('input[name="link"]').val('');
-        });
-});
-
-$('body').on('click','.link-delete', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if(confirm('Delete this link?')) {
-        var delete_url = $(this).data("delete-url");
-        var parent_box = $(this).closest('.box')
-        $.post(delete_url, {}, function (response) {
-            parent_box.remove();
-        });
-    }
-    return false
-});
+//$('body').on('submit','.links-unit-form', function (e) {
+//    e.preventDefault();
+//    e.stopPropagation();
+//    var $form = $(e.target);
+//    var link = $form.find('input[name="link"]').val();
+//
+//    $.post($form.attr('action'), $form.serialize())
+//        .fail(function (xhr) {
+//            var data = xhr.responseJSON;
+//            $form.find('.has-error').removeClass('has-error').removeAttr('title');
+//            for (var name in data) {
+//                if (data.hasOwnProperty(name)) {
+//                    var icon = $('<i>', {'class': 'fa fa-warning'}),
+//                        error_message = $('span', {
+//                            'class': 'text-red error-msg',
+//                            'id': 'error_' + $form.find('[name="' + name + '"]').id
+//                        }).text(data[name].join(', ')).append(icon);
+//
+//                    $form.find('[name="' + name + '"]')
+//                        .after(error_message);
+//                    $form.find('[name="' + name + '"]')
+//                        .parents('.form-group')
+//                        .addClass('has-error')
+//                        .attr('title', data[name].join(', '));
+//                }
+//            }
+//        }).done(function (response) {
+//            $('.link-list').append(response.html);
+//            $form.find('input[name="link"]').val('');
+//        });
+//});
+//
+//$('body').on('click','.link-delete', function (e) {
+//    e.preventDefault();
+//    e.stopPropagation();
+//
+//    if(confirm('Delete this link?')) {
+//        var delete_url = $(this).data("delete-url");
+//        var parent_box = $(this).closest('.box')
+//        $.post(delete_url, {}, function (response) {
+//            parent_box.remove();
+//        });
+//    }
+//    return false
+//});
 
 $('body').on('click','.box-collapse', function (e) {
     e.preventDefault();

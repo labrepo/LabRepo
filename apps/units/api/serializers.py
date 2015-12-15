@@ -1,5 +1,6 @@
+from django.conf import settings
 from rest_framework import serializers
-from units.models import Unit
+from units.models import Unit, UnitLink
 from reversion import revisions as reversion
 
 
@@ -60,11 +61,26 @@ class UnitTableSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Unit
-        fields = ('id', 'sample', 'experiments_names', 'parents_names', 'tags_names',  'readonly', 'change_reasons', 'experiments', 'parent', 'tags', 'lab' )
+        fields = ('id', 'sample', 'experiments_names', 'parents_names', 'tags_names',  'readonly',
+                  'change_reasons', 'experiments', 'parent', 'tags', 'lab')
 
 
 class UnitSerializer(serializers.ModelSerializer):
 
+    edit_permission = serializers.SerializerMethodField()
+
+    def get_edit_permission(self, obj):
+        return obj.is_owner(self.context['request'].user)
+
     class Meta:
         model = Unit
-        fields = ('id', 'sample', 'experiments', 'parent', 'tags', 'lab' )
+        fields = ('id', 'sample', 'description', 'experiments', 'parent', 'tags', 'lab',  'edit_permission')
+
+
+class UnitLinkSerializer(serializers.ModelSerializer):
+
+    timestamp = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+
+    class Meta:
+        model = UnitLink
+        fields = ('id', 'parent', 'link', 'timestamp', 'image', 'title', 'canonicalUrl',  'description')

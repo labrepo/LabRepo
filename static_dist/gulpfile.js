@@ -152,6 +152,8 @@ gulp.task('scripts:vendor', function () {
         "bower_components/angular/angular.min.js",
         "bower_components/angular-cookies/angular-cookies.min.js",
         "bower_components/angular-translate/angular-translate.min.js",
+        "bower_components/angular-resource/angular-resource.min.js",
+        "bower_components/angular-ui-select2/src/select2.js",
         "bower_components/AdminLTE/dist/js/app.js",
         "bower_components/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js",
         "bower_components/AdminLTE/plugins/fullcalendar/fullcalendar.min.js",
@@ -165,6 +167,7 @@ gulp.task('scripts:vendor', function () {
         "bower_components/blueimp-file-upload/js/jquery.fileupload-ui.js",
         "bower_components/blueimp-file-upload/js/jquery.fileupload-process.js",
         "bower_components/blueimp-file-upload/js/jquery.fileupload-validate.js",
+        "bower_components/blueimp-file-upload/js/jquery.fileupload-angular.js",
         "bower_components/d3/d3.min.js",
         "bower_components/webcola/WebCola/cola.min.js",
         "bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js",
@@ -196,9 +199,12 @@ gulp.task('scripts:app', function () {
 
     return gulp.src([
         "js/**.js",
+        "js/angular/services.js",
+        "js/angular/controllers.js",
+        "js/angular/app.js",
     ])
         .pipe(concat('app.js'))
-        .pipe(uglify())
+        .pipe(uglify({mangle: false}))
         .pipe(gulp.dest('../static/'));
 })
 
