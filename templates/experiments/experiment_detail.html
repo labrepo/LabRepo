@@ -169,7 +169,7 @@
                   <li class="">
                     <a href="#units-list" data-toggle="tab"><i class="fa fa-list"></i> {% trans 'List' %}</a>
                   </li>
-                  <li class="pull-right" ><a class="create-unit" data-url="{% url 'units:create' lab.pk %}" href="#"><i class="fa fa-plus"></i> {% trans "Create Unit" %}</a></li>
+                  <li class="pull-right" ><a ng-click="createUnit()" href="#"><i class="fa fa-plus"></i> {% trans "Create Unit" %}</a></li>
                   <li class="pull-right" style="margin-right: -20px;"><a data-toggle="modal" data-target="#add_unit" href="#"><i class="fa fa-plus"></i> {% trans "Add Unit" %}</a></li>
                   {% include "units/unit_add_modal.html" %}
                 </ul>
@@ -213,7 +213,7 @@
                       <div class="field-container">
                         <h4>{% trans "Sample" %}</h4>
                         <form  ng-submit="saveUnit()" method="post">
-                          <button ng-show="unit.edit_permission" ng-click="isEditorOpenSample = !isEditorOpenSample" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+                          <button type="button" ng-show="unit.edit_permission" ng-click="isEditorOpenSample = !isEditorOpenSample" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
                           <div ng-show="!isEditorOpenSample" class="field-text">
                             {% verbatim %}{{ unit.sample }}{% endverbatim %}
                           </div>
@@ -221,7 +221,7 @@
                             <div class="form-group">
                               <input required ng-model="unit.sample"/>
                             </div>
-                            <button type="submit" ng-click="saveUnit();isEditorOpenSample = !isEditorOpenSample" class="btn btn-info">{% trans 'Save' %}</button>
+                            <button type="submit" ng-click="isEditorOpenSample = !isEditorOpenSample" class="btn btn-info">{% trans 'Save' %}</button>
                             <button ng-click="isEditorOpenSample = !isEditorOpenSample" class="btn btn-info">{% trans 'cancel'|title %}</button>
                           </div>
                         </form>
@@ -230,7 +230,7 @@
                       <div class="field-container">
                         <h4>{% trans "Description" %}</h4>
                         <form  ng-submit="saveUnit()" method="post">
-                          <button ng-show="unit.edit_permission" ng-click="isEditorOpenDescription = !isEditorOpen" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+                          <button type="button" ng-show="unit.edit_permission" ng-click="isEditorOpenDescription = !isEditorOpen" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
                           <div ng-show="!isEditorOpenDescription" class="field-text">
                             {% verbatim %}{{ unit.description }}{% endverbatim %}
                           </div>
@@ -238,7 +238,7 @@
                             <div class="form-group">
                               <input ng-model="unit.description"/>
                             </div>
-                            <button type="submit" ng-click="saveUnit();isEditorOpenDescription = !isEditorOpenDescription" class="btn btn-info">{% trans 'Save' %}</button>
+                            <button type="submit" ng-click="isEditorOpenDescription = !isEditorOpenDescription" class="btn btn-info">{% trans 'Save' %}</button>
                             <button ng-click="isEditorOpenDescription = !isEditorOpenDescription" class="btn btn-info">{% trans 'cancel'|title %}</button>
                           </div>
                         </form>
@@ -246,8 +246,8 @@
 
                       <div class="field-container">
                         <h4>{% trans "Parent" %}</h4>
-                        <form  ng-submit="saveUnit()" method="post">
-                          <button ng-show="unit.edit_permission" ng-click="isEditorOpenParent = !isEditorOpenParent" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
+                        <form ng-submit="saveUnit()" method="post">
+                          <button type="button" ng-show="unit.edit_permission" ng-click="isEditorOpenParent = !isEditorOpenParent" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
                           <div ng-show="!isEditorOpenParent" class="field-text">
                             <span ng-repeat="unit_index in unit.parent"> {% verbatim %}{{ getUnitbyId(unit_index) }}{{$last ? '' : ', '}}{% endverbatim %}</span>
                           </div>
@@ -255,10 +255,10 @@
                             <div class="form-group">
                               <select ui-select2 multiple="multiple" class="form-control" ng-model="unit.parent">
 
-                              <option ng-repeat="unit_option in units" ng-selected="unit.parent.indexOf(unit_option.id) > -1"  value="{{unit_option.id}}">{{unit_option.sample}}</option>
+                              <option ng-repeat="unit_option in units" ng-if="unit_option.id != unit.id" ng-selected="unit.parent.indexOf(unit_option.id) > -1"  value="{% verbatim %}{{unit_option.id}}{% endverbatim %}">{% verbatim %}{{unit_option.sample}}{% endverbatim %}</option>
                               </select>
                             </div>
-                            <button type="submit" ng-click="saveUnit();isEditorOpenParent = !isEditorOpenParent" class="btn btn-info">{% trans 'Save' %}</button>
+                            <button type="submit" ng-click="isEditorOpenParent = !isEditorOpenParent" class="btn btn-info">{% trans 'Save' %}</button>
                             <button ng-click="isEditorOpenParent = !isEditorOpenParent" class="btn btn-info">{% trans 'cancel'|title %}</button>
                           </div>
                         </form>

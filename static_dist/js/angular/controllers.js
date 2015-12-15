@@ -2,29 +2,57 @@ var unitControllers = angular.module('unitControllers', []);
 
 unitControllers.controller('UnitDetailCtrl', ['$scope', 'Unit',
     function($scope, Unit) {
-
-        $scope.units = Unit.query({labId: lab_pk})
+        var experiment_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
+        $scope.units = Unit.query({labId: lab_pk, experiment_pk: experiment_id})
 
         $scope.getUnit = function(UnitId) {
             $scope.unit = Unit.get({labId: lab_pk, unitId: UnitId}, function(phone) {});
             $scope.$broadcast('UnitLoaded', {'unitId': UnitId});
         };
 
+        $scope.createUnit = function() {
+            Unit.create(
+                {labId: lab_pk},
+                {
+                    lab: lab_pk,
+                    sample:'New Unit #',
+                    experiments: [exp_pk,]
+                },
+                function(unit){
+                    $scope.$broadcast('UnitLoaded', {'unitId': unit.id});
+                    graph.addNode({
+                        id: unit.id,
+                        index: 0,
+                        link: "#",
+                        score: 2,
+                        size: 1,
+                        text: unit.sample,
+                        type: "circle",
+                        weight: 1,
+                    });
+                    $scope.unit = unit
+                });
+        };
+
         $scope.saveUnit = function() {
-            $scope.unit.$save({unitId: $scope.unit.id })
+            Unit.update({unitId: $scope.unit.id,labId: lab_pk}, $scope.unit, function(unit){
+                graph.updateNodeText(unit.id, unit.sample)
+                graph.updateParents(unit.id, unit.parent)
+            })
+//            $scope.unit.$save({unitId: $scope.unit.id })
         };
 
         $scope.getUnitbyId = function(id){
             return  $scope.units.filter(function(v) {
-                return v.id === id;
+                return v.id == id;
             })[0].sample;
         };
 
         Unit.prototype.$save = function() {
             if (this.id) {
-                return this.$update({unitId: $scope.unit.id,labId: lab_pk  });
+                return this.$update({unitId: $scope.unit.id,labId: lab_pk});
             } else {
-                return this.$create();
+                return this.$create({labId: lab_pk});
             }
         };
     }]);

@@ -31,7 +31,7 @@ class Unit(models.Model): #todo history
     """
     lab = models.ForeignKey(Lab, verbose_name=_('lab'))
     experiments = models.ManyToManyField(Experiment, verbose_name=_('experiments'))
-    parent = models.ManyToManyField('self', blank=True, null=True, related_name='children', db_index=True)
+    parent = models.ManyToManyField('self', symmetrical=False, blank=True, null=True, related_name='children', db_index=True)
     sample = models.CharField(max_length=4096, verbose_name=_('sample'))
     tags = models.ManyToManyField(Tag, blank=True, null=True, verbose_name=_('tags'))
     active = models.BooleanField(default=True, verbose_name=_('active'))

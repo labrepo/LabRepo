@@ -362,29 +362,29 @@ $('body').on('click','.comment-cancel', function (e) {
     $(this).closest('form').find('.comment-editor').hide();
 });
 
-$('.create-unit').click(function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var sample = 'New Unit #'
-    var unit_data = {
-        'length':1,
-        'data-0-experiments_pk[]': exp_pk,
-        'data-0-sample': sample,
-    }
-
-    $.post($(this).data('url'), unit_data, function (response) {
-        graph.addNode({
-            id: response[0][1]['pk'],
-            index: 0,
-            link: "#",
-            score: 2,
-            size: 1,
-            text: sample,
-            type: "circle",
-            weight: 1,
-        });
-    });
-});
+//$('.create-unit').click(function (e) {
+//    e.preventDefault();
+//    e.stopPropagation();
+//    var sample = 'New Unit #'
+//    var unit_data = {
+//        'length':1,
+//        'data-0-experiments_pk[]': exp_pk,
+//        'data-0-sample': sample,
+//    }
+//
+//    $.post($(this).data('url'), unit_data, function (response) {
+//        graph.addNode({
+//            id: response[0][1]['pk'],
+//            index: 0,
+//            link: "#",
+//            score: 2,
+//            size: 1,
+//            text: sample,
+//            type: "circle",
+//            weight: 1,
+//        });
+//    });
+//});
 
 $('.unit-item').click(function (e) {
     e.preventDefault();

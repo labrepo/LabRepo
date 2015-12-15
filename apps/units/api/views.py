@@ -92,8 +92,8 @@ class UnitTableView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityM
 
 class UnitCreateView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListCreateAPIView):
     def get_queryset(self, **kwargs):
-        if self.kwargs.get('experiment_pk'):
-            experiments = [self.kwargs.get('experiment_pk')]
+        if self.request.GET.get('experiment_pk'):
+            experiments = [self.request.GET.get('experiment_pk')]
         else:
             experiments = Experiment.objects.filter(lab=self.lab, active=True)
             if self.lab.is_guest(self.request.user):

@@ -3,6 +3,7 @@ unitServices.factory('Unit', ['$resource',
     function($resource){
         return $resource('/:labId/units/api/unit/:unitId', {}, {
             'update': {method:'PUT' },
+            'create': {method:'POST' },
             'query':  {method:'GET', isArray:true},
         });
     }]);
