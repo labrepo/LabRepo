@@ -1,4 +1,11 @@
 ---
+- name: install prerequisites
+  sudo: true
+  apt: name={{ item }} state=latest
+  with_items:
+    - libpq-dev
+    - python-psycopg2
+
 - name: Install postgres
   apt: name=postgresql=9.3+154 state=present
   sudo: yes

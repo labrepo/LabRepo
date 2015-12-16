@@ -37,6 +37,17 @@
   mongodb_user: database={{ mongodb_test_database }}  name={{ mongodb_user }} password={{ mongodb_passwd }} state=present
   sudo: yes
 
+- name: Add postgresql db
+  postgresql_db: name={{ postgresql_dbname }}
+  sudo: yes
+  sudo_user: postgres
+
+- name: Add a postgresql user
+  postgresql_user: db={{ postgresql_dbname }}   name={{ postgresql_user }}   password={{ postgresql_password }}   role_attr_flags=CREATEDB
+  sudo: yes
+  sudo_user: postgres
+
+
 - name: Get code from git repo
   git: repo={{ git_repo }} dest={{ project_dir }} accept_hostkey=yes
   notify: restart labrepo
@@ -73,11 +84,16 @@
   environment:
         DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"
 
+- name: Migrate database
+  django_manage: command="migrate" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
+  environment:
+        DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"
+
 - name: Make django messages
   django_manage: '{{ item }}'
   with_items:
-    - 'command="makemessages -a --ignore=env/*" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
-    - 'command="makemessages -d djangojs -a --ignore=env/*" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
+#    - 'command="makemessages -a --ignore=env/*" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
+#    - 'command="makemessages -d djangojs -a --ignore=env/*" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
     - 'command="compilemessages" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
   environment:
         DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"

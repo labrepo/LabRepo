@@ -6,6 +6,7 @@
     - common
     - nginx
     - mongo
+    - postgresql
     - elastic
     - redis
     - django
