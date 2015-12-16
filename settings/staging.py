@@ -45,18 +45,28 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
 SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = environ.get('SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY')
 SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = environ.get('SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET')
 
-_MONGODB_USER = environ.get('MONGODB_USER')
-_MONGODB_PASSWD = environ.get('MONGODB_PASSWD')
-_MONGODB_NAME = environ.get('MONGODB_NAME')
-_MONGODB_HOST = environ.get('MONGODB_HOST')
-_MONGODB_PORT = environ.get('MONGODB_PORT')
+# _MONGODB_USER = environ.get('MONGODB_USER')
+# _MONGODB_PASSWD = environ.get('MONGODB_PASSWD')
+# _MONGODB_NAME = environ.get('MONGODB_NAME')
+# _MONGODB_HOST = environ.get('MONGODB_HOST')
+# _MONGODB_PORT = environ.get('MONGODB_PORT')
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': environ.get('POSTGRESQL_DBNAME'),
+        'USER': environ.get('POSTGRESQL_USER'),
+        'PASSWORD': environ.get('POSTGRESQL_PASSWORD'),
+        'HOST': environ.get('POSTGRESQL_HOST'),
+        'PORT': environ.get('POSTGRESQL_PORT'),
+    }
+}
 
-_MONGODB_DATABASE_HOST = \
-    'mongodb://%s:%s@%s:%s/%s' \
-    % (_MONGODB_USER, _MONGODB_PASSWD, _MONGODB_HOST, _MONGODB_PORT, _MONGODB_NAME)
-
-mongoengine.connect(_MONGODB_NAME, host=_MONGODB_DATABASE_HOST, tz_aware=USE_TZ)
+# _MONGODB_DATABASE_HOST = \
+#     'mongodb://%s:%s@%s:%s/%s' \
+#     % (_MONGODB_USER, _MONGODB_PASSWD, _MONGODB_HOST, _MONGODB_PORT, _MONGODB_NAME)
+#
+# mongoengine.connect(_MONGODB_NAME, host=_MONGODB_DATABASE_HOST, tz_aware=USE_TZ)
 
 BROKER_URL = 'redis://localhost:6379/1'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
