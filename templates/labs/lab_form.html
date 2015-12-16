@@ -20,7 +20,7 @@
 {% block content %}
   <div class="col-md-offset-2 col-md-8 col-sm-12">
     <div class="box box-solid">
-      <form method="post">
+      <form action="" method="post">
         <div class="box-body">
           {% csrf_token %}
           {{ form|as_bootstrap }}

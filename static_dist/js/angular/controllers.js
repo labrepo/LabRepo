@@ -39,6 +39,7 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', 'Unit',
             for (i in $scope.added_units){
                var unit = $scope.getUnitbyId($scope.added_units[i]);
                 unit.experiments.push($scope.experiment_id);
+                $scope.units.push(unit);
                 Unit.update({unitId: unit.id,labId: lab_pk}, unit, function(unit){
                 graph.addNode({
                         id: unit.id,

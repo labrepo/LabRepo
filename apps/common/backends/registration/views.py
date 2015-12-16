@@ -131,8 +131,8 @@ class ActivationView(BaseActivationView):
             signals.user_activated.send(sender=self.__class__,
                                         user=activated_user,
                                         request=request)
-        if activated_user:
-            activated_user.create_test_lab()
+        # if activated_user:
+        #     activated_user.create_test_lab()
         return activated_user
 
     def get_success_url(self, request, user):

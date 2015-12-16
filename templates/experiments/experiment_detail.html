@@ -255,7 +255,7 @@
                             <div class="form-group">
                               <select ui-select2 multiple="multiple" class="form-control" ng-model="unit.parent">
 
-                              <option ng-repeat="unit_option in units" ng-if="unit_option.experiments.indexOf(experiment_id) > -1" ng-selected="unit.parent.indexOf(unit_option.id) > -1"  value="{% verbatim %}{{unit_option.id}}{% endverbatim %}">{% verbatim %}{{unit_option.sample}}{% endverbatim %}</option>
+                              <option ng-repeat="unit_option in units" ng-if="unit_option.experiments.indexOf(experiment_id) > -1 && unit_option.id != unit.id" ng-selected="unit.parent.indexOf(unit_option.id) > -1"  value="{% verbatim %}{{unit_option.id}}{% endverbatim %}">{% verbatim %}{{unit_option.sample}}{% endverbatim %}</option>
                               </select>
                             </div>
                             <button type="submit" ng-click="isEditorOpenParent = !isEditorOpenParent" class="btn btn-info">{% trans 'Save' %}</button>

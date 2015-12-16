@@ -130,7 +130,7 @@ class RegistrationProfile(models.Model):
         # SHA1 hash; if it doesn't, no point trying to look it up in
         # the database.
         if SHA1_RE.search(activation_key):
-            profile = self.objects(activation_key=activation_key)
+            profile = self.objects.filter(activation_key=activation_key)
             if not profile:
                 return False
             profile = profile[0]
@@ -228,7 +228,7 @@ class RegistrationProfile(models.Model):
         be deleted.
 
         """
-        for profile in self.objects():
+        for profile in self.objects.all():
             try:
                 if profile.activation_key_expired():
                     user = profile.user
