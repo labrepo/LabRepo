@@ -2,8 +2,9 @@ var unitControllers = angular.module('unitControllers', []);
 
 unitControllers.controller('UnitDetailCtrl', ['$scope', 'Unit',
     function($scope, Unit) {
-        var experiment_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
-        $scope.units = Unit.query({labId: lab_pk, experiment_pk: experiment_id})
+        $scope.experiment_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
+//        $scope.units = Unit.query({labId: lab_pk, experiment_pk: experiment_id})
+        $scope.units = Unit.query({labId: lab_pk})
 
         $scope.getUnit = function(UnitId) {
             $scope.unit = Unit.get({labId: lab_pk, unitId: UnitId}, function(phone) {});
@@ -34,6 +35,27 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', 'Unit',
                 });
         };
 
+        $scope.addUnit = function() {
+            for (i in $scope.added_units){
+               var unit = $scope.getUnitbyId($scope.added_units[i]);
+                unit.experiments.push($scope.experiment_id);
+                Unit.update({unitId: unit.id,labId: lab_pk}, unit, function(unit){
+                graph.addNode({
+                        id: unit.id,
+                        index: 0,
+                        link: "#",
+                        score: 2,
+                        size: 1,
+                        text: unit.sample,
+                        type: "circle",
+                        weight: 1,
+                });
+                angular.element(document.querySelector('#add_unit')).modal('toggle');
+                $scope.added_units = null;
+            })
+            }
+        };
+
         $scope.saveUnit = function() {
             Unit.update({unitId: $scope.unit.id,labId: lab_pk}, $scope.unit, function(unit){
                 graph.updateNodeText(unit.id, unit.sample)
@@ -45,7 +67,7 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', 'Unit',
         $scope.getUnitbyId = function(id){
             return  $scope.units.filter(function(v) {
                 return v.id == id;
-            })[0].sample;
+            })[0];
         };
 
         Unit.prototype.$save = function() {

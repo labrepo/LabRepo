@@ -11,11 +11,16 @@
         </button>
         <h3 class="modal-title" id="Modal">{% trans 'Add units to the experiment' %}</h3>
       </div>
-      <form method="post" class="add-unit-form {{ class }}" action="{% url 'experiments:add-units' lab_pk=lab.pk %}" data-field="{{ fields }}">
+      <form method="post" class="{{ class }}" ng-submit="addUnit()" data-field="{{ fields }}">
         <div class="modal-body">
           {% csrf_token %}
-          {{ unit_form }}
-          {% if extra_form %}{{ extra_form|as_bootstrap }}{{ extra_form.media }}{% endif %}
+          <select ui-select2 multiple="multiple" class="form-control" ng-model="added_units">
+            <option ng-repeat="unit_option in units" ng-if="unit_option.experiments.indexOf(experiment_id) == -1"
+                    ng-selected="unit.parent.indexOf(unit_option.id) > -1"
+                    value="{% verbatim %}{{unit_option.id}}{% endverbatim %}">
+              {% verbatim %}{{unit_option.sample}}{% endverbatim %}
+            </option>
+          </select>
         </div>
         <div class="modal-footer form-actions">
           <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">{% trans 'Close' %}</button>

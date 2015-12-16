@@ -307,34 +307,34 @@ $('body').on('click','.box-collapse', function (e) {
     $(this).closest('.box').find('.box-body').toggle(200);
 });
 
-$('body').on('submit','.add-unit-form', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var $form = $(e.target);
-
-    $.post($form.attr('action'), $form.serialize())
-        .fail(function (xhr) {
-            form_fail($form, xhr)
-        }).done(function (response) {
-
-            $('#add_unit').modal('toggle');
-            var units = $form.find('select[name="units"]').val();
-            for (i in units){
-                graph.addNode({
-                    id: units[i],
-                    index: 0,
-                    link: "#",
-                    score: 2,
-                    size: 1,
-                    text:  $form.find('select[name="units"]').find('option[value=' + units[i]+ ']').text(),
-                    type: "circle",
-                    weight: 1,
-                });
-            }
-            $form.find('select[name="units"]').select2("val", "");
-            $form.find('select[name="units"]').val("val", "");
-        });
-});
+//$('body').on('submit','.add-unit-form', function (e) {
+//    e.preventDefault();
+//    e.stopPropagation();
+//    var $form = $(e.target);
+//
+//    $.post($form.attr('action'), $form.serialize())
+//        .fail(function (xhr) {
+//            form_fail($form, xhr)
+//        }).done(function (response) {
+//
+//            $('#add_unit').modal('toggle');
+//            var units = $form.find('select[name="units"]').val();
+//            for (i in units){
+//                graph.addNode({
+//                    id: units[i],
+//                    index: 0,
+//                    link: "#",
+//                    score: 2,
+//                    size: 1,
+//                    text:  $form.find('select[name="units"]').find('option[value=' + units[i]+ ']').text(),
+//                    type: "circle",
+//                    weight: 1,
+//                });
+//            }
+//            $form.find('select[name="units"]').select2("val", "");
+//            $form.find('select[name="units"]').val("val", "");
+//        });
+//});
 
 //upload files from filemanager
 $('body').on('click', '.fm-choose', function(e){

@@ -249,13 +249,13 @@
                         <form ng-submit="saveUnit()" method="post">
                           <button type="button" ng-show="unit.edit_permission" ng-click="isEditorOpenParent = !isEditorOpenParent" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
                           <div ng-show="!isEditorOpenParent" class="field-text">
-                            <span ng-repeat="unit_index in unit.parent"> {% verbatim %}{{ getUnitbyId(unit_index) }}{{$last ? '' : ', '}}{% endverbatim %}</span>
+                            <span ng-repeat="unit_index in unit.parent"> {% verbatim %}{{ getUnitbyId(unit_index).sample }}{{$last ? '' : ', '}}{% endverbatim %}</span>
                           </div>
                           <div ng-show="isEditorOpenParent" >
                             <div class="form-group">
                               <select ui-select2 multiple="multiple" class="form-control" ng-model="unit.parent">
 
-                              <option ng-repeat="unit_option in units" ng-if="unit_option.id != unit.id" ng-selected="unit.parent.indexOf(unit_option.id) > -1"  value="{% verbatim %}{{unit_option.id}}{% endverbatim %}">{% verbatim %}{{unit_option.sample}}{% endverbatim %}</option>
+                              <option ng-repeat="unit_option in units" ng-if="unit_option.experiments.indexOf(experiment_id) > -1" ng-selected="unit.parent.indexOf(unit_option.id) > -1"  value="{% verbatim %}{{unit_option.id}}{% endverbatim %}">{% verbatim %}{{unit_option.sample}}{% endverbatim %}</option>
                               </select>
                             </div>
                             <button type="submit" ng-click="isEditorOpenParent = !isEditorOpenParent" class="btn btn-info">{% trans 'Save' %}</button>
