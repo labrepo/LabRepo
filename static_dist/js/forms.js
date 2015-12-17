@@ -12,7 +12,10 @@ $(document).ready(function () {
         $('div#all div.resent-activities ul:not(.pager), div#comments_activities div.resent-activities ul:not(.pager)').prepend(response.resent_activity);
         form.trigger('reset').find('.has-error').removeClass('has-error');
         var comment_field_id = form.find('textarea[name="create-text"]').attr('id');
-        $('#' + comment_field_id).code('');
+        $('#' + comment_field_id).summernote('code', '');
+        $('#' + comment_field_id).summernote('focus');
+
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 //        CKEDITOR.instances[comment_field_id].setData('');
 //        CKEDITOR.instances[comment_field_id].setData('');
     });
@@ -83,7 +86,6 @@ function addSumernote() {
             height: 150,
             width: '100%',
             airMode: false,
-            focus: true,
             toolbar: [
                 ['style', ['style']],
                 ['style', ['bold', 'italic', 'underline', 'clear']],
@@ -92,42 +94,100 @@ function addSumernote() {
                 ['view', ['fullscreen', 'codeview']],
                 ['help', ['help']]
             ],
-            onKeydown: function (e) {
-                if (e.keyCode == 13 && e.shiftKey && !$input.summernote('isEmpty'))
-                {
-                    $input.closest('form').submit()
-                    // prevent default behavior
-                    e.preventDefault();
+            keyMap: {
+                pc: {
+                    'CTRL+Z': 'undo',
+                    'CTRL+Y': 'redo',
+                    'TAB': 'tab',
+                    'SHIFT+TAB': 'untab',
+                    'CTRL+B': 'bold',
+                    'CTRL+I': 'italic',
+                    'CTRL+U': 'underline',
+                    'CTRL+SHIFT+S': 'strikethrough',
+                    'CTRL+BACKSLASH': 'removeFormat',
+                    'CTRL+SHIFT+L': 'justifyLeft',
+                    'CTRL+SHIFT+E': 'justifyCenter',
+                    'CTRL+SHIFT+R': 'justifyRight',
+                    'CTRL+SHIFT+J': 'justifyFull',
+                    'CTRL+SHIFT+NUM7': 'insertUnorderedList',
+                    'CTRL+SHIFT+NUM8': 'insertOrderedList',
+                    'CTRL+LEFTBRACKET': 'outdent',
+                    'CTRL+RIGHTBRACKET': 'indent',
+                    'CTRL+NUM0': 'formatPara',
+                    'CTRL+NUM1': 'formatH1',
+                    'CTRL+NUM2': 'formatH2',
+                    'CTRL+NUM3': 'formatH3',
+                    'CTRL+NUM4': 'formatH4',
+                    'CTRL+NUM5': 'formatH5',
+                    'CTRL+NUM6': 'formatH6',
+                    'CTRL+K': 'showLinkDialog'
+                },
+
+                mac: {
+                    'CMD+Z': 'undo',
+                    'CMD+SHIFT+Z': 'redo',
+                    'TAB': 'tab',
+                    'SHIFT+TAB': 'untab',
+                    'CMD+B': 'bold',
+                    'CMD+I': 'italic',
+                    'CMD+U': 'underline',
+                    'CMD+SHIFT+S': 'strikethrough',
+                    'CMD+BACKSLASH': 'removeFormat',
+                    'CMD+SHIFT+L': 'justifyLeft',
+                    'CMD+SHIFT+E': 'justifyCenter',
+                    'CMD+SHIFT+R': 'justifyRight',
+                    'CMD+SHIFT+J': 'justifyFull',
+                    'CMD+SHIFT+NUM7': 'insertUnorderedList',
+                    'CMD+SHIFT+NUM8': 'insertOrderedList',
+                    'CMD+LEFTBRACKET': 'outdent',
+                    'CMD+RIGHTBRACKET': 'indent',
+                    'CMD+NUM0': 'formatPara',
+                    'CMD+NUM1': 'formatH1',
+                    'CMD+NUM2': 'formatH2',
+                    'CMD+NUM3': 'formatH3',
+                    'CMD+NUM4': 'formatH4',
+                    'CMD+NUM5': 'formatH5',
+                    'CMD+NUM6': 'formatH6',
+                    'CMD+K': 'showLinkDialog'
+                }
+
+            },
+            callbacks: {
+                onKeydown: function (e) {
+                    if ((e.keyCode == 10 || e.keyCode == 13) && (e.ctrlKey || e.shiftKey) && !$input.summernote('isEmpty'))
+                    {
+                        $input.closest('form').submit()
+                        // prevent default behavior
+                        e.preventDefault();
+                    }
+                },
+
+                onImageUpload: function(files) {
+                    var imageInput = $('.note-image-input');
+                    var sn = $(this);
+                    imageInput.fileupload({
+                        uploadTemplateId: null,
+                        downloadTemplateId: null,
+                    });
+
+                    var jqXHR = imageInput.fileupload('send',
+                        {
+                            files: files,
+                            formData: {csrfmiddlewaretoken: csrftoken},
+                            url: '/' + lab_pk + '/filemanager/summernote_upload/',
+                        })
+                        .success(function (data, textStatus, jqXHR) {
+                            $.each(data.files, function (index, file) {
+                                sn.summernote("insertImage", file.url);
+                            });
+                        })
+                        .error(function (jqXHR, textStatus, errorThrown) {
+                            // TODO: Display a detailed error message. It will come from JSON.
+                            alert( 'Got an error while uploading images.' );
+                        });
                 }
             },
-
-            onImageUpload: function(files) {
-                var imageInput = $('.note-image-input');
-                var sn = $(this);
-                imageInput.fileupload({
-                    uploadTemplateId: null,
-                    downloadTemplateId: null,
-                });
-
-                var jqXHR = imageInput.fileupload('send',
-                    {
-                        files: files,
-                        formData: {csrfmiddlewaretoken: csrftoken},
-                        url: '/' + lab_pk + '/filemanager/summernote_upload/',
-                    })
-                    .success(function (data, textStatus, jqXHR) {
-                        $.each(data.files, function (index, file) {
-                            sn.summernote("insertImage", file.url);
-                        });
-                    })
-                    .error(function (jqXHR, textStatus, errorThrown) {
-                        // TODO: Display a detailed error message. It will come from JSON.
-                        alert( 'Got an error while uploading images.' );
-                    });
-            }
         });
-        //fix started bug
-        $input.code('');
     });
 };
 
