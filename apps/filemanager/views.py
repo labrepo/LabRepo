@@ -237,7 +237,7 @@ class FileManagerView(FileManagerMixin, View):
                 response = HttpResponse(content_type=content_type)
                 response['Content-Length'] = size
                 file_object = self.fs.open(relative_dir_path, 'rb')
-                response['Content-Disposition'] = 'attachment; filename=%s' % filename
+                response['Content-Disposition'] = u'attachment; filename={}'.format(filename.decode('utf-8'))
                 response.write(file_object.read())
                 return response
         return HttpResponse("failed")
@@ -274,10 +274,10 @@ class FileManagerView(FileManagerMixin, View):
                 file_url = os.path.join(dir_url, filename)
 
                 if os.path.isdir(file_path):
-                    output.append('<li class="directory collapsed"><a href="#" rel="%s/">%s</a></li>' % (file_url, filename))
+                    output.append(u'<li class="directory collapsed"><a href="#" rel="%s/">%s</a></li>' % (file_url, filename))
                 else:
                     ext = os.path.splitext(filename)[1][1:]
-                    output.append('<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (ext, file_url, filename))
+                    output.append(u'<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (ext, file_url, filename))
 
             output.append('</ul>')
         except Exception:
@@ -438,7 +438,7 @@ class FileManagerView(FileManagerMixin, View):
 def alternative_names(filename):
         base, ext = os.path.splitext(filename)
         for i in itertools.count(1):
-            yield base + "_%i" % i + ext
+            yield base + u"_%i" % i + ext
 
 
 def trim_upload_url(url, UPLOAD_URL):
@@ -581,7 +581,7 @@ class FileManagerDownloadView(FileManagerMixin, View):
         response = HttpResponse(content_type=content_type)
         response['Content-Length'] = size
         file_object = self.fs.open(fs_path, 'rb')
-        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        response['Content-Disposition'] = u'attachment; filename={}'.format(filename.decode('utf-8'))
         response.write(file_object.read())
         return response
 
@@ -826,7 +826,7 @@ class AngFileManagerDownloadView(AngularFileManagerMixin, FileManagerMixin, View
         response = HttpResponse(content_type=content_type)
         response['Content-Length'] = size
         file_object = self.fs.open(relative_dir_path, 'rb')
-        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        response['Content-Disposition'] = u'attachment; filename={}'.format(filename.decode('utf-8'))
         response.write(file_object.read())
         return response
 
