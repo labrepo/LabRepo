@@ -337,7 +337,7 @@ $('body').on('click','.box-collapse', function (e) {
 //});
 
 //upload files from filemanager
-$('body').on('click', '.fm-choose', function(e){
+$('body').on('click', '#fm .fm-choose', function(e){
     var file_url = $(this).data('path')
     var file_name = $(this).data('name');
 

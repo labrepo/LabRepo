@@ -1,7 +1,12 @@
 var FileManagerApp = angular.module('FileManagerApp').config(['fileManagerConfigProvider', function (config) {
     var defaults = config.$get();
+
+    if(!window.lab_name){
+       window.lab_name = ''
+    };
+
     config.set({
-        appName: '{{ lab }} storages',
+        appName: window.lab_name + ' storages',
         listUrl: '/' + lab_pk + '/filemanager/list/',
         createFolderUrl: '/' + lab_pk + '/filemanager/createfolder/',
         renameUrl: '/' + lab_pk + '/filemanager/rename/',

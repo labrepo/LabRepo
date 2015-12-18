@@ -2,7 +2,9 @@
 {% load i18n %}
 
 {% block extra_script %}
-
+<script>
+   window.lab_name = '{{ lab.name }}';
+</script>
 {% endblock %}
 {% block page_header %}{% endblock %}
 

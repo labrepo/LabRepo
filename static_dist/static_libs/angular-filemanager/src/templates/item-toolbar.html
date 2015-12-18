@@ -23,7 +23,7 @@
     <button class="btn btn-sm btn-default" ng-show="config.allowedActions.preview && item.isImage()" ng-click="openImagePreview(item)" title="{{'view_item' | translate}}">
         <i class="glyphicon glyphicon-picture"></i>
     </button>
-    <button class="btn btn-sm btn-default fm-choose" data-path="{{item.model.fullPath()}}" data-name="{{item.model.name }}" ng-show="config.allowedActions.choose" title="{{'Choose' | translate}}">
+    <button class="btn btn-sm btn-default fm-choose" data-url="{{ item.getUrl() }}" data-path="{{item.model.fullPath()}}" data-name="{{item.model.name }}" ng-show="config.allowedActions.choose" title="{{'Choose' | translate}}">
         <i class="glyphicon glyphicon-ok"></i>
     </button>
     <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#delete" ng-show="config.allowedActions.remove" ng-click="touch(item)" title="{{'remove' | translate}}">
