@@ -29,7 +29,12 @@ class LabUser(AbstractUser):
 
     @property
     def full_name(self):
-        return self.first_name + ' ' + self.last_name
+        if self.first_name or self.last_name:
+            return self.first_name + ' ' + self.last_name
+        return self.get_username()
+
+    def get_absolute_url(self):
+        return reverse('profiles:detail', kwargs={'pk': self.pk})
 
     class Meta:
         unique_together = ('email', )

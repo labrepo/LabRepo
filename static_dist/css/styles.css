@@ -65,6 +65,9 @@ body {
     max-height: inherit;
     overflow-y: auto;
 }
+.timeline-body img {
+    max-width: 300px;
+}
 
 .container-xs-height {
     height: 100px;
