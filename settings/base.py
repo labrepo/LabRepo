@@ -167,26 +167,32 @@ MEDIA_ROOT = rel('public', 'media')
 # SOCIAL_AUTH_STORAGE = 'social.apps.django_app.me.models.DjangoStorage'
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
-# SOCIAL_AUTH_FACEBOOK_KEY = '460569577381739'
-# SOCIAL_AUTH_FACEBOOK_SECRET = 'b0231a0b9344c98c7f85d67c10ccf32b'
 
-# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '766010577484-9657jjre4728h3glefl3om0thc3ulj4o.apps.googleusercontent.com'
-# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '4IVfUGcHfZjjSfuUxE5taUvV'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email']
 SOCIAL_AUTH_GOOGLE_OAUTH2_USE_DEPRECATED_API = True
 
-# SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = '757bs6iu6r66ta'
-# SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = 'dsVAOq7B4o7iid4o'
 SOCIAL_AUTH_LINKEDIN_OAUTH2_SCOPE = ['r_basicprofile', 'r_emailaddress']
 SOCIAL_AUTH_LINKEDIN_OAUTH2_FIELD_SELECTORS = ['email-address']
 
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'social.pipeline.social_auth.associate_by_email',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details'
+)
 
 AUTHENTICATION_BACKENDS = (
     'social.backends.facebook.FacebookAppOAuth2',
     'social.backends.facebook.FacebookOAuth2',
     'social.backends.google.GoogleOAuth2',
     'social.backends.linkedin.LinkedinOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
+    'profiles.backends.EmailAuthBackend',
 )
 
 AUTH_USER_MODEL = 'profiles.LabUser'

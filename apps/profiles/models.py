@@ -12,9 +12,6 @@ class LabUser(AbstractUser):
     plot_un = models.CharField(max_length=512, blank=True, null=True, verbose_name=_('Plot.ly username(un)'))
     plot_key = models.CharField(max_length=512, blank=True, null=True, verbose_name=_('Plot.ly key'))
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-
     avatar = models.ImageField(upload_to='avatars',
                                blank=True, null=True,
                                verbose_name=_('Avatar'))

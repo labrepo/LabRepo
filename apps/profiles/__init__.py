@@ -13,8 +13,6 @@ from experiments.search_indexes import ExperimentMappingType
 from profiles.search_indexes import ProfileMappingType
 
 
-User.USERNAME_FIELD = 'email'
-
 @property
 def full_name(self):
     if self.first_name or self.last_name:
