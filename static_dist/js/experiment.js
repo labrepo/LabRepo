@@ -3,20 +3,23 @@ window.unit_data = {}
 var treeElement = $('#tag-tree');
 
 $(function() {
+     console.log(window.innerHeight)
     InitJSTree(treeElement,['search', 'checkbox']);
 
     // set height of comment block
-    $('.comment-activities').css('max-height', window.innerHeight -430)
-    var sidebar_height = $('.main-sidebar').height();
-    if (window.innerHeight > 650) {
-        $('.comment-activities').not('.comments-list').css('max-height', sidebar_height - 325).css('min-height', sidebar_height - 325);
-    }
-    if ($('#exp-workfow iframe').length) {
-        $('#exp-workfow iframe').css('min-height', sidebar_height - 100)
-        setTimeout(function () {
-            comments_scroll_to_end()
-        }, 500);
-    }
+//    $('.comment-activities').css('max-height', window.innerHeight -430)
+//    var sidebar_height = $('.main-sidebar').height();
+//    if (window.innerHeight > 650) {
+//        $('.comment-activities').not('.comments-list').css('max-height', sidebar_height - 325).css('min-height', sidebar_height - 325);
+//        console.log($('.comment-activities').not('.comments-list'))
+//        console.log($('.comment-activities'))
+//    }
+//    if ($('#exp-workfow iframe').length) {
+//        $('#exp-workfow iframe').css('min-height', sidebar_height - 100)
+//        setTimeout(function () {
+//            comments_scroll_to_end()
+//        }, 500);
+//    }
 
     // fix bootstrap tabs urls
     var hash = window.location.hash;

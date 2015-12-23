@@ -86,11 +86,7 @@ $('body').on('click', '#fm-summernote .fm-choose', function(e){
     $('#fm-summernote').modal('hide')
 })
 
-
-function addSumernote() {
-    $('.summernote').each(function (i, input) {
-        var $input = $(input);
-        $input.summernote({
+window.summernote_config = {
             height: 150,
             width: '100%',
             airMode: false,
@@ -196,6 +192,11 @@ function addSumernote() {
                         });
                 }
             },
-        });
+        };
+
+function addSumernote() {
+    $('.summernote').each(function (i, input) {
+        var $input = $(input);
+        $input.summernote(window.summernote_config)
     });
 };

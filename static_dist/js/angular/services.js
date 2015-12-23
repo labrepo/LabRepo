@@ -26,3 +26,39 @@ unitLinkServices.factory('UnitLink', ['$resource',
 unitLinkServices.config(function($resourceProvider) {
     $resourceProvider.defaults.stripTrailingSlashes = false;
 });
+
+var commentServices = angular.module('commentServices', ['ngResource']);
+commentServices.factory('Comment', ['$resource',
+    function($resource){
+        return $resource('/:labId/comment/api/:instanceType/:instanceId/:commentId/', {}, {
+            'create': {method:'POST'},
+            'delete': {method:'DELETE'},
+            'update': {method:'PUT'},
+            'query':  {method:'GET', isArray:true
+            },
+        });
+    }]);
+
+commentServices.config(function($resourceProvider) {
+    $resourceProvider.defaults.stripTrailingSlashes = false;
+});
+
+
+var chatSocketServices = angular.module('chatSocketServices', ['ngWebSocket']);
+chatSocketServices.factory('chatMessage', ['$websocket', '$rootScope',
+    function($websocket, $rootScope) {
+        var experiment =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
+
+        var dataStream = $websocket('ws://'+ LabRepo.domain + '/chat/'  + experiment + '/');
+
+        dataStream.onMessage(function(message) {
+            $rootScope.$emit('new_chat_message', JSON.parse(message.data).comment);
+        });
+
+        var methods = {
+            get: function() {
+                dataStream.send(JSON.stringify({ action: 'get' }));
+            }
+        };
+        return methods;
+    }])

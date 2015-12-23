@@ -22,7 +22,10 @@ class LabUser(AbstractUser):
                                       options={})
 
     def get_username(self):
-        return self.email.split('@')[0]
+        if self.first_name or self.last_name:
+            return ' '.join([self.first_name, self.last_name])
+        if self.email:
+            return self.email.split('@')[0]
 
     @property
     def full_name(self):

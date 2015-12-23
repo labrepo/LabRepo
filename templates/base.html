@@ -149,7 +149,17 @@
   <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&delayStartupUntil=configured"></script>
   <script src="{% static 'app.js' %}" type="text/javascript"></script>
   <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
-
+  <script>
+  var app = angular.module('LabrepoApp');
+  app.factory('AuthUser', function() {
+    return {
+      id: "{{ user.id|default:''|escapejs }}",
+      username: "{{ user.last_name|default:''|escapejs }}",
+      firstname: "{{ user.first_name|default:''|escapejs }}",
+      lastname: "{{ user.last_name|default:''|escapejs }}"
+    }
+  });
+  </script>
   {% block script %}
     {% block extra_script %}{% endblock %}
     {% block form_script %}{% endblock %}

@@ -154,6 +154,8 @@ gulp.task('scripts:vendor', function () {
         "bower_components/angular-translate/angular-translate.min.js",
         "bower_components/angular-resource/angular-resource.min.js",
         "bower_components/angular-ui-select2/src/select2.js",
+        "bower_components/angular-timeago/dist/angular-timeago.min.js",
+        "bower_components/angular-websocket/dist/angular-websocket.min.js",
         "bower_components/AdminLTE/dist/js/app.js",
         "bower_components/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js",
         "bower_components/AdminLTE/plugins/fullcalendar/fullcalendar.min.js",
@@ -179,6 +181,7 @@ gulp.task('scripts:vendor', function () {
         "bower_components/lightbox2/dist/js/lightbox.min.js",
         "bower_components/select2/select2.min.js",
         "bower_components/summernote/dist/summernote.min.js",
+        "bower_components/angular-summernote/dist/angular-summernote.min.js",
 
         // custom plugins or modified files
         "static_libs/blueimp-uploader/locale.js",
@@ -200,8 +203,10 @@ gulp.task('scripts:app', function () {
     return gulp.src([
         "js/**.js",
         "js/angular/services.js",
+
         "js/angular/controllers.js",
         "js/angular/app.js",
+        "js/angular/directives.js",
     ])
         .pipe(concat('app.js'))
         .pipe(uglify({mangle: false}))

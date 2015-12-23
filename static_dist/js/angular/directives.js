@@ -1,0 +1,21 @@
+angular.module('LabrepoApp.directives', []).
+    directive('commentsScroll', ['$timeout', function ($timeout) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attr) {
+                if (scope.$last === true) {
+                    $timeout(function () {
+//                        scope.$emit(attr.onFinishRender);
+                        var $comments = $(element).parent()
+                        $comments.css('max-height', window.innerHeight -430)
+                        var sidebar_height = $('.main-sidebar').height();
+                        if (window.innerHeight > 650) {
+                            $comments.css('max-height', sidebar_height - 325).css('min-height', sidebar_height - 325);
+                        }
+                        $comments.scrollTop($comments[0].scrollHeight);
+
+                    });
+                }
+            }
+        }
+    }]);

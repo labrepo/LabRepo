@@ -37,11 +37,11 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', 'Unit',
 
         $scope.addUnit = function() {
             for (i in $scope.added_units){
-               var unit = $scope.getUnitbyId($scope.added_units[i]);
+                var unit = $scope.getUnitbyId($scope.added_units[i]);
                 unit.experiments.push($scope.experiment_id);
                 $scope.units.push(unit);
                 Unit.update({unitId: unit.id,labId: lab_pk}, unit, function(unit){
-                graph.addNode({
+                    graph.addNode({
                         id: unit.id,
                         index: 0,
                         link: "#",
@@ -50,10 +50,10 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', 'Unit',
                         text: unit.sample,
                         type: "circle",
                         weight: 1,
-                });
-                angular.element(document.querySelector('#add_unit')).modal('toggle');
-                $scope.added_units = null;
-            })
+                    });
+                    angular.element(document.querySelector('#add_unit')).modal('toggle');
+                    $scope.added_units = null;
+                })
             }
         };
 
@@ -103,5 +103,71 @@ UnitLinkCtrl.controller('UnitLinkCtrl', ['$scope', 'UnitLink',
             UnitLink.delete({labId: lab_pk, linkId: UnitLinkId})
             $scope.unitLinks.splice(index,1);
         };
+
+    }]);
+
+var chatCtrl = angular.module('chatCtrl', []);
+
+chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'AuthUser', 'chatMessage',
+    function($scope, $sce, $rootScope, Comment, AuthUser, chatMessage) {
+
+        $scope.object_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
+        $scope.comments = angular.extend(Comment.query({labId: lab_pk, instanceType: 'experiment', instanceId: 1}),chatMessage.collection)
+
+        $rootScope.$on('new_chat_message', function(e, comment){
+            $scope.comments.push(comment);
+        });
+
+        $scope.createComment = function() {
+            var comment = Comment.create(
+                {labId: lab_pk, instanceType: 'experiment', instanceId: 1},
+                {
+                    text: $scope.text,
+                    instance_type: 'experiment',
+                    object_id: $scope.object_id,
+                    init_user: AuthUser.id
+                })
+//            $scope.comments.push(comment);
+            $scope.text = null;
+        };
+
+        $scope.setComment = function(comment) {
+            $scope.comment = comment;
+        };
+
+        $scope.updateComment = function() {
+            var comment = Comment.create(
+                {labId: lab_pk, instanceType: 'experiment', instanceId: 1},
+                $scope.comment)
+            angular.element(document.querySelector('#comment-modal')).modal('toggle');
+        };
+
+        $scope.deleteComment = function() {
+            var comment = Comment.delete(
+                {labId: lab_pk, instanceType: 'experiment', instanceId: 1, commentId: $scope.comment.id},
+                function(){
+                    var index = $scope.comments.indexOf(comment);
+                    $scope.comments.splice(index, 1);
+                }
+            )
+            angular.element(document.querySelector('#confirm-delete-comment')).modal('toggle');
+        };
+
+        $scope.renderHtml = function(html_code)
+        {
+            return $sce.trustAsHtml(html_code);
+        };
+
+        $scope.summernote_config = window.summernote_config;
+        $scope.summernote_send = function(e) {
+            if ((e.keyCode == 10 || e.keyCode == 13) && (e.ctrlKey || e.shiftKey) && $scope.text)
+            {
+                e.preventDefault();
+                $scope.createComment()
+            }
+            if ((e.keyCode == 10 || e.keyCode == 13) && (e.ctrlKey || e.shiftKey)) {
+                e.preventDefault();
+            }
+        }
 
     }]);
