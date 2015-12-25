@@ -24,6 +24,7 @@ urlpatterns = patterns(
     url(r'^(?P<lab_pk>[\d]+)/measurements/', include('measurements.urls', namespace='measurements')),
     url(r'^(?P<lab_pk>[\d]+)/search/', include('search.urls', namespace='search')),
     url(r'^(?P<lab_pk>[\d]+)/file/', include('uploader.urls', namespace='upload')),
+    url(r'^(?P<lab_pk>[\d]+)/storages/', include('storages.urls', namespace='storages')),
     url(r'^profiles/', include('profiles.urls', namespace='profiles')),
     url(r"^(?P<lab_pk>[\d]+)/filemanager/", include("filemanager.urls")),
     url(r'^ckeditor/', include('ckeditor.urls')),

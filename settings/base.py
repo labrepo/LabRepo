@@ -74,6 +74,7 @@ THIRD_PARTY_APPS = (
     'widget_tweaks',
     'rest_framework',
     'imagekit',
+    'djangular',
 )
 LOCAL_APPS = (
     'comments',
@@ -87,6 +88,7 @@ LOCAL_APPS = (
     'profiles',
     'search',
     'tags',
+    'storages',
     # 'unit_collections',
     'units',
     'uploader',

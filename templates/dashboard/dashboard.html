@@ -85,73 +85,73 @@
       </div>
       <!-- /. box -->
     </div>
-    <section class="col-lg-6">
-    <div class="box">
-      <div class="box-header"><h3 class="box-title">{% trans 'storages'|title %}</h3></div>
-      <div class="box-body">
-        <div class="list-group">
-          {% for storage in lab.storages.all %}
-          <div class="storage">
-            <span class="list-group-item list-group-item-sm">{{ storage }}
-              <span class="pull-right">
-              <a class="storage-edit" href="#" data-url="{% url 'labs:storage-update' lab_pk=lab.pk pk=storage.pk %}">
-                <i class="fa fa-edit"></i></a>
-              <a class="storage-delete" href="#" data-url="{% url 'labs:storage-delete' lab_pk=lab.pk pk=storage.pk %}">
-                <i class="fa fa-remove"></i></a>
-              </span>
-            </span>
-            <div class="storage-form-area"></div>
-          </div>
-          {% endfor %}
-          <form class="storage-add voffset3" enctype="multipart/form-data" method="post" action="{% url 'labs:storage-create' lab_pk=lab.pk %}">{% csrf_token %}
-            <div class="box-header with-border">
-              <h3 class="box-title">{% trans "Add new storage" %}</h3>
-            </div>
-            <div class="form-inline">
-              <div class="form-group">
-                {% render_field storage_form.type style="width:200px" placeholder=storage_form.type.label %}
-              </div>
-            </div>
-            <div class="form-inline voffset2">
-              <div class="form-group">
-                {% render_field storage_form.host  placeholder=storage_form.host.label %}
-              </div>
-              <div class="form-group">
-                {% render_field storage_form.path  placeholder=storage_form.path.label  %}
-              </div>
-            </div>
-            <div class="form-inline voffset2">
-              <div class="form-group">
-                {% render_field storage_form.username  placeholder=storage_form.username.label %}
-              </div>
-            </div>
+    <!--<section class="col-lg-6">-->
+    <!--<div class="box">-->
+      <!--<div class="box-header"><h3 class="box-title">{% trans 'storages'|title %}</h3></div>-->
+      <!--<div class="box-body">-->
+        <!--<div class="list-group">-->
+          <!--{% for storage in lab.storages.all %}-->
+          <!--<div class="storage">-->
+            <!--<span class="list-group-item list-group-item-sm">{{ storage }}-->
+              <!--<span class="pull-right">-->
+              <!--<a class="storage-edit" href="#" data-url="}">-->
+                <!--<i class="fa fa-edit"></i></a>-->
+              <!--<a class="storage-delete" href="#" data-url="}">-->
+                <!--<i class="fa fa-remove"></i></a>-->
+              <!--</span>-->
+            <!--</span>-->
+            <!--<div class="storage-form-area"></div>-->
+          <!--</div>-->
+          <!--{% endfor %}-->
+          <!--<form class="storage-add voffset3" enctype="multipart/form-data" method="post" action="">{% csrf_token %}-->
+            <!--<div class="box-header with-border">-->
+              <!--<h3 class="box-title">{% trans "Add new storage" %}</h3>-->
+            <!--</div>-->
+            <!--<div class="form-inline">-->
+              <!--<div class="form-group">-->
+                <!--{% render_field storage_form.type style="width:200px" placeholder=storage_form.type.label %}-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-inline voffset2">-->
+              <!--<div class="form-group">-->
+                <!--{% render_field storage_form.host  placeholder=storage_form.host.label %}-->
+              <!--</div>-->
+              <!--<div class="form-group">-->
+                <!--{% render_field storage_form.path  placeholder=storage_form.path.label  %}-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-inline voffset2">-->
+              <!--<div class="form-group">-->
+                <!--{% render_field storage_form.username  placeholder=storage_form.username.label %}-->
+              <!--</div>-->
+            <!--</div>-->
 
-            <div class="form-inline voffset2">
-              <div class="form-group">
-                {% render_field storage_form.password  placeholder=storage_form.password.label %}
-              </div>
-              <span> {% trans "OR" %} </span>
-              <div class="form-group">
-                {% render_field storage_form.key_file %}
-              </div>
-            </div>
-            <a class="storage-show-more voffset1" href="#">{% trans "More" %}</a>
-            <div class="form-inline storage-more voffset2" style="display: none">
-              <div class="form-group">
-                {% render_field storage_form.folder_name  placeholder=storage_form.folder_name.label %}
-              </div>
-              <div class="checkbox" style="padding-left: 10px;">
-                <label>
-                  {% render_field storage_form.readonly %}{{ storage_form.readonly.label_tag }}
-                </label>
-              </div>
-            </div>
-            <button style="width: 100%;" class="btn btn-success voffset2" type="submit">{% trans "Create" %}</button>
-         </form>
-        </div>
-      </div>
-    </div>
-  </section>
+            <!--<div class="form-inline voffset2">-->
+              <!--<div class="form-group">-->
+                <!--{% render_field storage_form.password  placeholder=storage_form.password.label %}-->
+              <!--</div>-->
+              <!--<span> {% trans "OR" %} </span>-->
+              <!--<div class="form-group">-->
+                <!--{% render_field storage_form.key_file %}-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<a class="storage-show-more voffset1" href="#">{% trans "More" %}</a>-->
+            <!--<div class="form-inline storage-more voffset2" style="display: none">-->
+              <!--<div class="form-group">-->
+                <!--{% render_field storage_form.folder_name  placeholder=storage_form.folder_name.label %}-->
+              <!--</div>-->
+              <!--<div class="checkbox" style="padding-left: 10px;">-->
+                <!--<label>-->
+                  <!--{% render_field storage_form.readonly %}{{ storage_form.readonly.label_tag }}-->
+                <!--</label>-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<button style="width: 100%;" class="btn btn-success voffset2" type="submit">{% trans "Create" %}</button>-->
+         <!--</form>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</section>-->
   </div>
     <!--<div class="col-lg-4">-->
       <!--<div class="box box-info">-->

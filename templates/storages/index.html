@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% load i18n static widget_tweaks %}
+
+{% block content %}
+<div ng-controller="StorageCtrl" class="row">
+  <section class="col-lg-6">
+    <div class="box box-primary">
+      <div class="box-header with-border">
+        <h3 class="box-title">{% trans "Storage form" %}</h3>
+      </div>
+      <form name="storageForm" enctype="multipart/form-data"  method="post" ng-submit="storageForm.$valid && saveStorage()">{% csrf_token %}
+        <div class="box-body">
+
+          <h4>{% trans "Server" %}</h4>
+          <div class="form-group">
+            {% render_field storage_form.type  ng-init='storage.type=1' %}
+          </div>
+          <div class="form-group">
+            {% render_field storage_form.host  placeholder=storage_form.host.label %}
+          </div>
+          <div class="form-group">
+            {% render_field storage_form.path  placeholder=storage_form.path.label  %}
+          </div>
+
+          <h4>{% trans "Credentials" %}</h4>
+          <div class="form-group">
+            {% render_field storage_form.username  placeholder=storage_form.username.label %}
+          </div>
+          <div class="form-group">
+            {% render_field storage_form.password  placeholder=storage_form.password.label %}
+          </div>
+          <small> {% trans "OR" %} </small>
+          <div class="form-group">
+            <span ng-show="storage.file_info" ng-bind="'Current file: ' + storage.file_info.name"></span>
+            <input type="file" ng-file-model="storage.key_file"  />
+          </div>
+
+          <h4>{% trans "Additional info" %}</h4>
+          <div class="form-group">
+            {% render_field storage_form.folder_name  placeholder=storage_form.folder_name.label %}
+          </div>
+          <div class="checkbox" style="padding-left: 10px;">
+            <label>
+              {% render_field storage_form.readonly %}{{ storage_form.readonly.label_tag }}
+            </label>
+          </div>
+          <div ng-show="!storage.id">
+            <button style="width: 100%;" class="btn btn-success" ng-bind="button_text" type="submit"></button>
+          </div>
+          <div ng-show="storage.id">
+            <button style="width: 50%;" class="btn btn-success" ng-bind="button_text" type="submit"></button>
+            <button style="width: 49%;" class="btn btn-primary" ng-click="cancelEdit()" type="button">{% trans "Cancel" %}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="col-lg-6">
+    <div class="box box-primary">
+      <div class="box-header with-border">
+        <h3 class="box-title">{% trans "Storage list" %}</h3>
+      </div>
+      <div class="list-group">
+        <div ng-repeat="storage in storages" class="storage">
+            <span class="list-group-item list-group-item-sm"><span ng-bind="storage.fullname"></span>
+              <span class="pull-right">
+              <a href="#" ng-click="setStorage(storage)"><i class="fa fa-edit"></i></a>
+              <a ng-really-message="Are you sure?" ng-really-click="deleteStorage(storage)" href="#" >
+                <i class="fa fa-remove"></i></a>
+              </span>
+            </span>
+          <div class="storage-form-area"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+</div>
+{% endblock %}

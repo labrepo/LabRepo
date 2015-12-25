@@ -44,6 +44,23 @@ commentServices.config(function($resourceProvider) {
 });
 
 
+var storageServices = angular.module('storageServices', ['ngResource']);
+storageServices.factory('Storage', ['$resource',
+    function($resource){
+        return $resource('/:labId/storages/api/:storageId/', {}, {
+            'create': {method:'POST'},
+            'delete': {method:'DELETE'},
+            'update': {method:'PUT'},
+            'query':  {method:'GET', isArray:true
+            },
+        });
+    }]);
+
+commentServices.config(function($resourceProvider) {
+    $resourceProvider.defaults.stripTrailingSlashes = false;
+});
+
+
 var chatSocketServices = angular.module('chatSocketServices', ['ngWebSocket']);
 chatSocketServices.factory('chatMessage', ['$websocket', '$rootScope',
     function($websocket, $rootScope) {

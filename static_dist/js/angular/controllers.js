@@ -171,3 +171,60 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
         }
 
     }]);
+
+
+var StorageCtrl = angular.module('StorageCtrl', []);
+StorageCtrl.controller('StorageCtrl', ['$scope', 'Storage',
+    function($scope, Storage) {
+
+        $scope.storages = Storage.query({labId: lab_pk})
+        $scope.button_text = 'Create';
+
+        $scope.saveStorage = function() {
+            $scope.storage.lab = lab_pk;
+            if (!$scope.storage.id){
+                Storage.create({labId: lab_pk}, $scope.storage, function(storage) {
+                    $scope.storages.push(storage);
+                })
+            } else{
+                var index = $scope.storages.indexOf($scope.storage);
+                var storage = Storage.update(
+                    {labId: lab_pk, storageId: $scope.storage.id},
+                    $scope.storage,
+                    function(storage){
+                        $scope.storages[index] = storage;
+                    }
+                )
+            }
+            $scope.button_text = 'Create';
+            $scope.storage = {};
+            $scope.storage.type = 1;
+
+            angular.forEach(
+                angular.element("input[type='file']"),
+                function(inputElem) {
+                    angular.element(inputElem).val(null);
+                });
+        };
+
+        $scope.setStorage = function(storage) {
+            $scope.storage = storage;
+            $scope.button_text = 'Update';
+        };
+
+        $scope.cancelEdit = function() {
+            $scope.storage = {};
+            $scope.storage.type = 1;
+            $scope.button_text = 'Create';
+        };
+
+        $scope.deleteStorage = function(storage) {
+           Storage.delete(
+                {labId: lab_pk, storageId: storage.id},
+                function(){
+                    var index = $scope.storages.indexOf(storage);
+                    $scope.storages.splice(index, 1);
+                }
+            )
+        };
+    }]);

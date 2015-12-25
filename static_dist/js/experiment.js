@@ -3,7 +3,6 @@ window.unit_data = {}
 var treeElement = $('#tag-tree');
 
 $(function() {
-     console.log(window.innerHeight)
     InitJSTree(treeElement,['search', 'checkbox']);
 
     // set height of comment block

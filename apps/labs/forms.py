@@ -3,7 +3,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from common.forms import BaseForm
-from labs.models import Lab, LabStorage
+from labs.models import Lab
 
 
 class LabBaseForm(BaseForm):
@@ -44,25 +44,6 @@ class LabForm(LabBaseForm):
                 self._errors['investigator'] = self.error_class([_('You have not permission change lab\'s investigator')])
                 del data['investigator']
         return data
-
-
-class LabStorageForm(BaseForm):
-    """
-    Form for create/edit laboratory storages
-    """
-    password = forms.CharField(widget=forms.PasswordInput(), required=False)
-
-    class Meta:
-        model = LabStorage
-        fields = ('type', 'readonly', 'username', 'host', 'password', 'path', 'folder_name', 'key_file')
-
-    def __init__(self, *args, **kwargs):
-        super(LabStorageForm, self).__init__(*args, **kwargs)
-        self.fields['readonly'].widget = forms.CheckboxInput()
-        self.fields['readonly'].widget.attrs['class'] = self.fields['readonly'].widget.attrs.get('class', '') + ' checkbox'
-        self.fields['type'].initial = 'SFTP'
-        if self.instance.pk and not self.instance.folder_name:
-            self.initial['folder_name'] = self.instance.get_folder_name()
 
 
 class LabAdminForm(LabBaseForm):

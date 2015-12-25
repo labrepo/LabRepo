@@ -26,10 +26,10 @@ var FileManagerApp = angular.module('FileManagerApp').config(['fileManagerConfig
 
 
 var app = angular.module('LabrepoApp', [
-    'FileManagerApp', 'unitControllers', 'UnitLinkCtrl', 'chatCtrl',
+    'FileManagerApp', 'unitControllers', 'UnitLinkCtrl', 'chatCtrl', 'StorageCtrl',
     'LabrepoApp.directives',
-    'unitServices', 'unitLinkServices', 'commentServices', 'chatSocketServices',
-    'ui.select2', 'summernote', 'yaru22.angular-timeago', 'ngWebSocket']);
+    'unitServices', 'unitLinkServices', 'commentServices', 'chatSocketServices', 'storageServices',
+    'ui.select2', 'summernote', 'yaru22.angular-timeago', 'ngWebSocket', 'ng-file-model']);
 //app.config(function($interpolateProvider) {
 //    $interpolateProvider.startSymbol('{[{');
 //    $interpolateProvider.endSymbol('}]}');

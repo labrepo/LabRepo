@@ -156,6 +156,7 @@ gulp.task('scripts:vendor', function () {
         "bower_components/angular-ui-select2/src/select2.js",
         "bower_components/angular-timeago/dist/angular-timeago.min.js",
         "bower_components/angular-websocket/dist/angular-websocket.min.js",
+        "bower_components/ng-file-model/ng-file-model.js",
         "bower_components/AdminLTE/dist/js/app.js",
         "bower_components/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js",
         "bower_components/AdminLTE/plugins/fullcalendar/fullcalendar.min.js",
