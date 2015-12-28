@@ -17,6 +17,12 @@ def order_name(name):
     return name[:10] + "..." + name[-7:]
 
 
+def get_short_name(name):
+    if len(name) > 25:
+        return name[:20] + u'...' + name[-3:]
+    return name
+
+
 def serialize(instance, lab_pk):
     """serialize -- Serialize a file doc instance into a dict.
 
@@ -42,6 +48,7 @@ def serialize(instance, lab_pk):
     return {
         'url': url,
         'name': instance.filename,
+        'short_name': get_short_name(instance.filename),
         'type': instance.content_type,
         'thumbnailUrl': thumbnail_url,
         'size': instance.file.size,

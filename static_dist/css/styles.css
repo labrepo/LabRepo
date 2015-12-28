@@ -68,6 +68,10 @@ body {
 .timeline-body img {
     max-width: 300px;
 }
+.timeline-body {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
 
 .container-xs-height {
     height: 100px;
