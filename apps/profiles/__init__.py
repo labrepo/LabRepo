@@ -1,31 +1,9 @@
-from django.dispatch import receiver
-from django.contrib.auth.hashers import is_password_usable
-from django.core.urlresolvers import reverse
 from django.db.models import BLANK_CHOICE_DASH
 from django.http import Http404
 from django.db.models.query import QuerySet
 from django.utils.encoding import smart_text
-from django.db.models.signals import pre_save, post_save, pre_delete
-from django.contrib.auth.models import User
 
 from profiles.models import LabUser as User
-from experiments.search_indexes import ExperimentMappingType
-from profiles.search_indexes import ProfileMappingType
-
-
-@property
-def full_name(self):
-    if self.first_name or self.last_name:
-        return self.get_full_name()
-    return self.username
-
-
-def has_usable_password(self):
-    return is_password_usable(self.password)
-
-
-def get_absolute_url(self):
-    return reverse('profiles:detail', kwargs={'pk': self.pk})
 
 
 def create_test_lab(self):
@@ -118,20 +96,6 @@ def create_test_lab(self):
 # User.add_to_class('create_test_lab', create_test_lab)
 # User._meta['virtual_fields'] = []
 
-
-@receiver(post_save, sender=User)
-def update_in_index(sender, instance, **kw):
-    from common import tasks
-    tasks.create_mapping(ExperimentMappingType)
-    tasks.create_mapping(ProfileMappingType)
-    # create mapping
-    tasks.index_objects.delay(ProfileMappingType, [instance.id])
-
-
-@receiver(pre_delete, sender=User)
-def remove_from_index(sender, instance, **kw):
-    from common import tasks
-    tasks.unindex_objects.delay(ProfileMappingType, [instance.id])
 
 
 def get_related_field(self):

@@ -10,7 +10,7 @@ from experiments.models import Experiment
 from experiments.search_indexes import ExperimentMappingType
 from labs.models import Lab
 from measurements.search_indexes import MeasurementMappingType
-from profiles import ProfileMappingType
+from profiles.search_indexes import ProfileMappingType
 # from unit_collections.forms import CollectionForm, UpdateUnitsCollectionForm
 from experiments.forms import UpdateUnitsForm
 from units.search_indexes import UnitMappingType

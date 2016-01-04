@@ -1,4 +1,9 @@
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
+
 from elasticutils.contrib.django import MappingType, Indexable
+
+from comments.models import Comment
 
 
 class CommentMappingType(MappingType, Indexable):
@@ -82,4 +87,16 @@ class CommentMappingType(MappingType, Indexable):
                 }
             }
         }
+
+
+@receiver(post_save, sender=Comment)
+def update_in_index(sender, instance, **kw):
+    from common import tasks
+    tasks.index_objects.delay(CommentMappingType, [instance.id])
+
+
+@receiver(pre_delete, sender=Comment)
+def remove_from_index(sender, instance, **kw):
+    from common import tasks
+    tasks.unindex_objects.delay(CommentMappingType, [instance.id])
 

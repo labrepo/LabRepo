@@ -30,8 +30,6 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
 
     def form_valid(self, form):
 
-
-
         self.object = Comment(
             text=form.cleaned_data['text']
         )

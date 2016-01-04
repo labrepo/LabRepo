@@ -110,3 +110,18 @@ class CommentTest(TestCase):
         resp = self.client.post(url, follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(Comment.objects.count(), 0)
+
+    def test_url(self):
+        url = reverse('comment:comment', kwargs={'lab_pk': self.lab.pk})
+        data = {
+            'create-text': lorem_ipsum.words(2),
+            'create-instance_type': 'Experiment',
+            'create-object_id': unicode(self.experiment.pk)
+        }
+
+
+        self.client.login(username=self.owner.email, password='qwerty')
+        resp = self.client.post(url, data, follow=True)
+        self.assertEqual(Comment.objects.count(), 1)
+        self.assertEqual(u'/1/experiments/detail/1/', Comment.objects.first().get_absolute_url())
+        # self.assertEqual(RecentActivity.objects.all()[0].action_flag, RecentActivity.COMMENT)

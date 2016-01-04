@@ -1,5 +1,10 @@
+from django.dispatch import receiver
+from django.db.models.signals import pre_save, post_save, pre_delete
+
 from elasticutils.contrib.django import MappingType, Indexable
+
 from profiles.models import LabUser
+from experiments.search_indexes import ExperimentMappingType
 
 
 class ProfileMappingType(MappingType, Indexable):
@@ -82,3 +87,19 @@ class ProfileMappingType(MappingType, Indexable):
                 }
             }
         }
+
+
+
+@receiver(post_save, sender=LabUser)
+def update_in_index(sender, instance, **kw):
+    from common import tasks
+    tasks.create_mapping(ExperimentMappingType)
+    tasks.create_mapping(ProfileMappingType)
+    # create mapping
+    tasks.index_objects.delay(ProfileMappingType, [instance.id])
+
+
+@receiver(pre_delete, sender=LabUser)
+def remove_from_index(sender, instance, **kw):
+    from common import tasks
+    tasks.unindex_objects.delay(ProfileMappingType, [instance.id])
