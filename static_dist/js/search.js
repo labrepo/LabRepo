@@ -1,37 +1,37 @@
 $(function(){
-    var $selects = $('.search-components'),
-        $searchInput = $('#id_q[type="search"]');
-    $selects.each(function(){
-        var that = $(this),
-            $parent = that.closest('.form-group'),
-            $dropDown = $(
-                '<li role="presentation" class="dropdown">' +
-                '  <a href="#" class="dropdown-toggle" data-toggle="dropdown">' + $parent.find('label').text().toLowerCase() + '</a>' +
-                '  <ul class="dropdown-menu"></ul>' +
-                '</li>'
-                ),
-            $ul = $dropDown.find('ul.dropdown-menu');
-        that.find('option').each(function(){
-            $ul.append(
-                '<li role="presentation">' +
-                '  <a href="#" class="search-elements" data-value=' + jQuery.trim($(this).val()) + '>' +
-                     jQuery.trim($(this).text()) +
-                '  </a>' +
-                '</li>');
-        });
+//    var $selects = $('.search-components'),
+//        $searchInput = $('#id_q[type="search"]');
+//    $selects.each(function(){
+//        var that = $(this),
+//            $parent = that.closest('.form-group'),
+//            $dropDown = $(
+//                '<li role="presentation" class="dropdown">' +
+//                '  <a href="#" class="dropdown-toggle" data-toggle="dropdown">' + $parent.find('label').text().toLowerCase() + '</a>' +
+//                '  <ul class="dropdown-menu"></ul>' +
+//                '</li>'
+//                ),
+//            $ul = $dropDown.find('ul.dropdown-menu');
+//        that.find('option').each(function(){
+//            $ul.append(
+//                '<li role="presentation">' +
+//                '  <a href="#" class="search-elements" data-value=' + jQuery.trim($(this).val()) + '>' +
+//                     jQuery.trim($(this).text()) +
+//                '  </a>' +
+//                '</li>');
+//        });
 
-        $parent.hide();
-        $('ul#search-component').append($dropDown);
-    });
+//        $parent.hide();
+//        $('ul#search-component').append($dropDown);
+//    });
 
-    $('a.search-elements').on('click', function(e){
-        e.preventDefault();
-        var that = $(this),
-            parent = jQuery.trim(that.closest('li.dropdown').find('a.dropdown-toggle').text()),
-            searchString;
-        searchString = parent + ': {' + jQuery.trim(that.data('value')) + ': ""}';
-        $searchInput.val($searchInput.val() + ' ' + searchString);
-    });
+//    $('a.search-elements').on('click', function(e){
+//        e.preventDefault();
+//        var that = $(this),
+//            parent = jQuery.trim(that.closest('li.dropdown').find('a.dropdown-toggle').text()),
+//            searchString;
+//        searchString = parent + ': {' + jQuery.trim(that.data('value')) + ': ""}';
+//        $searchInput.val($searchInput.val() + ' ' + searchString);
+//    });
 
 
     $('body').on('click', '.unit-checkbox', function() {

@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
-from .views import ElasticSearchView
+from . import views
 
 
 urlpatterns = patterns('',
-    url(r'^$', ElasticSearchView.as_view(), name='all'),
+    url(r'^$', views.ElasticSimpleSearchView.as_view(), name='all'),
 )

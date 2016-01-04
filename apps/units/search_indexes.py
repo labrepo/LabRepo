@@ -57,8 +57,8 @@ class UnitMappingType(MappingType, Indexable):
             'lab': {
                 'id': unicode(obj.lab.pk),
             },
-            'tags': [{'details': tag.details, 'params': tag.params} for tag in obj.tags],
-            '_parent': unicode(experiment.pk)} for experiment in obj.experiments]
+            'tags': [{'details': tag.details, 'params': tag.params} for tag in obj.tags.all()],
+            '_parent': unicode(experiment.pk)} for experiment in obj.experiments.all()]
         return doc
 
     @classmethod
@@ -98,7 +98,7 @@ def update_in_index(sender, instance, **kw):
     from common import tasks
     if instance.active:
         tasks.create_mapping(UnitMappingType)
-        tasks.create_mapping(MeasurementMappingType)
+        # tasks.create_mapping(MeasurementMappingType)
         tasks.index_objects.delay(UnitMappingType, [instance.id])
         # for measurement in document.measurements:
         #     tasks.index_objects.delay(MeasurementMappingType, [measurement.id])

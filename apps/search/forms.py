@@ -4,6 +4,10 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 
+class SimpleSearchForm(forms.Form):
+    q = forms.CharField(label='', widget=forms.TextInput(attrs={'type': 'search', 'placeholder': _('Search'), 'class': 'form-control'}), help_text='')
+
+
 class SearchForm(forms.Form):
     COMMENT = (
         ('text', _('text')),

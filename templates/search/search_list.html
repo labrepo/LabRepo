@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% load static i18n  bootstrap_tags %}
+{% load static i18n  bootstrap_tags widget_tweaks %}
 
 {% block content %}
 
@@ -10,7 +10,7 @@
         <form action="" method="get">
           <div class="input-group">
             {{ form|as_bootstrap }}
-            <ul class="nav nav-pills nav-justified" id="search-component"></ul>
+            <!--<ul class="nav nav-pills nav-justified" id="search-component"></ul>-->
             <span class="input-group-btn top-vertical-align">
                 <button type="submit" name="search" title="Search" id="search-btn" class="btn btn-flat btn-info">
                   <i class="fa fa-search"></i>
@@ -70,10 +70,18 @@
               </ul>
               <div class="col-sm-12">
                 {% if update_experiment_form.fields.experiment.queryset %}
-                  <form class="form-inline update-experiment-form col-sm-4" role="form" method="post"
+                <form class="form-inline update-experiment-form" role="form" method="post"
                         action="{% url 'experiments:add-units' lab_pk=lab.pk %}">{% csrf_token %}
-                    {% include 'search/experiment_form.html' %}
-                  </form>
+                  {% for field in update_experiment_form.hidden_fields %}
+                    {{ field }}
+                  {% endfor %}
+                  <div class="form-group">
+                    <label>{{ update_experiment_form.experiment.label }}</label>
+                    {% render_field update_experiment_form.experiment style="width:200px;"%}
+                    {% render_field update_experiment_form.units style="display:none;"%}
+                  </div>
+                  <button type="submit" class="btn btn-primary">{% trans 'add to experiment'|title %}</button>
+                </form>
                 {% endif %}
 
                {# <button class="btn btn-sm btn-info pull-left" data-toggle="modal" #}

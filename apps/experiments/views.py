@@ -269,9 +269,9 @@ class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitia
             raise PermissionDenied
 
         for unit in form.cleaned_data['units']:
-            unit.update(
-                add_to_set__experiments=self.object)
-            unit.save(user=self.request.user)
+            unit.experiments.add(self.object)
+            unit.user = self.request.user
+            unit.save()
 
         self.save_recent_activity(RecentActivity.UPDATE)
         self.get_success_message()
