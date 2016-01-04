@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.utils import lorem_ipsum
 from django.core.urlresolvers import reverse
-
+from django.template.defaultfilters import title
 from labs.factories import LabFactory
 from profiles.factories import UserFactory
 from profiles.factories import UserFactory
@@ -64,7 +64,7 @@ class TestDashboardTest(TestCase):
         }
         resp = self.client.post(exp_url, data, follow=True)
         resp = self.client.get(url)
-        self.assertContains(resp, self.owner.full_name)
+        self.assertContains(resp, title(self.owner.full_name))
         self.assertContains(resp, experiment.title)
 
         #Update experiment2
@@ -104,7 +104,7 @@ class TestDashboardTest(TestCase):
         self.assertEqual(resp.status_code, 200)
 
         resp = self.client.get(url)
-        self.assertContains(resp, self.owner.full_name)
+        self.assertContains(resp, title(self.owner.full_name))
         self.assertContains(resp, text)
 
     def test_recent_comment_activity_experiment_view(self):
@@ -135,7 +135,7 @@ class TestDashboardTest(TestCase):
         self.assertEqual(resp.status_code, 200)
 
         resp = self.client.get(url)
-        self.assertContains(resp, self.owner.full_name)
+        self.assertContains(resp, title(self.owner.full_name))
         self.assertContains(resp, text)
 
         # Add comment to exp2
@@ -176,7 +176,7 @@ class TestDashboardTest(TestCase):
         }
         resp = self.client.post(exp_url, data, follow=True)
         resp = self.client.get(url)
-        self.assertContains(resp, self.owner.full_name)
+        self.assertContains(resp, title(self.owner.full_name))
         self.assertContains(resp, experiment.title)
 
         # Add comment
@@ -192,7 +192,7 @@ class TestDashboardTest(TestCase):
         self.assertEqual(resp.status_code, 200)
 
         resp = self.client.get(url)
-        self.assertContains(resp, self.owner.full_name)
+        self.assertContains(resp, title(self.owner.full_name))
         self.assertContains(resp, text)
 
     def test_recent_unit_activity(self):
@@ -223,7 +223,7 @@ class TestDashboardTest(TestCase):
         self.assertEqual(resp.status_code, 200)
 
         resp = self.client.get(url)
-        self.assertContains(resp, self.owner.full_name)
+        self.assertContains(resp, title(self.owner.full_name))
         self.assertContains(resp, text)
 
         # Add comment to exp2

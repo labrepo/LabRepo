@@ -22,17 +22,16 @@ class LabUser(AbstractUser):
                                       format='JPEG',
                                       options={})
 
-    def get_username(self):
-        if self.first_name or self.last_name:
-            return ' '.join([self.first_name, self.last_name])
-        if self.email:
-            return self.email.split('@')[0]
-
     @property
     def full_name(self):
-        if self.first_name or self.last_name:
+        if self.first_name and self.last_name:
             return self.first_name + ' ' + self.last_name
-        return self.get_username()
+        if self.last_name:
+            return self.last_name
+        if self.first_name:
+            return self.first_name
+        if self.email:
+            return self.email.split('@')[0]
 
     def has_usable_password(self):
         return is_password_usable(self.password)

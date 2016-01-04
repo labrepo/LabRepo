@@ -36,13 +36,14 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
         model_name = form.cleaned_data['instance_type']  # todo type__model
         if model_name == 'Experiment':
             model = Experiment
-            experiment = self.object.content_object
         if model_name == 'Unit':
             model = Unit
             experiment = None
         self.object.init_user = self.request.user
         self.object.content_object = model.objects.get(id=form.cleaned_data['object_id'])
         self.object.save()
+        if model_name == 'Experiment':
+            experiment = self.object.content_object
         resent_activity = self.save_recent_activity(RecentActivity.COMMENT,
                                                     value=self.object.text,
                                                     obj=self.object.content_object,
