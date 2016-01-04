@@ -1,4 +1,4 @@
-import datetime
+from django.utils import timezone
 import random
 import factory
 
@@ -17,11 +17,11 @@ class ExperimentFactory(factory.DjangoModelFactory):
 
     @factory.lazy_attribute
     def start(self):
-        return datetime.datetime.now()
+        return timezone.now()
 
     @factory.lazy_attribute
     def end(self):
-        return datetime.datetime.now()
+        return timezone.now()
 
     @factory.lazy_attribute
     def description(self):
