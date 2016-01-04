@@ -109,9 +109,6 @@ class LabDetailView(LoginRequiredMixin, CheckViewPermissionMixin, ActiveTabMixin
 
     def get_context_data(self, **kwargs):
         context = super(LabDetailView, self).get_context_data(**kwargs)
-
-        context['storage_form'] = LabStorageForm()
-
         return context
 
 
