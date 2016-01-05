@@ -14,7 +14,7 @@ def index_objects(mapping_type, ids, chunk_size=100, es=None, index=None):
     if settings.ES_DISABLED:
         return
 
-    create_mapping(mapping_type)
+    # create_mapping(mapping_type)
     # Get the model this mapping type is based on.
     model = mapping_type.get_model()
     # Retrieve all the objects that we're going to index and do it in
@@ -64,7 +64,7 @@ def unindex_objects(mapping_type, ids, es=None, index=None):
         mapping_type.unindex(id_, es=es, index=index)
 
 
-def create_mapping(mapping_type):
-    #create map
-    os.system('curl -XPUT {}/{} -d \'{}\''.format(settings.ES_URLS[0], settings.ES_INDEXES['default'],
-                                                  json.dumps(mapping_type.get_mapping())))
+# def create_mapping(mapping_type):
+#     #create map
+#     os.system('curl -XPUT {}/{} -d \'{}\''.format(settings.ES_URLS[0], settings.ES_INDEXES['default'],
+#                                                   json.dumps(mapping_type.get_mapping())))

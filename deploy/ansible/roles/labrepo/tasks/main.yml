@@ -49,7 +49,7 @@
 
 
 - name: Get code from git repo
-  git: repo={{ git_repo }} dest={{ project_dir }} accept_hostkey=yes
+  git: repo={{ git_repo }} dest={{ project_dir }} accept_hostkey=yes force=yes
   notify: restart labrepo
 
 - name: Check logs directory
@@ -95,6 +95,11 @@
 #    - 'command="makemessages -a --ignore=env/*" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
 #    - 'command="makemessages -d djangojs -a --ignore=env/*" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
     - 'command="compilemessages" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/'
+  environment:
+        DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"
+
+- name: Update elasticsearch mapping types
+  django_manage: command="createesindex" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
   environment:
         DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"
 

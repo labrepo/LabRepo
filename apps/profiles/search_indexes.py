@@ -93,8 +93,8 @@ class ProfileMappingType(MappingType, Indexable):
 @receiver(post_save, sender=LabUser)
 def update_in_index(sender, instance, **kw):
     from common import tasks
-    tasks.create_mapping(ExperimentMappingType)
-    tasks.create_mapping(ProfileMappingType)
+    # tasks.create_mapping(ExperimentMappingType)
+    # tasks.create_mapping(ProfileMappingType)
     # create mapping
     tasks.index_objects.delay(ProfileMappingType, [instance.id])
 
