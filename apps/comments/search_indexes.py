@@ -57,7 +57,7 @@ class CommentMappingType(MappingType, Indexable):
             },
             'text': obj.text,
             'url': obj.get_absolute_url(),
-            '_parent': unicode(obj.get_object().pk)   # todo use only experiments pk
+            '_parent': unicode(obj.content_object.pk)   # todo use only experiments pk
         }
 
     @classmethod

@@ -229,7 +229,7 @@ DATETIME_INPUT_FORMATS = (
     '%m/%d/%Y %H:%M',
 )
 
-ES_URLS = ['http://localhost:9200']
+ES_URLS = ['localhost:9200']
 ES_INDEXES = {'default': 'lab_index'}
 ES_DISABLED = False
 

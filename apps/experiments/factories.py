@@ -61,3 +61,16 @@ class ExperimentFactory(factory.DjangoModelFactory):
         if extracted:
             for user in extracted:
                 self.viewers.add(user)
+
+    # @classmethod
+    # def _generate(cls, create, attrs):
+    #     """Override the default _generate() to disable the post-save signal."""
+    #
+    #     # Note: If the signal was defined with a dispatch_uid, include that in both calls.
+    #     from django.db.models.signals import post_save, pre_delete
+    #     from django.dispatch import receiver
+    #     from experiments.search_indexes import update_in_index
+    #     post_save.disconnect(update_in_index, Experiment)
+    #     user = super(ExperimentFactory, cls)._generate(create, attrs)
+    #     post_save.connect(update_in_index, Experiment)
+    #     return user

@@ -23,7 +23,7 @@ class ElasticSimpleSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
     It uses the standard shell wildcards where ? matches any character, and * matches zero or more characters.
     """
     template_name = 'search/search_list.html'
-    form_class = SearchForm
+    form_class = SimpleSearchForm
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(request.GET)
@@ -146,7 +146,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
     It uses the standard shell wildcards where ? matches any character, and * matches zero or more characters.
     """
     template_name = 'search/search_list.html'
-    form_class = SimpleSearchForm
+    form_class = SearchForm
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(request.GET)
