@@ -8,9 +8,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 class Comment(models.Model):
     """
-    Model to add comments to every Unit / Experiment / Measurement.
+    Model to add comments to every Unit / Experiment.
     """
-    #TODO
     init_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user')
     instance_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
@@ -24,7 +23,7 @@ class Comment(models.Model):
         ordering = ['-action_time']
 
     def __unicode__(self):
-        return u'{}'.format(self.text)
+        return self.text
 
     def get_absolute_url(self):
         return self.content_object.get_absolute_url()

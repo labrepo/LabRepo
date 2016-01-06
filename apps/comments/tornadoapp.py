@@ -34,7 +34,8 @@ class MessagesHandler(tornado.websocket.WebSocketHandler):
 
     def my_handler(self, message):
         if message.kind == 'message':
-            print(message.body)
+            if settings.DEBUG:
+                print(message.body)
             try:
                 self.write_message(str(message.body))
             except TypeError:
@@ -55,59 +56,16 @@ class MessagesHandler(tornado.websocket.WebSocketHandler):
         self.client.connect()
         yield tornado.gen.Task(self.client.subscribe, self.channel)
         self.client.listen(self.my_handler)
-        # self.client.listen(self.on_message)
 
     def open(self, channel):
         self.channel = channel
         self.listen()
-        # session_key = self.get_cookie(settings.SESSION_COOKIE_NAME)
-        # session = session_engine.SessionStore(session_key)
-        # try:
-        #     self.user_id = session["_auth_user_id"]
-        #     self.sender_name = User.objects.get(id=self.user_id).username
-        # except (KeyError, User.DoesNotExist):
-        #     self.close()
-        #     return
-        # if not Thread.objects.filter(
-        #     id=thread_id,
-        #     participants__id=self.user_id
-        # ).exists():
-        #     self.close()
-        #     return
-
 
     def handle_request(self, response):
         pass
 
     def on_message(self, message):
-        print(message)
-        # if not message:
-        #     return
-        # if len(message) > 10000:
-        #     return
-        # c.publish(self.channel, json.dumps({
-        #     "timestamp": int(time.time()),
-        #     "sender": self.sender_name,
-        #     "text": message,
-        # }))
-        # http_client = tornado.httpclient.AsyncHTTPClient()
-        # request = tornado.httpclient.HTTPRequest(
-        #     "".join([
-        #                 settings.SEND_MESSAGE_API_URL,
-        #                 "/",
-        #                 self.thread_id,
-        #                 "/"
-        #             ]),
-        #     method="POST",
-        #     body=urllib.urlencode({
-        #         "message": message.encode("utf-8"),
-        #         "api_key": settings.API_KEY,
-        #         "sender_id": self.user_id,
-        #     })
-        # )
-        # http_client.fetch(request, self.handle_request)
-        self.write_message(str('123'))
-
+        pass
 
     def show_new_message(self, result):
         self.write_message(str(result.body))

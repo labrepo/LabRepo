@@ -13,7 +13,6 @@ class CommentMappingType(MappingType, Indexable):
     @classmethod
     def get_model(cls):
         """Returns the Django model this MappingType relates to comment"""
-        from .models import Comment
         return Comment
 
     @classmethod
@@ -99,4 +98,3 @@ def update_in_index(sender, instance, **kw):
 def remove_from_index(sender, instance, **kw):
     from common import tasks
     tasks.unindex_objects.delay(CommentMappingType, [instance.id])
-

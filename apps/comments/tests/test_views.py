@@ -119,7 +119,6 @@ class CommentTest(TestCase):
             'create-object_id': unicode(self.experiment.pk)
         }
 
-
         self.client.login(username=self.owner.email, password='qwerty')
         resp = self.client.post(url, data, follow=True)
         self.assertEqual(Comment.objects.count(), 1)

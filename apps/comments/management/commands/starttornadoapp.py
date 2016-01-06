@@ -8,9 +8,10 @@ from django.core.management.base import BaseCommand, CommandError
 
 from comments.tornadoapp import application
 
+
 class Command(BaseCommand):
     args = '[port_number]'
-    help = 'Starts the Tornado application for message handling.'
+    help = 'Starts the Tornado application for comments handling.'
 
     def sig_handler(self, sig, frame):
         """Catch signal and init callback"""

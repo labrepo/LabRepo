@@ -3,7 +3,6 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 
 from profiles.api.serializers import LabUserSerializer
-from profiles.models import LabUser
 from comments.models import Comment
 from units.models import Unit
 from experiments.models import Experiment
@@ -11,7 +10,7 @@ from experiments.models import Experiment
 
 class InstanceTypeField(serializers.Field):
     """
-    Content type
+    Serialize django content type field from a generic relation.
     """
 
     def to_representation(self, obj):

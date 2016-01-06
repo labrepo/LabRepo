@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
-
-import redis
-
 from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -16,12 +12,15 @@ from dashboard.models import RecentActivity
 from labs.models import Lab
 from units.models import Unit
 from experiments.models import Experiment
-from .models import Comment
+from comments.models import Comment
 
 
 class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialLabMixin, RecentActivityMixin, CreateView):
     """
-    View for create comment
+    View for create a comment.
+
+    Note:
+        Now is used only for unit comments. Comments for a experiment are created through API.
     """
     model = Comment
     form_class = CommentForm
@@ -42,29 +41,20 @@ class CommentCreateView(CheckLabPermissionMixin, AjaxableResponseMixin, InitialL
         self.object.init_user = self.request.user
         self.object.content_object = model.objects.get(id=form.cleaned_data['object_id'])
         self.object.save()
+
         if model_name == 'Experiment':
             experiment = self.object.content_object
-        resent_activity = self.save_recent_activity(RecentActivity.COMMENT,
-                                                    value=self.object.text,
-                                                    obj=self.object.content_object,
-                                                    experiment=experiment)
 
-        # publish message in the redis queue if experiment's comment
-        if model_name == 'Experiment':
-            r = redis.StrictRedis(host='localhost', port=6379, db=3)
-            p = r.pubsub()
-            channel = '{}'.format(self.object.object_id)
-            html = render_to_string(self.template_name, {'comment': self.object, 'lab': self.lab})
-            r.publish(channel, json.dumps({
-                'html': html,
-                'user_pk': u'{}'.format(self.object.init_user.pk),
-            }))
+        self.save_recent_activity(RecentActivity.COMMENT,
+                                  value=self.object.text,
+                                  obj=self.object.content_object,
+                                  experiment=experiment)
 
         return self.render_to_json_response({'data': render_to_string(self.template_name, {'comment': self.object},
                                                                       context_instance=RequestContext(self.request)),
                                              # 'resent_activity': render_to_string('dashboard/resent.html',
                                              #                                     {'object': resent_activity})
-        })
+                                             })
 
 
 class CommentUpdateView(CheckLabPermissionMixin, InitialLabMixin, AjaxableResponseMixin, UpdateView):
@@ -101,6 +91,9 @@ class CommentUpdateView(CheckLabPermissionMixin, InitialLabMixin, AjaxableRespon
 class CommentDeleteView(LoginRequiredMixin, AjaxableResponseMixin, RecentActivityMixin, DeleteView):
     """
     View for removing an existing comment
+
+    Note:
+        Now is used only for unit comments. Comments for a experiment are handled through API.
     """
     model = Comment
 
