@@ -40,12 +40,12 @@
   when: mapper_attachments_rules.stat.islnk is not defined
   notify: restart elasticsearch
 
-- stat: path=/usr/share/elasticsearch/plugins/river-mongodb
-  register: river_mongodb_rules
-  sudo: yes
+#- stat: path=/usr/share/elasticsearch/plugins/river-mongodb
+#  register: river_mongodb_rules
+#  sudo: yes
 
-- name: Plugins for ElasticSearch(river-mongodb)
-  command: /usr/share/elasticsearch/bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/2.0.1
-  sudo: yes
-  when: river_mongodb_rules.stat.islnk is not defined
-  notify: restart elasticsearch
+#- name: Plugins for ElasticSearch(river-mongodb)
+#  command: /usr/share/elasticsearch/bin/plugin --install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/2.0.1
+#  sudo: yes
+#  when: river_mongodb_rules.stat.islnk is not defined
+#  notify: restart elasticsearch

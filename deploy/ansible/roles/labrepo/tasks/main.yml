@@ -25,18 +25,6 @@
   notify: restart labrepo
   sudo: yes
 
-- name: Pymongo is needed for mongodb_user
-  pip: name=pymongo
-  sudo: yes
-
-- name: Add a mongodb user
-  mongodb_user: database={{ mongodb_name }} name={{ mongodb_user }} password={{ mongodb_passwd }} state=present
-  sudo: yes
-
-- name: Add a test mongodb user
-  mongodb_user: database={{ mongodb_test_database }}  name={{ mongodb_user }} password={{ mongodb_passwd }} state=present
-  sudo: yes
-
 - name: Add postgresql db
   postgresql_db: name={{ postgresql_dbname }}
   sudo: yes
@@ -78,6 +66,9 @@
 
 - include: static.yml
 
+- name: Delete old .pyc files
+  command: find . -name '*.pyc' -delete chdir="{{ project_dir }}"
+  sudo: yes
 
 - name: Collect static
   django_manage: command="collectstatic --noinput --verbosity=0" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/

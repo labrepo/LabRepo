@@ -10,11 +10,7 @@ project_dir: /home/vagrant/labrepo
 admin_email: cyc60@mail.ru
 secret_key: 12321
 language_code: en-us
-mongodb_user: admin
-mongodb_passwd: E9WAtmSVKb
-mongodb_name: labrepo
-mongodb_host: 127.0.0.1
-mongodb_port: 27017
+
 email_host: smtp.gmail.com
 email_port: 587
 email_host_user: no-reply@labrepo.com
