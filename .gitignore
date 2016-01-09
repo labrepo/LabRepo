@@ -51,12 +51,15 @@ local.py
 # Logs
 *.log
 
+# Docs
+/*docs/build*/
+
 *.pid
 
 *.xlsx
 *.xls
 
-/doc/build/
 fabricrc
+
 static_dist/bower_components
-static_dist/node_modules
+static_dist/node_modul
