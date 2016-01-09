@@ -6782,7 +6782,6 @@ CopyPasteClass.prototype.init = function () {
   }
 
   this.keydownListener = function (event) {
-      console.log(event)
     var isCtrlDown = false;
     if (event.metaKey) { //mac
       isCtrlDown = true;

@@ -56,6 +56,15 @@ storageServices.factory('Storage', ['$resource',
         });
     }]);
 
+var measurementServices = angular.module('measurementServices', ['ngResource']);
+measurementServices.factory('Measurement', ['$resource',
+    function($resource){
+        return $resource('/:labId/measurements/api/:measurementId/', {}, {
+            'get':    {method:'GET'},
+            'update': {method:'PUT'}
+        });
+    }]);
+
 commentServices.config(function($resourceProvider) {
     $resourceProvider.defaults.stripTrailingSlashes = false;
 });

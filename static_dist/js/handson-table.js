@@ -50,9 +50,9 @@ $(function () {
     if ($("#dataTable").length) {
         addHandsonTable("#dataTable");
     }
-    if ($("#dataTableEditable").length) {
-        addHandsonTableEditable("#dataTableEditable");
-    }
+//    if ($("#dataTableEditable").length) {
+//        addHandsonTableEditable("#dataTableEditable");
+//    }
 });
 
 function getTableData(url) {
@@ -89,15 +89,6 @@ function addHandsonTable(selector) {
 
         data = getTableData(table.data('content-url')),
         colWidths = [],
-
-        showMessageChild = function (hasError, messages) {
-            var error = gettext('Please fill in all required fields'),
-                success = gettext('Your data has been saved.');
-            if (messages.length == 0){messages.push(hasError ? error : success)}
-            while (messages.length !== 0) {
-                showMessage(hasError, messages.pop())
-            }
-        },
 
         renderTags = function (instance, td, row, col, prop, value, cellProperties) {
             var escaped, style = '',
@@ -407,63 +398,27 @@ function addHandsonTable(selector) {
     }
 }
 
-function addHandsonTableEditable(selector) {
+function addHandsonTableEditable(selector, data) {
     var table = $(selector),
-        title = table.data('title'),
-        headers = table.data('headers'),
+        title = 'table',
         toUpperCase = function (match) {
             return match.toUpperCase();
         },
-        column = table.data('column'),
-//        data = table.data('content'),
-        data = getTableData(table.data('content-url')),
+        column = [
+            {'editor': 'text', 'display': 'none'},
+            {'editor': 'text', 'display': 'none'}],
+
         colWidths = [],
-
-        showMessageChild = function (hasError, messages) {
-            var error = gettext('Please fill in all required fields'),
-                success = gettext('Your data has been saved.');
-            if (messages.length == 0){messages.push(hasError ? error : success)}
-            while (messages.length !== 0) {
-                showMessage(hasError, messages.pop())
-            }
-        },
-
-        renderTags = function (instance, td, row, col, prop, value, cellProperties) {
-            var escaped, style = '',
-                values;
-            if (value && !(value instanceof Array)) {
-                value = treeValueToJson(value, column, col);
-            }
-            if (value) {
-                values = [].map.call(value, function (val) {
-                    escaped = Handsontable.helper.stringify(val.text);
-                    escaped = strip_tags(escaped, '<em><b><strong><a><big>');
-                    style = '' +
-                        'box-shadow: 0 0 2px ' + ColorLuminance(val.color, -0.5) + ' inset, 0 1px 0 rgba(0, 0, 0, 0.05);' +
-                        'background-color:' + val.color + '; border: 1px solid ' + val.color;
-                    return '<span class="tags" style="' + style + '">' + escaped + '</span>';
-                }).join('');
-            } else {
-                values = Handsontable.helper.stringify(value);
-            }
-            td.innerHTML = values;
-            return td;
-        },
         handsontable;
 
     for (var i = 0, max = column.length; i < max; i += 1) {
-//        if (column[i].validator_string){
-//            column[i].validator = new RegExp(column[i].validator_string)
-//        }
-        if (column[i].display == 'none') {
             colWidths.push(200);
-        } else {
-            colWidths.push(200);
-        }
-        if (column[i].renderer == 'renderTags') {
-            column[i].renderer = renderTags;
-        }
     }
+
+    if (!data) {
+        data = getTableData(table.data('content-url'))
+    }
+
     table.handsontable({
         data: data,
         fillHandle: true,
@@ -476,65 +431,6 @@ function addHandsonTableEditable(selector) {
         colWidths: colWidths,
         outsideClickDeselects: false,
         afterChange: function (changes, source) {
-            $('.append').on('click', function (e) {
-                $('div' + $(e.target).data('target') + ' form').attr('action', $(this).data('url')).attr('data-column', $(this).data('column'));
-            });
-            if (this.$table) {
-                var tableContainer = this.$table.parents('div.handsontable'),
-                    height = this.$table.height();
-                if (tableContainer.css('min-height') != height) {
-                    tableContainer.css('min-height', height).css('height', 'auto');
-                    $('.wrap-handsontable').css('max-height', $(window).height() - $('.wrap-handsontable').offset().top - 30);
-                }
-            }
-
-            var col, row, values, column_value, id, i, max, j, jmax, v, requiredCol;
-            if (source == 'paste' || source == 'autofill') {
-                for (i = 0, max = changes.length; i < max; i++) {
-                    col = changes[i][1];
-                    row = changes[i][0];
-                    column_value = column[col].selectOptions || '';
-                    id = [];
-                    if (!column[col].readonly) {
-                        if (column[col].editor == 'jstree') {
-                            values = treeValueToJson(changes[i][3], column, col);
-                            for (j = 0, jmax = column_value.length; j < jmax; j++) {
-                                for (v = 0; v < values.length; v++) {
-                                    if (column_value[j].text == values[v].text && column_value[j].li_attr.background_color == values[v].color) {
-                                        id.push(column_value[j].id);
-                                    }
-                                }
-                            }
-                        } else {
-                            values = changes[i][3].split(',');
-                            for (j = 0, jmax = column_value.length; j < jmax; j++) {
-                                for (v = 0; v < values.length; v++) {
-                                    if (column_value[j][1] == values[v]) {
-                                        id.push(column_value[j][0]);
-                                    }
-                                }
-                            }
-                        }
-                        requiredCol = getRequiredCol(this, col, title);
-                        if (requiredCol) {
-                            this.setDataAtCell(row, requiredCol, id);
-                        }
-                    } else {
-                        this.setDataAtCell(row, col, 'True');
-                    }
-                }
-            } else if (source == 'edit') {
-                for (i = 0, max = changes.length; i < max; i++) {
-                    if (!changes[i][3].length) {
-                        col = changes[i][1];
-                        row = changes[i][0];
-                        requiredCol = getRequiredCol(this, col, title);
-                        if (requiredCol) {
-                            this.setDataAtCell(row, requiredCol, '');
-                        }
-                    }
-                }
-            }
             // update plot form
             var options = $(table).handsontable('getDataAtRow', 0);
             $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
@@ -551,79 +447,10 @@ function addHandsonTableEditable(selector) {
                 cellProperties.renderer = firstRowRenderer; // uses function directly
             }
             return cellProperties;
-
         }
     });
 
     handsontable = table.data('handsontable');
-
-    $('#save').click(function () {
-        var dataPost = {};
-        var data = handsontable.getData();
-        headers = getColumnHeaders(table);
-
-        dataPost.length = data.length;
-        dataPost.width = data[0].length;
-        dataPost.headers = data[0];
-        dataPost.table_data = data.slice(1);
-
-        $.ajax({
-            url: table.data('url'),
-            type: 'PUT',
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify(dataPost)
-        }).done(function (res) {
-            $('td').removeClass('error').removeAttr('title');
-            var messages = [],
-                hasError = false;
-            for (var i = 0, max = res.length; i < max; i += 1) {
-                var row = parseInt(res[i][0]),
-                    result = res[i][1];
-                if (result.success === true) {
-                    handsontable.setDataAtCell(row, 0, result.pk);
-                } else {
-                    var tr = $('tr:nth-child(' + (row + 1) + ')'),
-                        errors = result.errors;
-                    hasError = true;
-                    for (var name in errors) {
-                        if (errors.hasOwnProperty(name)) {
-                            tr.find('td:nth-child(' + (headers.indexOf(title[name]) + 1) + ')')
-                                .attr('title', errors[name].join(',')).addClass('error');
-                        }
-                    }
-                    if (typeof data[i].errors != 'undefined' && messages.indexOf(data[i].errors.non_field_error) == -1) {
-                        messages.push(errors.non_field_error);
-                    }
-                }
-            }
-            showMessageChild(hasError, messages);
-            //update revision list
-            if (res.revision_pk){
-                updateRevisionList(res);
-            }
-
-        }).fail(function (xhr) {
-            showMessageChild(true, [xhr.statusText]);
-        });
-    });
-
-    $('.append').on('click', function (e) {
-        $('div' + $(e.target).data('target') + ' form').attr('action', $(this).data('url')).attr('data-column', $(this).data('column'));
-    });
-
-    $('.addcolumn').on('click', function (e) {
-        $(table).handsontable('alter', 'insert_col');
-    });
-
-    submitForm($('.modal-form'), function (response, form) {
-        var col = column[parseInt(form.data('column'))];
-        if (col) {
-            col.selectOptions.push([response.pk, response.name]);
-            col.validator = new RegExp((col.validator_string + '|' + response.name));
-        }
-        $('.modal').modal('hide');
-    });
 
     //overwrite getCopyable that tags copy right
     var copyableLookup = Handsontable.helper.cellMethodLookupFactory('copyable', false);
@@ -649,15 +476,6 @@ function addHandsonTableEditable(selector) {
 
     function getRequiredCol(table, col, title) {
         return false
-//    var n_cols = table.countCols(),
-//        name = (Object.keys(title).filter(function (item) {
-//            return title[item].toLowerCase() === table.getColHeader(col).split('<')[0].trim().toLowerCase()
-//        })[0] + '_pk').toLowerCase();
-//    for (var j = 1; j <= n_cols; j++) {
-//        if (typeof table.getColHeader(j) !== 'undefined' && name == table.getColHeader(j).toLowerCase()) {
-//            return j;
-//        }
-//    }
     }
 
     function getColumnHeaders(table) {
@@ -671,11 +489,14 @@ function addHandsonTableEditable(selector) {
         td.style.textAlign = 'center';
     }
 
-
-    function updateRevisionList(res) {
-        $('.revision-list').prepend('<li><a href="#" class="revert-revision" data-url="'+ res.revision_url + '"> '+ res.revision_timestamp + '</a></li>')
-    }
-
-
 };
 
+showMessageChild = function (hasError, messages) {
+    var error = gettext('Please fill in all required fields'),
+        success = gettext('Your data has been saved.');
+    if (messages.length == 0){messages.push(hasError ? error : success)}
+    while (messages.length !== 0) {
+        showMessage(hasError, messages.pop())
+
+    }
+};

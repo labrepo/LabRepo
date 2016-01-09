@@ -74,7 +74,7 @@ class UnitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Unit
-        fields = ('id', 'sample', 'description', 'experiments', 'parent', 'tags', 'lab',  'edit_permission')
+        fields = ('id', 'sample', 'description', 'experiments', 'parent', 'tags', 'lab', 'measurement', 'edit_permission')
 
 
 class UnitLinkSerializer(serializers.ModelSerializer):

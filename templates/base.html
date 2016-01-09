@@ -113,7 +113,7 @@
   <!--<section class="content-header">-->
     <!--<h1>{% block content_header %}{% endblock %}</h1>-->
   <!--</section>-->
-  <section class="content">
+  <section class="content" {% block ang_controller %}{% endblock %}>
     <div id="messages">
       {% for message in messages %}
         {% include 'message.html' %}

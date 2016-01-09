@@ -142,7 +142,7 @@ class UnitLinkCreateView(LoginRequiredMixin, generics.CreateAPIView):
         request_data = json.loads(self.request.body)
         link = request_data.get('link')
         parent = request_data.get('parent')
-        print(link)
+
         try:
             link_info = self.get_info(link)
         except Exception as e:

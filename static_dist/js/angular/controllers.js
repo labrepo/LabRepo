@@ -106,6 +106,65 @@ UnitLinkCtrl.controller('UnitLinkCtrl', ['$scope', 'UnitLink',
 
     }]);
 
+
+var MeasurementCtrl = angular.module('MeasurementCtrl', []);
+MeasurementCtrl.controller('MeasurementCtrl', ['$scope', '$http', 'Measurement',
+    function($scope, $http, Measurement) {
+
+        createTable = function(measurementId) {  //todo: improve initialization
+            if (measurementId) {
+                $scope.measurement = Measurement.get({labId: lab_pk, measurementId: measurementId}, function(measurement){
+                    $scope.data = measurement.table_data;
+                    $scope.data.unshift(measurement.headers)
+                    addHandsonTableEditable("div#dataTableEditable", $scope.data)
+                })
+            }
+        };
+
+        var measurementId = angular.element(document.querySelector('.content')).data('measurement-pk');
+        createTable(measurementId);
+
+        $scope.$watch('unit', function(unit) {
+            if (unit) {
+                createTable(unit.measurement);
+            }
+        }, true);
+
+        $scope.saveTable = function() {  //todo: add two way binding
+            var data = $("#dataTableEditable").handsontable('getData');
+            $scope.measurement = Measurement.update(
+                {labId: lab_pk, measurementId: 9},
+                {headers:data[0], table_data: data.slice(1)},
+                function (data) {
+                    var messages = [],
+                        hasError = false;
+                    showMessageChild(hasError, messages);
+
+                },
+                function (data) {
+                    showMessageChild(true, [data.statusText])
+
+                }
+            )
+        };
+
+        $scope.revertRevision = function(url) {
+            $http.get(url).success(function(response)
+            {
+                var table = $("#dataTableEditable");
+                var table_data = response.table_data;
+                table_data.unshift(response.headers);
+                table.handsontable('loadData', table_data);
+                reset_plot();
+            });
+        };
+
+        $scope.addColumn = function() {
+            $("#dataTableEditable").handsontable('alter', 'insert_col');
+        };
+    }]);
+
+
 var chatCtrl = angular.module('chatCtrl', []);
 
 chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'AuthUser', 'chatMessage',

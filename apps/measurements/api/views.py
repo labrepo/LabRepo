@@ -19,11 +19,20 @@ from measurements.models import Measurement
 
 
 class MeasurementDetailView(LoginRequiredMixin, CheckLabPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
+    """
+    View for handle unit's measurement.
 
+    Note:
+        A new measurement is created with a new unit creating
+
+    """
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
 
     def dispatch(self, *args, **kwargs):
+        """
+        Check user permissions
+        """
         object = self.get_object()
 
         if not (object.unit.is_owner(self.request.user) or object.unit.is_member(self.request.user)):

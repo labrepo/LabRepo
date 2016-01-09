@@ -2,6 +2,7 @@
 
 {% load i18n static %}
 
+{% block ang_controller %}ng-controller="MeasurementCtrl" data-measurement-pk="{{ object.measurement.id }}"{% endblock %}
 
 {% block content_header %}
   {% if unit_pk %}
@@ -37,21 +38,19 @@
 {% block manage_buttons %}
   {% if is_member %}
     <div class="btn-group">
-      <button id="save" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Save' %}</button>
+      <button ng-click="saveTable()" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Save' %}</button>
     </div>
   {% endif %}
     <div class="btn-group">
-      <button  class="addcolumn btn bg-olive"><i class="fa fa-plus"></i> {% trans 'Add Column' %}</button>
+      <button ng-click="addColumn()" class="btn bg-olive"><i class="fa fa-plus"></i> {% trans 'Add Column' %}</button>
     </div>
     <div class="btn-group">
-      <button  class="show-plot btn bg-olive"><i class="fa fa-area-chart"></i> {% trans 'Create plot' %}</button>
+      <button class="show-plot btn bg-olive"><i class="fa fa-area-chart"></i> {% trans 'Create plot' %}</button>
     </div>
     <div class="btn-group pull-right">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">History <span class="caret"></span></button>
-        <ul class="dropdown-menu scrollable-menu revision-list" role="menu">
-            {% for revision in revisions %}
-                <li><a href="#" class="revert-revision" data-url="{% url 'measurements:measurement-revert' lab_pk=object.lab.pk unit_pk=object.id revision_pk=revision.pk %}"> {{ revision.timestamp }}</a></li>
-            {% endfor %}
+        <ul class="dropdown-menu scrollable-menu" role="menu">
+            <li ng-repeat="revision in measurement.revisions"><a href="#" ng-click="revertRevision(revision.url)" ng-bind="revision.timestamp"></a></li>
         </ul>
     </div>
 {% endblock %}
@@ -91,8 +90,7 @@
         </div>
     </div>
     <div class="wrap-handsontable">
-      <div id="dataTableEditable" data-content='{{ data }}' data-title='{{ title }}' data-column='{{ column }}'
-           data-headers='{{ headers }}' {% block urls %}{% endblock %}></div>
+      <div id="dataTableEditable"></div>
     </div>
   </div>
 

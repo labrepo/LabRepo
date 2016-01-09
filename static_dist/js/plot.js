@@ -110,17 +110,3 @@ function table_to_plot_data(table_data) {
      }
 
  });
-
- // revert table data on revision restore
- $('body').on('click',' .revert-revision', function (e) {
-     var url = $(this).data('url');
-     $.post(url, function (data) {
-         var table = $("#dataTableEditable");
-         var table_data = data.table_data;
-         table_data.unshift(data.headers);
-         table.handsontable('loadData', table_data);
-     });
-
-     reset_plot();
-
- });

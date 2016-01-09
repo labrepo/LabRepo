@@ -126,23 +126,23 @@ function update_unit_info(unit){
         document.getElementById("dropbox").appendChild(button);
         addSelect2();
 
-        // measurements
-        var table = $("#dataTableEditable");
-        var table_data = JSON.parse(data.measurements);
-        var save_url = '/' + lab_pk + '/measurements/api/'+ unit.id + '/'
-        table.data('url', save_url)
-        table.handsontable('loadData', table_data);
+//        // measurements
+//        var table = $("#dataTableEditable");
+//        var table_data = JSON.parse(data.measurements);
+//        var save_url = '/' + lab_pk + '/measurements/api/'+ unit.id + '/'
+//        table.data('url', save_url)
+//        table.handsontable('loadData', table_data);
 
-        // revisions
-        $('.revision-list').html('');
-        if (data.revisions){
-            var revisions = JSON.parse(data.revisions);
-            for (var i = 0; i < revisions.length; i++) {
-                var rev = revisions[i];
-                var h = '<li><a href="javascript:void(0);" class="revert-revision" data-url="' + rev.url +'">' +rev.timestamp +'</a></li>'
-                $('.revision-list').append(h);
-            }
-        }
+//        // revisions
+//        $('.revision-list').html('');
+//        if (data.revisions){
+//            var revisions = JSON.parse(data.revisions);
+//            for (var i = 0; i < revisions.length; i++) {
+//                var rev = revisions[i];
+//                var h = '<li><a href="javascript:void(0);" class="revert-revision" data-url="' + rev.url +'">' +rev.timestamp +'</a></li>'
+//                $('.revision-list').append(h);
+//            }
+//        }
 
         // tags
         treeElement.jstree('deselect_all')
@@ -184,18 +184,18 @@ $("#unit-tags").on("click", "#tag-save", function() {
     });
 });
 
-// revert table data on revision restore
-$('body').on('click','.revert-revision', function (e) {
-    var url = $(this).data('url');
-    $.post(url, function (data) {
-        var table = $("#dataTableEditable");
-        var table_data = data.table_data;
-        table_data.unshift(data.headers);
-        table.handsontable('loadData', table_data);
-    });
-    reset_plot();
-    return false
-});
+//// revert table data on revision restore
+//$('body').on('click','.revert-revision', function (e) {
+//    var url = $(this).data('url');
+//    $.post(url, function (data) {
+//        var table = $("#dataTableEditable");
+//        var table_data = data.table_data;
+//        table_data.unshift(data.headers);
+//        table.handsontable('loadData', table_data);
+//    });
+//    reset_plot();
+//    return false
+//});
 
 //$('body').on('submit','.description-unit-form', function (e) {
 //    e.preventDefault();
