@@ -395,3 +395,7 @@ text.id {
     dominant-baseline: central;
 }
 /*END GRAPH*/
+
+.error-page>.error-content {
+    padding-top: 20px;
+}

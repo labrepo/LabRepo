@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load i18n static %}
+
+
+
+{% block content %}
+      <div class="error-page">
+        <h2 class="headline text-red"> 404</h2>
+
+        <div class="error-content">
+          <h3><i class="fa fa-warning text-red"></i> {% blocktrans %}Oops! Page not found.{% endblocktrans %}</h3>
+
+          <p>
+            {% url 'labs:list' as the_url %}
+            {% blocktrans   %}
+              We could not find the page you were looking for.
+              Meanwhile, you may <a href="{{ the_url }}">return to index page</a>.
+            {% endblocktrans %}
+          </p>
+        </div>
+      </div>
+{% endblock %}

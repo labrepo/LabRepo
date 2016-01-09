@@ -35,3 +35,6 @@ urlpatterns = patterns(
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = 'common.views.handler404'
+handler500 = 'common.views.handler500'
