@@ -68,6 +68,7 @@ class UnitTableSerializer(serializers.ModelSerializer):
 class UnitSerializer(serializers.ModelSerializer):
 
     edit_permission = serializers.SerializerMethodField()
+    measurement = serializers.PrimaryKeyRelatedField(read_only=True)
 
     def get_edit_permission(self, obj):
         return obj.is_owner(self.context['request'].user)
