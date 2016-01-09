@@ -127,6 +127,7 @@ MeasurementCtrl.controller('MeasurementCtrl', ['$scope', '$http', 'Measurement',
                     $scope.data = measurement.table_data;
                     $scope.data.unshift(measurement.headers)
                     addHandsonTableEditable("div#dataTableEditable", $scope.data)
+                    $scope.measurementId = measurementId;
                 })
             }
         };
@@ -143,7 +144,7 @@ MeasurementCtrl.controller('MeasurementCtrl', ['$scope', '$http', 'Measurement',
         $scope.saveTable = function() {  //todo: add two way binding
             var data = $("#dataTableEditable").handsontable('getData');
             $scope.measurement = Measurement.update(
-                {labId: lab_pk, measurementId: 9},
+                {labId: lab_pk, measurementId: $scope.measurementId},
                 {headers:data[0], table_data: data.slice(1)},
                 function (data) {
                     var messages = [],
