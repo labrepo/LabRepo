@@ -17,7 +17,6 @@ $(document).ready(function () {
 
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 //        CKEDITOR.instances[comment_field_id].setData('');
-//        CKEDITOR.instances[comment_field_id].setData('');
     });
 
     // Scroll to comment's block bottom
@@ -239,4 +238,3 @@ $.ajaxSetup({
         }
     }
 });
-

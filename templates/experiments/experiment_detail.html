@@ -182,9 +182,14 @@
                   <!-- /.tab-pane -->
                   <div class="tab-pane" id="units-list">
                     <ul class="list-group">
-                        {% for unit in units %}
-                          <a href="#" ng-click="getUnit({{ unit.pk }});" data-unit-pk="{{ unit.pk }}" onclick="return false;" class="list-group-item list-group-item-sm unit-item">{{ unit }}</a>
-                        {% endfor %}
+                          <a href="#" ng-repeat="unit_option in experiment_units"
+                             ng-bind="unit_option.sample"
+                             ng-click="getUnit(unit_option.id);"
+                             data-unit-pk="{{ unit.pk }}"
+                             onclick="return false;"
+                             class="list-group-item list-group-item-sm unit-item"
+                             ng-class="{'active':unit_option.id == unit.id}"
+                             ></a>
                     </ul>
                     <div class="btn-group">
                       <a href="{% url 'units:experiment_unit_list' lab_pk=object.lab.pk experiment_pk=object.pk %}"
@@ -231,12 +236,11 @@
                         <h4>{% trans "Description" %}</h4>
                         <form  ng-submit="saveUnit()" method="post">
                           <button type="button" ng-show="unit.edit_permission" ng-click="isEditorOpenDescription = !isEditorOpen" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
-                          <div ng-show="!isEditorOpenDescription" class="field-text">
-                            {% verbatim %}{{ unit.description }}{% endverbatim %}
+                          <div ng-show="!isEditorOpenDescription" ng-bind-html="renderHtml(unit.description)" class="field-text">
                           </div>
                           <div ng-show="isEditorOpenDescription" >
                             <div class="form-group">
-                              <input ng-model="unit.description"/>
+                              <summernote ng-required="true" config="summernote_config" ng-model="unit.description" on-keydown="summernote_send(evt)"></summernote>
                             </div>
                             <button type="submit" ng-click="isEditorOpenDescription = !isEditorOpenDescription" class="btn btn-info">{% trans 'Save' %}</button>
                             <button ng-click="isEditorOpenDescription = !isEditorOpenDescription" class="btn btn-info">{% trans 'cancel'|title %}</button>
@@ -304,7 +308,6 @@
                   <div class="upload-area">
                   </div>
                     </div>
-                    <!--<a style="display:none" class="btn btn-primary edit-unit">Edit</a>-->
                   </div>
 
                   <div class="tab-pane"  ng-controller="MeasurementCtrl" id="unit-measurements">

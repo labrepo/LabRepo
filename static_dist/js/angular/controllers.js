@@ -1,14 +1,18 @@
 var unitControllers = angular.module('unitControllers', []);
 
-unitControllers.controller('UnitDetailCtrl', ['$scope', 'Unit',
-    function($scope, Unit) {
+unitControllers.controller('UnitDetailCtrl', ['$scope', '$sce', 'Unit',
+    function($scope, $sce, Unit) {
         $scope.experiment_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
 //        $scope.units = Unit.query({labId: lab_pk, experiment_pk: experiment_id})
-        $scope.units = Unit.query({labId: lab_pk})
+        $scope.units = Unit.query({labId: lab_pk}, function(units){
+            $scope.experiment_units =  units.filter(function(unit) {
+                return unit.experiments.indexOf($scope.experiment_id) > -1
+            });
+        })
 
         $scope.getUnit = function(UnitId) {
             $scope.unit = Unit.get({labId: lab_pk, unitId: UnitId}, function(phone) {});
-            $scope.$broadcast('UnitLoaded', {'unitId': UnitId});
+            $scope.$broadcast('UnitLoaded', {'unitId': UnitId});  //todo: fix different args
         };
 
         $scope.createUnit = function() {
@@ -78,6 +82,11 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', 'Unit',
                 return this.$create({labId: lab_pk});
             }
         };
+        $scope.renderHtml = function(html_code)
+        {
+            return $sce.trustAsHtml(html_code);
+        };
+        $scope.summernote_config = window.summernote_config;
     }]);
 
 var UnitLinkCtrl = angular.module('UnitLinkCtrl', []);

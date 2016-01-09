@@ -1,24 +1,9 @@
 var exp_pk = $("#experiment_row").data('experiment-pk');
-window.unit_data = {}
+window.unit_pk = null;
 var treeElement = $('#tag-tree');
 
 $(function() {
     InitJSTree(treeElement,['search', 'checkbox']);
-
-    // set height of comment block
-//    $('.comment-activities').css('max-height', window.innerHeight -430)
-//    var sidebar_height = $('.main-sidebar').height();
-//    if (window.innerHeight > 650) {
-//        $('.comment-activities').not('.comments-list').css('max-height', sidebar_height - 325).css('min-height', sidebar_height - 325);
-//        console.log($('.comment-activities').not('.comments-list'))
-//        console.log($('.comment-activities'))
-//    }
-//    if ($('#exp-workfow iframe').length) {
-//        $('#exp-workfow iframe').css('min-height', sidebar_height - 100)
-//        setTimeout(function () {
-//            comments_scroll_to_end()
-//        }, 500);
-//    }
 
     // fix bootstrap tabs urls
     var hash = window.location.hash;
@@ -50,65 +35,37 @@ function update_unit_info_ang(unit){
     update_unit_info(unit)
 }
 
+$('.unit-item').click(function (e) {  //todo
+    e.preventDefault();
+    e.stopPropagation();
+    var unit_id = $(this).data('unit-pk');
+    update_unit_info({id: unit_id});
+});
+
 function update_unit_info(unit){
     /**
      * Update unit info tabs.
      * @param unit - object {id: unit_id} For the the compatibility with d3 function call.
      */
-    var url = '/' + lab_pk + '/units/detail_json/'+ unit.id + '/'
-    $.get(url, {unit_pk: unit.id}, function(data){
 
-        function get_parents(unit_data) {
-            /**
-             * Return array of unit parents ids
-             * @param unit_data - (string) serialized unit object
-             */
-            var unit_json = JSON.parse(unit_data)
-            var parents = []
-            for (var i=0; i< unit_json.parent.length; i++) {
-                parents.push(unit_json.parent[i]['$oid'])
-            }
-            return parents
-        }
-
-        function get_tags(unit_data) {
-            /**
-             * Return array of unit parents ids
-             * @param unit_data - (string) serialized unit object
-             */
-            var unit_json = JSON.parse(unit_data)
-            var tags = []
-            for (var i=0; i< unit_json.tags.length; i++) {
-                tags.push(unit_json.tags[i]['$oid'])
-            }
-            return tags
-        }
-
-        var unit_json = JSON.parse(data.unit_data)
-        // set global current unit
-        window.unit_data = {
-            'data-0-pk': data.pk,
-            'data-0-sample': data.sample,
-            'data-0-description': unit_json.description,
-            'data-0-parent_pk[]': get_parents(data.unit_data),
-            'data-0-experiments_pk[]': exp_pk,
-            'data-0-tags_pk[]': get_tags(data.unit_data),
-            'length':1
-        }
-        unit_data = window.unit_data
-
-        // show hidden tab's buttons
+    // show hidden tab's buttons
         $('#unit-measurements .btn').show()
 //        $('#unit-desc .btn').show()
         $('#unit-tags .btn').show()
 
-        // description
-        $('.upload-area').html(data.uploader)
+    var url = '/' + lab_pk + '/units/detail_json/'+ unit.id + '/'
+    $.get(url, {unit_pk: unit.id}, function(unit_data){
+
+        // set global current unit
+        window.unit_pk = unit_data.pk
+
+        // Uploader
+        $('.upload-area').html(unit_data.uploader)
         update_uploaders()
 
         options = {
             success: function(files) {
-                var url = '/' + lab_pk + '/units/'+ window.unit_data['data-0-pk'] +'/dropxbox-upload/'
+                var url = '/' + lab_pk + '/units/'+ unit_data.pk +'/dropxbox-upload/'
                 var need_upload = $('.upload-file').is(":checked")
                 $.post(url,{'files[]': JSON.stringify(files), 'need_upload': need_upload}, function(data){
                     $('.blueimp-uploader').fileupload('destroy');
@@ -124,46 +81,14 @@ function update_unit_info(unit){
 
         var button = Dropbox.createChooseButton(options);
         document.getElementById("dropbox").appendChild(button);
-        addSelect2();
 
-//        // measurements
-//        var table = $("#dataTableEditable");
-//        var table_data = JSON.parse(data.measurements);
-//        var save_url = '/' + lab_pk + '/measurements/api/'+ unit.id + '/'
-//        table.data('url', save_url)
-//        table.handsontable('loadData', table_data);
-
-//        // revisions
-//        $('.revision-list').html('');
-//        if (data.revisions){
-//            var revisions = JSON.parse(data.revisions);
-//            for (var i = 0; i < revisions.length; i++) {
-//                var rev = revisions[i];
-//                var h = '<li><a href="javascript:void(0);" class="revert-revision" data-url="' + rev.url +'">' +rev.timestamp +'</a></li>'
-//                $('.revision-list').append(h);
-//            }
-//        }
-
-        // tags
+        // Tags
         treeElement.jstree('deselect_all')
-        treeElement.jstree('select_node', JSON.parse(data.tags))
+        treeElement.jstree('select_node', JSON.parse(unit_data.tags))
 
-        // comments
-        $('#unit-comments').html(data.comments)
+        // Comments
+        $('#unit-comments').html(unit_data.comments)
         addSumernote();
-
-        //edit button
-//        var edit_url = '/{{ lab.pk }}/units/detail/'+ unit.id + '/'
-//        $('.edit-unit').attr('href', edit_url);
-
-        // set active unit in list
-        $('.unit-item').removeClass('active')
-        $('.unit-item').each(function(e){
-            if($(this).data('unit-pk') == unit.id){
-                $(this).addClass('active')
-                return false
-            }
-        })
     });
 }
 
@@ -184,124 +109,6 @@ $("#unit-tags").on("click", "#tag-save", function() {
     });
 });
 
-//// revert table data on revision restore
-//$('body').on('click','.revert-revision', function (e) {
-//    var url = $(this).data('url');
-//    $.post(url, function (data) {
-//        var table = $("#dataTableEditable");
-//        var table_data = data.table_data;
-//        table_data.unshift(data.headers);
-//        table.handsontable('loadData', table_data);
-//    });
-//    reset_plot();
-//    return false
-//});
-
-//$('body').on('submit','.description-unit-form', function (e) {
-//    e.preventDefault();
-//    e.stopPropagation();
-//    var $form = $(e.target);
-//    var unit_data = window.unit_data
-//    unit_data['data-0-description'] = $form.find('textarea[name="description"]').val();
-//
-//    $.post($form.attr('action'), unit_data)
-//        .fail(function (xhr) {
-//            form_fail($form, xhr)
-//        }).done(function (response) {
-//            var desc_value = $form.find('textarea[name="description"]').val()
-//            $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
-//            $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(desc_value);
-//
-//        });
-//});
-
-//$('body').on('submit','.sample-unit-form', function (e) {
-//    e.preventDefault();
-//    e.stopPropagation();
-//    var $form = $(e.target);
-//    var unit_data = window.unit_data
-//    var sample = $form.find('input[name="sample"]').val()
-//    unit_data['data-0-sample'] = sample;
-//
-//    $.post($form.attr('action'), unit_data)
-//        .fail(function (xhr) {
-//            form_fail($form, xhr)
-//        }).done(function (response) {
-//            $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
-//            $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(sample);
-//            graph.updateNodeText(response[0][1]['pk'], sample)
-//
-//        });
-//});
-
-//$('body').on('submit','.parent-unit-form', function (e) {
-//    e.preventDefault();
-//    e.stopPropagation();
-//    var $form = $(e.target);
-//    var unit_data = window.unit_data
-//
-//    var parents = $form.find('select[name="parent"]').val()
-//    if (parents) {
-//        unit_data['data-0-parent_pk[]'] = parents;
-//    } else {
-//        delete unit_data['data-0-parent_pk[]']
-//    }
-//
-//    $.post($form.attr('action'), unit_data)
-//        .fail(function (xhr) {
-//            form_fail($form, xhr)
-//        }).done(function (response) {
-//            $form.find('.field-editor').hide().closest('.field-container').find('.field-show').show();
-//            $form.find('.field-editor').hide().closest('.field-container').find('.field-text').html(parents);
-//            graph.updateParents(response[0][1]['pk'], parents)
-//        });
-//});
-
-//$('body').on('submit','.links-unit-form', function (e) {
-//    e.preventDefault();
-//    e.stopPropagation();
-//    var $form = $(e.target);
-//    var link = $form.find('input[name="link"]').val();
-//
-//    $.post($form.attr('action'), $form.serialize())
-//        .fail(function (xhr) {
-//            var data = xhr.responseJSON;
-//            $form.find('.has-error').removeClass('has-error').removeAttr('title');
-//            for (var name in data) {
-//                if (data.hasOwnProperty(name)) {
-//                    var icon = $('<i>', {'class': 'fa fa-warning'}),
-//                        error_message = $('span', {
-//                            'class': 'text-red error-msg',
-//                            'id': 'error_' + $form.find('[name="' + name + '"]').id
-//                        }).text(data[name].join(', ')).append(icon);
-//
-//                    $form.find('[name="' + name + '"]')
-//                        .after(error_message);
-//                    $form.find('[name="' + name + '"]')
-//                        .parents('.form-group')
-//                        .addClass('has-error')
-//                        .attr('title', data[name].join(', '));
-//                }
-//            }
-//        }).done(function (response) {
-//            $('.link-list').append(response.html);
-//            $form.find('input[name="link"]').val('');
-//        });
-//});
-//
-//$('body').on('click','.link-delete', function (e) {
-//    e.preventDefault();
-//    e.stopPropagation();
-//
-//    if(confirm('Delete this link?')) {
-//        var delete_url = $(this).data("delete-url");
-//        var parent_box = $(this).closest('.box')
-//        $.post(delete_url, {}, function (response) {
-//            parent_box.remove();
-//        });
-//    }
-//    return false
-//});
 
 $('body').on('click','.box-collapse', function (e) {
     e.preventDefault();
@@ -309,41 +116,12 @@ $('body').on('click','.box-collapse', function (e) {
     $(this).closest('.box').find('.box-body').toggle(200);
 });
 
-//$('body').on('submit','.add-unit-form', function (e) {
-//    e.preventDefault();
-//    e.stopPropagation();
-//    var $form = $(e.target);
-//
-//    $.post($form.attr('action'), $form.serialize())
-//        .fail(function (xhr) {
-//            form_fail($form, xhr)
-//        }).done(function (response) {
-//
-//            $('#add_unit').modal('toggle');
-//            var units = $form.find('select[name="units"]').val();
-//            for (i in units){
-//                graph.addNode({
-//                    id: units[i],
-//                    index: 0,
-//                    link: "#",
-//                    score: 2,
-//                    size: 1,
-//                    text:  $form.find('select[name="units"]').find('option[value=' + units[i]+ ']').text(),
-//                    type: "circle",
-//                    weight: 1,
-//                });
-//            }
-//            $form.find('select[name="units"]').select2("val", "");
-//            $form.find('select[name="units"]').val("val", "");
-//        });
-//});
-
 //upload files from filemanager
 $('body').on('click', '#fm .fm-choose', function(e){
     var file_url = $(this).data('path')
     var file_name = $(this).data('name');
 
-    var url = '/' + lab_pk + '/units/'+ window.unit_data['data-0-pk'] +'/local-upload/'
+    var url = '/' + lab_pk + '/units/'+ window.unit_pk +'/local-upload/'
     var need_upload = $('.upload-file').is(":checked")
     var file = {
         name:file_name,
@@ -364,37 +142,6 @@ $('body').on('click','.comment-cancel', function (e) {
     $(this).closest('form').find('.comment-editor').hide();
 });
 
-//$('.create-unit').click(function (e) {
-//    e.preventDefault();
-//    e.stopPropagation();
-//    var sample = 'New Unit #'
-//    var unit_data = {
-//        'length':1,
-//        'data-0-experiments_pk[]': exp_pk,
-//        'data-0-sample': sample,
-//    }
-//
-//    $.post($(this).data('url'), unit_data, function (response) {
-//        graph.addNode({
-//            id: response[0][1]['pk'],
-//            index: 0,
-//            link: "#",
-//            score: 2,
-//            size: 1,
-//            text: sample,
-//            type: "circle",
-//            weight: 1,
-//        });
-//    });
-//});
-
-$('.unit-item').click(function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var unit_id = $(this).data('unit-pk');
-    update_unit_info({id: unit_id});
-});
-
 $('.box-comments').scroll(function (e) {
     if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
         $('.comments-alert').hide(1000)
@@ -402,3 +149,19 @@ $('.box-comments').scroll(function (e) {
         $.post(url, {'comment': $('.box-comment').last().data('pk')})
     }
 });
+
+
+// set height of comment block
+//    $('.comment-activities').css('max-height', window.innerHeight -430)
+//    var sidebar_height = $('.main-sidebar').height();
+//    if (window.innerHeight > 650) {
+//        $('.comment-activities').not('.comments-list').css('max-height', sidebar_height - 325).css('min-height', sidebar_height - 325);
+//        console.log($('.comment-activities').not('.comments-list'))
+//        console.log($('.comment-activities'))
+//    }
+//    if ($('#exp-workfow iframe').length) {
+//        $('#exp-workfow iframe').css('min-height', sidebar_height - 100)
+//        setTimeout(function () {
+//            comments_scroll_to_end()
+//        }, 500);
+//    }
