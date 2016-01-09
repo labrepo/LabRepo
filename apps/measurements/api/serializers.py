@@ -10,7 +10,7 @@ from measurements.models import Measurement
 
 class RevisionsField(serializers.Field):
     """
-    Returl list of revisions for object from django-revision
+    Return the list of revisions for object from django-revision
     """
     def __init__(self, **kwargs):
         super(RevisionsField, self).__init__(**kwargs)
@@ -55,17 +55,3 @@ class MeasurementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Measurement
         fields = ('headers', 'table_data', 'revisions')
-
-    def update(self, instance, validated_data):
-        """
-        Update and return an existing `Measurement` instance, given the validated data.
-
-        Doesn't hit DB if nothing changed(Doesn't create redundant revisions).
-        """
-        if instance.headers == validated_data.get('headers') and instance.table_data == validated_data.get('table_data'):
-            return instance
-
-        instance.headers = validated_data.get('headers', instance.headers)
-        instance.table_data = validated_data.get('table_data', instance.table_data)
-        instance.save()
-        return instance

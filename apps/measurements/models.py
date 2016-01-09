@@ -46,7 +46,7 @@ class Measurement(models.Model):
     def get_unit(self):
         from units.models import Unit
         try:
-            return Unit.objects.get(measurements=self)
+            return Unit.objects.get(measurement=self)
         except Unit.DoesNotExist:
             # todo this should not occur
             return None
