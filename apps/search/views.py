@@ -9,7 +9,6 @@ from common.mixins import LoginRequiredMixin
 from experiments.models import Experiment
 from experiments.search_indexes import ExperimentMappingType
 from labs.models import Lab
-from measurements.search_indexes import MeasurementMappingType
 from profiles.search_indexes import ProfileMappingType
 # from unit_collections.forms import CollectionForm, UpdateUnitsCollectionForm
 from experiments.forms import UpdateUnitsForm
@@ -30,14 +29,14 @@ class ElasticSimpleSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
         self.lab = Lab.objects.get(pk=self.kwargs['lab_pk'])
         if form.is_valid():
             query = []
-            comments_query, units_query, measurement_query, profiles = [], [], [], []
+            comments_query, units_query, profiles = [], [], []
             user = self.request.user
 
             for elastic_type, search_data in form.cleaned_data['q']:
                 if elastic_type == '_all':
                     comments_query.append({"match": search_data})
                     units_query.append({"match": search_data})
-                    measurement_query.append({"match": search_data})
+                    # measurement_query.append({"match": search_data})
                     query.extend([
                         {
                             "filtered": {
@@ -113,13 +112,13 @@ class ElasticSimpleSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                     }
                 }
             }
-            measurement_query.append(unit_ids)
-            measurements = MeasurementMappingType.search()\
-                .query_raw({
-                    "bool": {
-                        "must": measurement_query
-                    }
-                })
+            # measurement_query.append(unit_ids)
+            # measurements = MeasurementMappingType.search()\
+            #     .query_raw({
+            #         "bool": {
+            #             "must": measurement_query
+            #         }
+            #     })
 
             comments_query.append(experiment_ids)
             comments = CommentMappingType.search()\
@@ -129,7 +128,7 @@ class ElasticSimpleSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                     }
                 })
             return self.render_to_response(self.get_context_data(experiments=experiments, units=units, profiles=profiles,
-                                                                 comments=comments, measurements=measurements))
+                                                                 comments=comments))
         return self.render_to_response(self.get_context_data())
 
     def get_context_data(self, **kwargs):
@@ -153,7 +152,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
         self.lab = Lab.objects.get(pk=self.kwargs['lab_pk'])
         if form.is_valid():
             query = []
-            comments_query, units_query, measurement_query, profiles = [], [], [], []
+            comments_query, units_query, profiles = [], [], []
             user = self.request.user
             for elastic_type, search_data in form.cleaned_data['q']:
                 if elastic_type == 'comment':
@@ -192,27 +191,27 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                             }
                         }
                     )
-                elif elastic_type == 'measurement':
-                    measurement_query.append({"wildcard": search_data})
-                    query.append(
-                        {
-                            "has_child": {
-                                'type': UnitMappingType.get_mapping_type_name(),
-                                "query": {
-                                    "filtered": {
-                                        "query": {
-                                            "has_child": {
-                                                'type': MeasurementMappingType.get_mapping_type_name(),
-                                                "query": {
-                                                    "wildcard": search_data
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    )
+                # elif elastic_type == 'measurement':
+                #     measurement_query.append({"wildcard": search_data})
+                #     query.append(
+                #         {
+                #             "has_child": {
+                #                 'type': UnitMappingType.get_mapping_type_name(),
+                #                 "query": {
+                #                     "filtered": {
+                #                         "query": {
+                #                             "has_child": {
+                #                                 'type': MeasurementMappingType.get_mapping_type_name(),
+                #                                 "query": {
+                #                                     "wildcard": search_data
+                #                                 }
+                #                             }
+                #                         }
+                #                     }
+                #                 }
+                #             }
+                #         }
+                #     )
                 elif elastic_type == 'profile' or elastic_type == '_all':
                     profiles_query = ProfileMappingType.search()\
                         .query_raw({
@@ -229,7 +228,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                 if elastic_type == '_all':
                     comments_query.append({"match": search_data})
                     units_query.append({"match": search_data})
-                    measurement_query.append({"match": search_data})
+                    # measurement_query.append({"match": search_data})
                     query.extend([
                         {
                             "filtered": {
@@ -305,13 +304,13 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                     }
                 }
             }
-            measurement_query.append(unit_ids)
-            measurements = MeasurementMappingType.search()\
-                .query_raw({
-                    "bool": {
-                        "must": measurement_query
-                    }
-                })
+            # measurement_query.append(unit_ids)
+            # measurements = MeasurementMappingType.search()\
+            #     .query_raw({
+            #         "bool": {
+            #             "must": measurement_query
+            #         }
+            #     })
 
             comments_query.append(experiment_ids)
             comments = CommentMappingType.search()\
@@ -321,7 +320,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                     }
                 })
             return self.render_to_response(self.get_context_data(experiments=experiments, units=units, profiles=profiles,
-                                                                 comments=comments, measurements=measurements))
+                                                                 comments=comments))
         return self.render_to_response(self.get_context_data())
 
     def get_context_data(self, **kwargs):

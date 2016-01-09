@@ -2,7 +2,6 @@ from django.dispatch import receiver
 
 from elasticutils.contrib.django import MappingType, Indexable
 from django.db.models.signals import pre_save, post_save, pre_delete
-from measurements.search_indexes import MeasurementMappingType
 
 from .models import Unit
 

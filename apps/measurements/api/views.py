@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 from rest_framework import generics
 from reversion import revisions as reversion
 
-from common.mixins import LoginRequiredMixin, AjaxableResponseMixin, CheckLabPermissionMixin, RecentActivityMixin
+from common.mixins import LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin
 from dashboard.models import RecentActivity
 from measurements.api.serializers import MeasurementSerializer
 from measurements.models import Measurement
@@ -16,7 +16,6 @@ class MeasurementDetailView(LoginRequiredMixin, RecentActivityMixin, CheckLabPer
 
     Note:
         A new measurement is created with a new unit creating
-
     """
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
@@ -47,6 +46,9 @@ class MeasurementDetailView(LoginRequiredMixin, RecentActivityMixin, CheckLabPer
 
 
 class UnitRevisionView(LoginRequiredMixin, CheckLabPermissionMixin, generics.RetrieveAPIView):
+    """
+    Return a measurement instance by a revision id. Handle only GET requests.
+    """
 
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
@@ -54,6 +56,7 @@ class UnitRevisionView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Ret
 
     def get_object(self, *args, **kwargs):
         """
+        Query a measurement by a revision pk
         """
         if self.object:
             return self.object
@@ -63,6 +66,9 @@ class UnitRevisionView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Ret
         return self.object
 
     def dispatch(self, *args, **kwargs):
+        """
+        Check user permissions
+        """
         object = self.get_object(*args, **kwargs)
         if not (object.unit.is_owner(self.request.user) or object.unit.is_member(self.request.user)):
             raise PermissionDenied
