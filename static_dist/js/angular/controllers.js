@@ -11,8 +11,9 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', '$sce', 'Unit',
         })
 
         $scope.getUnit = function(UnitId) {
-            $scope.unit = Unit.get({labId: lab_pk, unitId: UnitId}, function(phone) {});
-            $scope.$broadcast('UnitLoaded', {'unitId': UnitId});  //todo: fix different args
+            $scope.unit = Unit.get({labId: lab_pk, unitId: UnitId}, function(unit) {
+                $scope.$broadcast('UnitLoaded', unit);
+            });
         };
 
         $scope.createUnit = function() {
@@ -24,7 +25,7 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', '$sce', 'Unit',
                     experiments: [exp_pk,]
                 },
                 function(unit){
-                    $scope.$broadcast('UnitLoaded', {'unitId': unit.id});
+                    $scope.$broadcast('UnitLoaded', unit);
                     graph.addNode({
                         id: unit.id,
                         index: 0,
@@ -94,8 +95,8 @@ UnitLinkCtrl.controller('UnitLinkCtrl', ['$scope', 'UnitLink',
     function($scope, UnitLink) {
 //        $scope.unitLinks = UnitLink.query({labId: lab_pk, unitId: $scope.$parent.unit})
 
-        $scope.$on('UnitLoaded', function(e, unitId) {
-            $scope.getUnitLinks(unitId.unitId)
+        $scope.$on('UnitLoaded', function(e, unit) {
+            $scope.getUnitLinks(unit.id)
         });
 
         $scope.getUnitLinks = function(unitId) {
