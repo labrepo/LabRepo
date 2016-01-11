@@ -1,5 +1,7 @@
 (function (Handsontable) {
-
+  /*
+  Get a column number with a '_pk' attr linked to the current column.
+   */
   Handsontable.editors.BaseEditor.prototype.getColumnNumber = function(){
     var n_cols = this.instance.countCols(),
         i = 1,
@@ -8,7 +10,6 @@
         name = (Object.keys(title).filter(function(item) {
             return title[item].toLowerCase() === inst
         })[0] + '_pk').toLowerCase();
-
     for (i=1; i<=n_cols; i++){
         if (typeof this.instance.getColHeader(i) !== 'undefined' && name == this.instance.getColHeader(i).toLowerCase()) {
             return i;
@@ -25,14 +26,13 @@
     Handsontable.Dom.addClass(this.select, 'htSelectEditor');
     Handsontable.Dom.addClass(this.select, 'select2');
     this.select.style.display = 'none';
-    this.instance.rootElement[0].appendChild(this.select);
+    this.instance.rootElement.appendChild(this.select);
   };
 
   SelectMultiplEditor.prototype.prepareOptions = function(optionsToPrepare){
 
     var preparedOptions = {};
-
-    if (Handsontable.helper.isArray(optionsToPrepare)){
+    if (Array.isArray(optionsToPrepare)){
       for(var i = 0, len = optionsToPrepare.length; i < len; i++){
         preparedOptions[optionsToPrepare[i][0]] = optionsToPrepare[i][1];
       }
@@ -49,7 +49,11 @@
     var value = [].map.call(this.select.selectedOptions, function(option) {
       return option.value;
     });
+      var text = [].map.call(this.select.selectedOptions, function(option) {
+      return option.text;
+    });
     this.instance.setDataAtCell(this.row, this.getColumnNumber(), value);
+    this.instance.setDataAtCell(this.row, this.col, text);
 
     return [].map.call(this.select.selectedOptions, function(option) {
       return option.text;
@@ -97,7 +101,7 @@
   SelectMultiplEditor.prototype.open = function () {
     var width = Handsontable.Dom.outerWidth(this.TD); //important - group layout reads together for better performance
     var height = Handsontable.Dom.outerHeight(this.TD);
-    var rootOffset = Handsontable.Dom.offset(this.instance.rootElement[0]);
+    var rootOffset = Handsontable.Dom.offset(this.instance.rootElement);
     var tdOffset = Handsontable.Dom.offset(this.TD);
 
 //    this.select.style.height = height +  + 10 + 'px';

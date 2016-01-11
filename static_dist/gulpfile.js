@@ -183,11 +183,11 @@ gulp.task('scripts:vendor', function () {
         "bower_components/select2/select2.min.js",
         "bower_components/summernote/dist/summernote.min.js",
         "bower_components/angular-summernote/dist/angular-summernote.min.js",
+        "bower_components/handsontable/dist/handsontable.full.min.js",
 
         // custom plugins or modified files
         "static_libs/blueimp-uploader/locale.js",
 //        "static/datetimepicker/js/bootstrap-datetimepicker.min.js",
-        "static_libs/jquery-handsontable/jquery.handsontable.full.js",
         "static_libs/jquery-handsontable/selectMultipleEditor.js",
         "static_libs/jquery-handsontable/select2Editor.js",
         "static_libs/jquery-handsontable/jsTreeEditor.js",

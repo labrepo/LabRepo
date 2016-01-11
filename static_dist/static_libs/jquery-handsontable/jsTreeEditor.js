@@ -8,8 +8,8 @@
     this.div.style.display = 'none';
     this.div.style['background-color'] = 'white';
     this.div.style.with = this.TEXTAREA.style.with;
-    this.$textarea.after(this.div);
-    this.$textarea.attr('placeholder', 'Search');
+    $(this.TEXTAREA).after(this.div);
+    $(this.TEXTAREA).attr('placeholder', 'Search');
 
     this.tree = $(this.div).jstree({
         'core' : {
@@ -28,7 +28,7 @@
     this.tree.focus();
     var that = this;
     var to = false;
-    this.$textarea.keyup(function () {
+    $(this.TEXTAREA).keyup(function () {
         if(to) { clearTimeout(to); }
         to = setTimeout(function () {
             var v = that.$textarea.val();
@@ -46,9 +46,9 @@ JsTreeEditor.prototype.prepare = function(){
 
   JsTreeEditor.prototype.open = function () {
       Handsontable.editors.HandsontableEditor.prototype.open.apply(this, arguments);
-      this.$textarea[0].style.visibility = 'visible';
+      this.TEXTAREA.style.visibility = 'visible';
       this.focus();
-      var tableContainer = this.instance.$table.parents('div.handsontable');
+      var tableContainer = $(this.instance.table).parents('div.handsontable');
       tableContainer.css('height', tableContainer.height() + this.tree.height());
       this.div.style.display = 'block';
   };
@@ -65,14 +65,16 @@ JsTreeEditor.prototype.prepare = function(){
   JsTreeEditor.prototype.getValue = function () {
     var that = this, node;
     that.instance.setDataAtCell(that.row, that.getColumnNumber(), that.tree.jstree('get_selected'));
-    return JSON.stringify([].map.call(that.tree.jstree('get_selected'), function(option) {
+    var tags_data =  JSON.stringify([].map.call(that.tree.jstree('get_selected'), function(option) {
         node = that.tree.jstree('get_node', option);
         return {text: node.text, color: node.li_attr.background_color};
     }));
+    that.instance.setDataAtCell(that.row, that.col, tags_data);
+    return tags_data
   };
 
   JsTreeEditor.prototype.close = function () {
-      var tableContainer = this.instance.$table.parents('div.handsontable');
+      var tableContainer = $(this.instance.table).parents('div.handsontable');
       tableContainer.css('height', tableContainer.height() - this.tree.height());
       Handsontable.editors.HandsontableEditor.prototype.close.apply(this, arguments);
 //    this.$htContainer.handsontable('getInstance').removeHook('beforeKeyDown', onBeforeKeyDownInner);
