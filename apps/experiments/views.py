@@ -26,7 +26,6 @@ from experiments.models import Experiment, ExperimentReadCommentEntry
 from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm, AddUnitToExperimentForm
 from tags.models import Tag
 from units.models import Unit
-from units.forms import UnitForm, UnitPopupForm
 from filemanager.views import get_upload
 
 
@@ -162,7 +161,6 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
     model = Experiment
     template_name = 'experiments/experiment_detail.html'
     paginate_by = 5
-    form = UnitPopupForm
 
     def get_unit_graph_data(self):
         """

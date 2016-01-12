@@ -34,7 +34,7 @@ class UnitListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListAPI
             if self.lab.is_guest(self.request.user):
                 experiments = experiments.filter(Q(owners=self.user) | Q(editors=self.user) | Q(viewers=self.user))
             experiments = experiments.values_list('id')
-        return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'], experiments__in=experiments, active=True)
+        return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'], experiments__in=experiments, active=True).distinct()
 
 
 class UnitTableView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin, AjaxableResponseMixin, View):

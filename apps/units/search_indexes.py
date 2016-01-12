@@ -96,8 +96,6 @@ class UnitMappingType(MappingType, Indexable):
 def update_in_index(sender, instance, **kw):
     from common import tasks
     if instance.active:
-        # tasks.create_mapping(UnitMappingType)
-        # tasks.create_mapping(MeasurementMappingType)
         tasks.index_objects.delay(UnitMappingType, [instance.id])
         # for measurement in document.measurements:
         #     tasks.index_objects.delay(MeasurementMappingType, [measurement.id])

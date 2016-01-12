@@ -3,7 +3,6 @@
 {% load static i18n %}
 
 {% block urls %}
-  data-url='{% url "units:create" lab_pk=lab.pk %}'
   data-remove-url='{% url "units:delete" lab_pk=lab.pk %}'
   data-content-url='{% url "units:api-list-table" lab_pk=lab.pk %}'
   data-update-url='{% url "units:api-update-table" lab_pk=lab.pk %}'

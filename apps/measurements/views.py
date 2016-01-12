@@ -9,8 +9,8 @@ from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckViewPermissi
 from units.models import Unit
 
 
-class MeasurementTemplateView(LoginRequiredMixin, CheckEditPermissionMixin,
-                             TemplateResponseMixin, BaseDetailView, View):
+class MeasurementTableView(LoginRequiredMixin, CheckEditPermissionMixin,
+                           TemplateResponseMixin, BaseDetailView, View):
     """
     Render a measurement table template
     """
