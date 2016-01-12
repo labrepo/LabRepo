@@ -35,3 +35,7 @@ var app = angular.module('LabrepoApp', [
 //    $interpolateProvider.endSymbol('}]}');
 //
 //});
+
+app.run(function ($http, $cookies) {
+    $http.defaults.headers.common['X-CSRFToken'] = $cookies['csrftoken'];
+})
