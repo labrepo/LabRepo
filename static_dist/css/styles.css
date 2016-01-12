@@ -399,3 +399,9 @@ text.id {
 .error-page>.error-content {
     padding-top: 20px;
 }
+
+@media (max-width: 1400px) {
+    .files .name {
+        width: 90px;
+        word-wrap: break-word;
+    }}

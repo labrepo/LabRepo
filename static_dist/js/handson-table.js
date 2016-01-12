@@ -89,7 +89,10 @@ function addHandsonTable(selector) {
 
         data = getTableData(table.data('content-url')),
         colWidths = [],
-
+        getHeight = function (){
+            var sidebar_height = $('.main-sidebar').height();
+            return sidebar_height - 150
+        },
         renderTags = function (instance, td, row, col, prop, value, cellProperties) {
             var escaped, style = '',
                 values;
@@ -137,6 +140,7 @@ function addHandsonTable(selector) {
         manualRowResize: true,
         minSpareRows: 1,
         colWidths: colWidths,
+        height: getHeight,
         colHeaders: function (col) {
             if (headers[col]) {
                 if (typeof column !== 'undefined' && typeof column[col] !== 'undefined' && column[col].hasOwnProperty('append_url')) {
@@ -398,7 +402,10 @@ function addHandsonTable(selector) {
     }
 }
 
+//console.log(sidebar_height)
 function addHandsonTableEditable(selector, data) {
+
+
     var table = $(selector),
         title = 'table',
         toUpperCase = function (match) {
@@ -407,7 +414,10 @@ function addHandsonTableEditable(selector, data) {
         column = [
             {'editor': 'text', 'display': 'none'},
             {'editor': 'text', 'display': 'none'}],
-
+        getHeight = function (){
+            var sidebar_height = $('.main-sidebar').height();
+            return sidebar_height - 150
+        },
         colWidths = [],
         handsontable;
 
@@ -421,15 +431,13 @@ function addHandsonTableEditable(selector, data) {
 
     table.handsontable({
         data: data,
-        fillHandle: true,
-        minRows: 1,
+
         autoWrapCol: false,
-        manualColumnResize: true,
-        manualRowResize: true,
         minSpareRows: 1,
         contextMenu: true,
-        colWidths: colWidths,
+        colWidths: 200,
         outsideClickDeselects: false,
+        height:getHeight(),
         afterChange: function (changes, source) {
             // update plot form
             var options = $(table).handsontable('getDataAtRow', 0);
@@ -451,28 +459,6 @@ function addHandsonTableEditable(selector, data) {
     });
 
     handsontable = table.data('handsontable');
-
-    //overwrite getCopyable that tags copy right
-    var copyableLookup = Handsontable.helper.cellMethodLookupFactory('copyable', false);
-
-    /**
-     * Returns single value from the data array (intended for clipboard copy to an external application)
-     * @param {Number} row
-     * @param {Number} prop
-     * @return {String}
-     */
-    Handsontable.DataMap.prototype.getCopyable = function (row, prop) {
-        if (copyableLookup.call(this.instance, row, this.propToCol(prop))) {
-            var value = this.get(row, prop);
-            if (column[prop].editor == 'jstree') {
-                return [].map.call(value, function (val) {
-                    return val.text;
-                })
-            }
-            return value;
-        }
-        return '';
-    };
 
     function getRequiredCol(table, col, title) {
         return false

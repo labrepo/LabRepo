@@ -88,7 +88,7 @@
                           {% endfor %}
                         </ul>
                       </div>
-                      <div class="col-sm-3 title-desc external-event">{% trans 'editors'|upper %}</div>
+                      <div class="col-sm-3 title-desc ">{% trans 'editors'|upper %}</div>
                       <div class="col-sm-9">
                         <ul class="list-group">
                           {% for member in object.editors.all %}
@@ -176,7 +176,6 @@
 
                 <div class="tab-content">
                   <div class="tab-pane active" id="units-graph">
-                    <!--<a href="{% url 'units:create' lab.pk %}" class="btn btn-primary">Add Unit</a>-->
                     <div class="graph-area" data-graph-json='{{ units_graph_json }}'></div>
                   </div>
                   <!-- /.tab-pane -->
@@ -238,6 +237,8 @@
                           <button type="button" ng-show="unit.edit_permission" ng-click="isEditorOpenDescription = !isEditorOpen" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
                           <div ng-show="!isEditorOpenDescription" ng-bind-html="renderHtml(unit.description)" class="field-text">
                           </div>
+                          <div ng-show="!isEditorOpenDescription && !unit.description" class="field-text">None
+                          </div>
                           <div ng-show="isEditorOpenDescription" >
                             <div class="form-group">
                               <summernote ng-required="true" config="summernote_config" ng-model="unit.description" on-keydown="summernote_send(evt)"></summernote>
@@ -254,6 +255,7 @@
                           <button type="button" ng-show="unit.edit_permission" ng-click="isEditorOpenParent = !isEditorOpenParent" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
                           <div ng-show="!isEditorOpenParent" class="field-text">
                             <span ng-repeat="unit_index in unit.parent"> {% verbatim %}{{ getUnitbyId(unit_index).sample }}{{$last ? '' : ', '}}{% endverbatim %}</span>
+                            <span ng-show="!unit.parent.length"> None</span>
                           </div>
                           <div ng-show="isEditorOpenParent" >
                             <div class="form-group">
