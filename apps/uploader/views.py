@@ -4,8 +4,9 @@ import json
 import requests
 import mimetypes
 import StringIO
+import logging
 
-from PIL import Image
+from PIL import Image, ImageDraw
 import ghostscript
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -22,6 +23,9 @@ from django.apps import apps
 from filemanager.views import pyfs_file, pyfs_file_ang
 from .response import JSONResponse, response_mimetype
 from .serialize import serialize
+
+
+logger = logging.getLogger(__name__)
 
 
 class BaseUploaderMixin(View, SingleObjectMixin):
@@ -82,23 +86,34 @@ class BaseUploaderMixin(View, SingleObjectMixin):
         instance - BaseFile(or subclass) instance
         Return path to file with jpeg
         """
-        filename_pdf = '/tmp/tmp_pdf_{}.pdf'.format(instance.filename)
         filename_jpg = '/tmp/tmpjpg_{}.jpg'.format(instance.filename)
-        with open(filename_pdf, 'w') as f:
-            f.write(instance.file.read())
+        try:
+            # test.py just placeholder
+            args = """test.py
+                   -sDEVICE=jpeg
+                   -o {}
+                   -dJPEGQ=95
+                   -dFirstPage=1
+                   -dLastPage=1
+                   {} """.format(filename_jpg, instance.file.path).split()
 
-        # test.py just placeholder
-        args = """test.py
-               -sDEVICE=jpeg
-               -o {}
-               -dJPEGQ=95
-               -dFirstPage=1
-               -dLastPage=1
-               {} """.format(filename_jpg, filename_pdf).split()
+            GS = ghostscript.Ghostscript(*args)
+            return filename_jpg
 
-        GS = ghostscript.Ghostscript(*args)
-        os.remove(filename_pdf)
-        return filename_jpg
+        except Exception as e:
+            logger.exception("Fatal error while a pdf preview file generation")
+            width = 330
+            height = 490
+            image = Image.new('RGB', (width, height), color=(255, 255, 255, 0))
+            draw = ImageDraw.Draw(image)
+            text = 'PDF preview error'.format(instance.filename)
+            textwidth, textheight = draw.textsize(text)
+            if textwidth < width and textheight < height:
+                texttop = (height - textheight) // 2
+                textleft = (width - textwidth) // 2
+                draw.text((textleft, texttop), text, fill=(0, 0, 0))
+            image.save(filename_jpg, 'JPEG')
+            return filename_jpg
 
 
 class FileUploadMixinView(BaseUploaderMixin):
@@ -115,7 +130,7 @@ class FileUploadMixinView(BaseUploaderMixin):
 
             for key, f in request.FILES.items():
                 obj = self.model(parent=parent, file=f, content_type=f.content_type)
-
+                obj.save()
                 if f.content_type == 'application/pdf':
                     thumb_filename = self.generate_pdf_review(obj)
                     with open(thumb_filename, 'r') as f:
@@ -200,7 +215,7 @@ class LocalFileUploadMixinView(BaseUploaderMixin):
             if need_upload:
                 with pyfs_file_ang(kwargs.get('lab_pk'), f.get('link')) as file_obj:
                     obj.file.save(f.get('name'), File(file_obj))
-
+                obj.save()
                 #generate thumb
                 if obj.content_type == 'application/pdf':
                     thumb_filename = self.generate_pdf_review(obj)

@@ -146,6 +146,15 @@ class UnitFile(models.Model):  # todo upd docs
 
             return self.outer_thumbnail_url
 
+    def delete(self, using=None):
+        if self.file:
+            if os.path.isfile(self.file.path):
+                os.remove(self.file.path)
+        if self.thumbnail:
+            if os.path.isfile(self.thumbnail.path):
+                os.remove(self.thumbnail.path)
+        super(UnitFile, self).delete(using)
+
 
 class UnitLink(models.Model):
     """
