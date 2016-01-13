@@ -182,7 +182,7 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
     function($scope, $sce, $rootScope, Comment, AuthUser, chatMessage) {
 
         $scope.object_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
-        $scope.comments = angular.extend(Comment.query({labId: lab_pk, instanceType: 'experiment', instanceId: 1}),chatMessage.collection)
+        $scope.comments = angular.extend(Comment.query({labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id}),chatMessage.collection)
 
         $rootScope.$on('new_chat_message', function(e, comment){
             $scope.comments.push(comment);
@@ -190,7 +190,7 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
 
         $scope.createComment = function() {
             var comment = Comment.create(
-                {labId: lab_pk, instanceType: 'experiment', instanceId: 1},
+                {labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id},
                 {
                     text: $scope.text,
                     instance_type: 'experiment',
@@ -207,14 +207,14 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
 
         $scope.updateComment = function() {
             var comment = Comment.create(
-                {labId: lab_pk, instanceType: 'experiment', instanceId: 1},
+                {labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id},
                 $scope.comment)
             angular.element(document.querySelector('#comment-modal')).modal('toggle');
         };
 
         $scope.deleteComment = function() {
             var comment = Comment.delete(
-                {labId: lab_pk, instanceType: 'experiment', instanceId: 1, commentId: $scope.comment.id},
+                {labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id, commentId: $scope.comment.id},
                 function(){
                     var index = $scope.comments.indexOf(comment);
                     $scope.comments.splice(index, 1);

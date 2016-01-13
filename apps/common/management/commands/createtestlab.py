@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 from experiments.factories import ExperimentFactory
 from labs.models import Lab
 from labs.factories import LabFactory
-from measurements.factories import MeasurementTypeFactory
+# from measurements.factories import MeasurementTypeFactory
 from profiles.factories import UserFactory
 from tags.factories import TagFactory
 from units.factories import UnitFactory
@@ -34,10 +34,10 @@ class Command(BaseCommand):
             tag5 = TagFactory.create_batch(5, lab=lab, parent=tag3)
             tag6 = TagFactory.create_batch(4, lab=lab, parent=tag2)
             TagFactory.create_batch(2, lab=lab, parent=tag2)
-            UnitFactory(lab=lab, experiments=[experiment1,experiment2, experiment3], user=owner, tag=tag4)
-            UnitFactory(lab=lab, experiments=[experiment2], user=guest, tag=tag4+tag5+[tag3]+[tag2]+[tag1])
-            UnitFactory(lab=lab, experiments=[experiment3], user=member, tag=tag4+tag6+[tag2]+[tag1])
-            MeasurementTypeFactory.create_batch(2, lab=lab)
+            UnitFactory(lab=lab, experiments=[experiment1, experiment2, experiment3], tags=tag4)
+            UnitFactory(lab=lab, experiments=[experiment2], tags=tag4+tag5+[tag3]+[tag2]+[tag1])
+            UnitFactory(lab=lab, experiments=[experiment3], tags=tag4+tag6+[tag2]+[tag1])
+            # MeasurementTypeFactory.create_batch(2, lab=lab)
             self.stdout.write("Test lab created successfully.")
             return
         self.stdout.write("Test lab already created.")

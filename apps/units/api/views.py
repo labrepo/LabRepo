@@ -107,15 +107,7 @@ class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Retri
 
     serializer_class = UnitSerializer
 
-    def get_queryset(self, **kwargs):
-        if self.kwargs.get('experiment_pk'):
-            experiments = [self.kwargs.get('experiment_pk')]
-        else:
-            experiments = Experiment.objects.filter(lab=self.lab, active=True)
-            if self.lab.is_guest(self.request.user):
-                experiments = experiments.filter(Q(owners=self.user) | Q(editors=self.user) | Q(viewers=self.user))
-            experiments = experiments.values_list('id')
-        return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'], experiments__in=experiments, active=True)
+    queryset = Unit.objects.all()
 
 
 class UnitLinkListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListAPIView):

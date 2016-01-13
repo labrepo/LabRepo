@@ -19,6 +19,15 @@ class UnitFactory(factory.DjangoModelFactory):
         return lorem_ipsum.words(1, False)
 
     @factory.post_generation
+    def tags(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for tag in extracted:
+                self.tags.add(tag)
+
+    @factory.post_generation
     def experiments(self, create, extracted, **kwargs):
         if not create:
             return

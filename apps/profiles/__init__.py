@@ -10,7 +10,7 @@ def create_test_lab(self):
     from labs.models import Lab
     from experiments.models import Experiment
     from comments.models import Comment
-    from measurements.models import Measurement, MeasurementType
+    # from measurements.models import Measurement, MeasurementType
     from units.models import Unit
     from tags.models import Tag
 
@@ -27,44 +27,46 @@ def create_test_lab(self):
         lab.guests = []
         lab.pk = None
         lab.is_test = False
-        lab = lab.save()
-
+        lab.save()
         experiments, measurement_types, tags = {}, {}, {}
-        for measurement_type in MeasurementType.objects.filter(lab=base_lab_id):
-            base_measurement_type = measurement_type.pk
-            measurement_type.lab = lab
-            measurement_type.pk = None
-            measurement_type = measurement_type.save()
-            measurement_types[unicode(base_measurement_type)] = measurement_type
+        # for measurement_type in MeasurementType.objects.filter(lab=base_lab_id):
+        #     base_measurement_type = measurement_type.pk
+        #     measurement_type.lab = lab
+        #     measurement_type.pk = None
+        #     measurement_type = measurement_type.save()
+        #     measurement_types[unicode(base_measurement_type)] = measurement_type
 
         for tag in Tag.objects.filter(lab=base_lab_id).order_by('-parent'):
             base_tag = tag.pk
             tag.lab = lab
             tag.pk = None
-            tag = tag.save()
+            tag.save()
             tags[unicode(base_tag)] = tag
-            Tag.objects.filter(lab=lab, parent=base_tag).update(set__parent=tag)
+            Tag.objects.filter(lab=lab, parent=base_tag).update(parent=tag)
 
-        for experiment in Experiment.objects.filter(lab=base_lab_id):
+        for experiment in Experiment.objects.filter(lab__pk=base_lab_id):
             base_experiment = experiment.pk
             experiment.lab = lab
             experiment.pk = None
+            experiment.save()
             experiment.editors = []
             experiment.viewers = []
             experiment.owners = [user]
-            experiment = experiment.save(user=user)
+            experiment.save()
+
             experiments[unicode(base_experiment)] = experiment
             for comment in Comment.objects.filter(object_id=base_experiment):
                 comment.object_id = experiment.pk
                 comment.pk = None
                 comment.save()
 
-        for unit in Unit.objects.filter(lab=base_lab_id):
+        for unit in Unit.objects.filter(lab__pk=base_lab_id):
             base_unit = unit.pk
             unit.lab = lab
             unit.pk = None
+            unit.save()
             unit_experiment = []
-            for experiment in unit.experiments:
+            for experiment in unit.experiments.all():
                 unit_experiment.append(experiments[unicode(experiment.pk)])
             unit.experiments = unit_experiment
             # measurements = []
@@ -80,10 +82,10 @@ def create_test_lab(self):
             #         comment.save()
             # unit.measurements = measurements
             unit_tags = []
-            for tag in unit.tags:
+            for tag in unit.tags.all():
                 unit_tags.append(tags[unicode(tag.pk)])
             unit.tags = unit_tags
-            unit = unit.save(user=user)
+            unit.save()
             for comment in Comment.objects.filter(object_id=base_unit):
                 comment.object_id = unit.pk
                 comment.pk = None
@@ -93,7 +95,7 @@ def create_test_lab(self):
 # User.add_to_class('full_name', full_name)
 # User.add_to_class('get_absolute_url', get_absolute_url)
 # User.add_to_class('has_usable_password', has_usable_password)
-# User.add_to_class('create_test_lab', create_test_lab)
+User.add_to_class('create_test_lab', create_test_lab)
 # User._meta['virtual_fields'] = []
 
 
