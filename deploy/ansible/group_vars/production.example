@@ -26,5 +26,6 @@ social_auth_google_oauth2_key: <social_auth_google_oauth2_key>
 social_auth_google_oauth2_secret: <social_auth_google_oauth2_secret>
 social_auth_linkedin_oauth2_key: <social_auth_linkedin_oauth2_key>
 social_auth_linkedin_oauth2_secret: <social_auth_linkedin_oauth2_secret>
+sentry_dsn: <full_sentry_dsn>
 
 
