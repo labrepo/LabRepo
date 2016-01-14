@@ -34,7 +34,7 @@ ADMINS = (
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lq(3)t1@+4$t#jzzpwi5rf)))kf^(49e%is&*!_7asbrtxae9z'
+SECRET_KEY = 'secret_key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -44,12 +44,6 @@ TEMPLATE_DEBUG = DEBUG
 DOMAIN = 'localhost:8000'
 
 ALLOWED_HOSTS = [DOMAIN]
-
-# EMAIL_HOST = 'smtp.example.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'user@example.com'
-# EMAIL_HOST_PASSWORD = 'paSSworD'
-# EMAIL_USE_TLS = True
 
 SERVER_EMAIL = DEFAULT_FROM_EMAIL = 'info@example.com'
 # Application definition
@@ -137,16 +131,6 @@ ROOT_URLCONF = 'common.urls'
 WSGI_APPLICATION = 'wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # 'django.db.backends.dummy',
-        'NAME': rel('lab.sqlite3'),
-    }
-}
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
@@ -164,8 +148,8 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = rel('public', 'media')
 
-# SOCIAL_AUTH_STORAGE = 'social.apps.django_app.me.models.DjangoStorage'
 
+# Social auth section
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email']
@@ -202,6 +186,8 @@ ACCOUNT_ACTIVATION_DAYS = 1
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = reverse_lazy('login_auth')
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
@@ -209,8 +195,8 @@ LANGUAGE_CODE = 'en-us'
 
 LANGUAGES = (
     ('en', _('English')),
-    ('ru', _('Russian')),
 )
+
 LOCALE_PATHS = (
     rel('conf', 'locale'),
 )
@@ -227,40 +213,20 @@ DATETIME_INPUT_FORMATS = (
     '%m/%d/%Y %H:%M',
 )
 
+# Elasticsearch
 ES_URLS = ['localhost:9200']
 ES_INDEXES = {'default': 'lab_index'}
 ES_DISABLED = False
 
+# Celery
+BROKER_URL = 'redis://localhost:6379/1'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+
+CELERY_ACCEPT_CONTENT = ['pickle']
+CELERY_EVENT_SERIALIZER = 'pickle'
+
+
+# Fileupload
 FILEMANAGER_UPLOAD_ROOT = MEDIA_ROOT + '/uploads/'
 FILEMANAGER_UPLOAD_URL = MEDIA_URL + 'uploads/'
 FILEMANAGER_AUTH_CALLBACK = 'filemanager.auth.allow_in_lab'
-
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_IMAGE_BACKEND = 'Pillow'
-CKEDITOR_CONFIGS = {
-    'ckeditor': {
-        'toolbar': [
-            ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Bold', 'Italic',
-             'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat', '-',
-             'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-'],
-            ['Link', 'Unlink'],
-            ['Image', 'Table', 'Smiley', 'SpecialChar', 'Blockquote'],
-            ['TextColor', 'BGColor', 'Styles', 'Format', 'Font', 'FontSize'],
-            ['Source'],
-        ],
-        'width': '100%',
-        'height': 200,
-        'skin': 'bootstrapck',
-    },
-    'comments': {
-        'toolbar': [
-            ['Link', 'Unlink'],
-            ['Image', 'Table', 'Smiley', 'SpecialChar', 'Blockquote'],
-            ['Source'],
-        ],
-        'width': '100%',
-        'height': 100,
-        'skin': 'bootstrapck',
-    },
-}

@@ -1,20 +1,20 @@
 from __future__ import absolute_import
 
-from os import environ
+from os import environ, urandom
+
+from django.core.exceptions import ImproperlyConfigured
 
 from .base import *
 
 
-# Normally you should not import ANYTHING from Django directly
-# into your settings, but ImproperlyConfigured is an exception.
-from django.core.exceptions import ImproperlyConfigured
 
 import dotenv
 dotenv.read_dotenv()
 
 TESTING = os.sys.argv[1:2] == ['test']
 if TESTING:
-    raise SystemExit('Use testing settings file')
+    raise SystemExit('Use a testing settings file')
+
 
 def get_env_setting(setting):
     """ Get the environment setting or return exception """
@@ -26,6 +26,8 @@ def get_env_setting(setting):
 
 DEBUG = False
 
+SECRET_KEY = environ.get('SECRET_KEY', urandom(32))
+
 DOMAIN = environ.get('DOMAIN', 'localhost')
 
 ALLOWED_HOSTS = [DOMAIN]
@@ -34,29 +36,8 @@ ADMINS = (
     ('Admin', environ.get('ADMIN_EMAIL')),
 )
 
-LANGUAGE_CODE = environ.get('LANGUAGE_CODE')
+LANGUAGE_CODE = environ.get('LANGUAGE_CODE', LANGUAGE_CODE)
 
-SOCIAL_AUTH_FACEBOOK_KEY = environ.get('SOCIAL_AUTH_FACEBOOK_KEY')
-SOCIAL_AUTH_FACEBOOK_SECRET = environ.get('SOCIAL_AUTH_FACEBOOK_SECRET')
-#Google section
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
-#Linkedin section
-SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = environ.get('SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY')
-SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = environ.get('SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET')
-
-# _MONGODB_USER = environ.get('MONGODB_USER')
-# _MONGODB_PASSWD = environ.get('MONGODB_PASSWD')
-# _MONGODB_NAME = environ.get('MONGODB_NAME')
-# _MONGODB_HOST = environ.get('MONGODB_HOST')
-# _MONGODB_PORT = environ.get('MONGODB_PORT')
-
-#
-# _MONGODB_DATABASE_HOST = \
-#     'mongodb://%s:%s@%s:%s/%s' \
-#     % (_MONGODB_USER, _MONGODB_PASSWD, _MONGODB_HOST, _MONGODB_PORT, _MONGODB_NAME)
-
-# mongoengine.connect(_MONGODB_NAME, host=_MONGODB_DATABASE_HOST, tz_aware=USE_TZ)
 
 DATABASES = {
     'default': {
@@ -70,11 +51,15 @@ DATABASES = {
 }
 
 
-BROKER_URL = 'redis://localhost:6379/1'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
-
-CELERY_ACCEPT_CONTENT = ['pickle']
-CELERY_EVENT_SERIALIZER = 'pickle'
+#Facebook section
+SOCIAL_AUTH_FACEBOOK_KEY = environ.get('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = environ.get('SOCIAL_AUTH_FACEBOOK_SECRET')
+#Google section
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+#Linkedin section
+SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = environ.get('SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY')
+SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = environ.get('SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET')
 
 
 EMAIL_HOST = get_env_setting('EMAIL_HOST')
