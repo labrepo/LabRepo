@@ -6,9 +6,6 @@ urlpatterns = patterns(
 
     url(r'^summernote_upload/$', views.SummernoteUploadView.as_view(), name='summernote_upload'),
 
-    url(r'^include/$', views.FileManagerView.as_view(), name='filemanager-include'),
-    url(r'^old/$', views.FileManagerView.as_view(), {'template_name': 'filemanager/filemanager.html'}, name='filemanager'),
-
     url(r'^$', views.FileManagerBaseView.as_view(), name='filemanager-base'),
     url(r'^list/$', views.AngFileManagerListView.as_view(), name='filemanager-list'),
     url(r'^createfolder/$', views.AngFileManagerCreateView.as_view(), name='filemanager-createfolder'),

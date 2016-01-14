@@ -30,9 +30,10 @@
     </form>
   </div>
   </div></div>
+  {% include 'filemanager/modal_summernote.html' %}
 {% endblock %}
 
 {% block form_script %}
-<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+{% include 'filemanager/modal_scripts.html' %}
 {% endblock %}
 

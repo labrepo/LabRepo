@@ -144,6 +144,6 @@ def update_in_index(sender, instance, **kw):
 
 
 @receiver(pre_delete, sender=Experiment)
-def remove_from_index(sender, document, **kw):
+def remove_from_index(sender, instance, **kw):
     from common import tasks
-    tasks.unindex_objects.delay(ExperimentMappingType, [document.id])
+    tasks.unindex_objects.delay(ExperimentMappingType, [instance.id])

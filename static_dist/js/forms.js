@@ -92,9 +92,9 @@ function invite() {
     });
 }
 
-//$('#confirm-delete,#confirm-delete-comment').on('show.bs.modal', function (e) {
-//    $(this).find('#formConfirmDelete').attr('action', $(e.relatedTarget).data('href'));
-//});
+$('#confirm-delete').on('show.bs.modal', function (e) {
+    $(this).find('#formConfirmDelete').attr('action', $(e.relatedTarget).data('href'));
+});
 
 $('body').on('click', '.comment-delete', function (e) {
     $('.formConfirmDelete').attr('action', $(e.target).closest('button').data('href'));
@@ -106,14 +106,6 @@ function submitForm(el, callback, error_callback) {
         e.stopImmediatePropagation();
 
         var $form = $(e.target);
-
-        if (typeof CKEDITOR !== "undefined") {
-            for (var instance in CKEDITOR.instances) {
-                if (CKEDITOR.instances.hasOwnProperty(instance)) {
-                    CKEDITOR.instances[instance].updateElement();
-                }
-            }
-        }
 
         $.post($form.attr('action'), $form.serialize())
             .fail(function (xhr) {

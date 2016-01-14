@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 
 from common.forms import BaseForm, SelectFormMixin, CheckOwnerEditMixin
-from common.widgets import DateTimeWidget, CKEditorUploadWidget
+from common.widgets import DateTimeWidget
 from experiments.models import Experiment
 from units.models import Unit
 
@@ -25,7 +25,7 @@ class ExperimentForm(SelectFormMixin, CheckOwnerEditMixin, BaseForm):
         lab = self.initial['lab']
         self.user = self.initial['user']
         del self.initial['user']
-        self.fields['description'].widget = CKEditorUploadWidget(config_name='ckeditor', lab_pk=lab.pk)
+        self.fields['description'].widget.attrs['class'] += ' summernote '
 
     def clean(self):
         data = super(ExperimentForm, self).clean()

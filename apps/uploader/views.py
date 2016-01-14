@@ -20,7 +20,7 @@ from django.core.servers.basehttp import FileWrapper
 from django.core.exceptions import PermissionDenied
 from django.apps import apps
 
-from filemanager.views import pyfs_file, pyfs_file_ang
+from filemanager.views import pyfs_file_ang
 from .response import JSONResponse, response_mimetype
 from .serialize import serialize
 

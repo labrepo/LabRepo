@@ -27,7 +27,6 @@ urlpatterns = patterns(
     url(r'^(?P<lab_pk>[\d]+)/storages/', include('storages.urls', namespace='storages')),
     url(r'^profiles/', include('profiles.urls', namespace='profiles')),
     url(r"^(?P<lab_pk>[\d]+)/filemanager/", include("filemanager.urls")),
-    url(r'^ckeditor/', include('ckeditor.urls')),
     url('', include('social.apps.django_app.urls', namespace='social')),
     url(r'^admin/rosetta/', include('rosetta.urls')),
     url(r'^admin/', include(admin.site.urls)),

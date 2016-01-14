@@ -405,3 +405,8 @@ text.id {
         width: 90px;
         word-wrap: break-word;
     }}
+
+.sidebar-menu .treeview-menu>li>a {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
