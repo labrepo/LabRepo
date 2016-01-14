@@ -3,14 +3,14 @@
 - name: install npm packeges
   command: npm install
   args:
-    chdir: "{{ project_dir }}/static_dist"
+    chdir: "{{ project_dir }}/static_src"
 
 - name: install bower packeges
   command: bower install
   args:
-    chdir: "{{ project_dir }}/static_dist"
+    chdir: "{{ project_dir }}/static_src"
 
 - name: run gulp task
   command: gulp
   args:
-    chdir: "{{ project_dir }}/static_dist"
+    chdir: "{{ project_dir }}/static_src"
