@@ -12,7 +12,7 @@
                 data-toggle="modal"
                 ng-click="setComment(comment)"><i class="fa fa-times"></i></button>
       </div>
-      <img class="img-circle img-sm" ng-src="{% verbatim %}{{ comment.init_user_info.avatar || '/static/img/gravatar.png' }}{% endverbatim %}" alt="user image">
+      <img class="img-circle img-sm" ng-src="{% verbatim %}{{ comment.init_user_info.avatar || '/static/images/gravatar.png' }}{% endverbatim %}" alt="user image">
       <div class="comment-text">
     <span class="username">
       <span ng-bind="comment.init_user_info.full_name"></span>

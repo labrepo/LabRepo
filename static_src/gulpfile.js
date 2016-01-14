@@ -231,5 +231,5 @@ gulp.task('images:app', function() {
         .pipe(filter([
             '**/*.{png,gif,svg,jpeg,jpg}',
         ]))
-        .pipe(gulp.dest('../static/img/'));
+        .pipe(gulp.dest('../static/images/'));
 });

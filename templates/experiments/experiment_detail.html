@@ -39,7 +39,7 @@
             <div class="col-lg-12">
               <div style="overflow:hidden">
                 <iframe src="http://wooflo.magic60.ru/project/{{ object.wooflo_key}}" width="100%" height="100%">
-                  {% trans 'Your browser doesn't support iframes' %}
+                  {% trans "Your browser doesn't support iframes" %}
                 </iframe>
               </div>
             </div>
@@ -288,7 +288,7 @@
                         </div>
                         <div class="box-body">
                           <div class="attachment-block clearfix">
-                              <img class="attachment-img" ng-src="{% verbatim %}{{ unitLink.image || '/static/img/no_image.png' }}{% endverbatim %}" alt="attachment image">
+                              <img class="attachment-img" ng-src="{% verbatim %}{{ unitLink.image || '/static/images/no_image.png' }}{% endverbatim %}" alt="attachment image">
                             <div class="attachment-pushed">
                               <h4 class="attachment-heading"><a href="{% verbatim %}{{ unitLink.link }}{% endverbatim %}"><span ng-if="unitLink.title">{{ unitLink.title }}</span><span ng-if="!unitLink.title">{% verbatim %}{{ unitLink.link }}{% endverbatim %}</span></a></h4>
                               <div class="attachment-text"><span ng-if="unitLink.description">{% verbatim %}{{ unitLink.description }}{% endverbatim %}</span><span ng-if="!unitLink.description">...</span>
