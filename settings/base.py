@@ -58,7 +58,6 @@ DEFAULT_APPS = (
     'django.contrib.admin',
 )
 THIRD_PARTY_APPS = (
-    'ckeditor',
     'reversion',
     'django_forms_bootstrap',
     'djcelery',
