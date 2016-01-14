@@ -17,7 +17,7 @@ from experiments.models import Experiment
 from tags.models import Tag
 
 
-class Unit(models.Model): #todo history
+class Unit(models.Model):
     """
     The model is for storing Unit data. Bind to laboratory
 

@@ -10,6 +10,7 @@ from common.forms import BaseForm
 
 from .models import Tag
 
+
 class DictWidget(HiddenInput):
 
     def render(self, name, value, attrs=None):

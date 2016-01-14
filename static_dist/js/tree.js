@@ -109,27 +109,28 @@ function InitJSTree(treeElement, plugins){
             });
     });
 
-    $('#location-remove').click(function (e) {
-        e.preventDefault();
-        var selected_node = treeElement.jstree('get_selected'),
-            url = $('#' + selected_node).closest('[data-remove-url]').data('remove-url');
-        $.post(url || $(this).closest('form').attr('action'), {
-            ids: selected_node,
-            csrfmiddlewaretoken: csrftoken
-        }).done(function (response) {
-            treeElement.jstree(true).delete_node(selected_node);
-            formContainerElement.html('');
-            showMessage(false, response.message);
-        }).fail(function (xhr) {
-            showMessage(true, xhr.responseJSON);
-            console.log(xhr.responseJSON);
-        });
-        $('#confirm-delete').modal('hide');
-    });
-    $(document).bind("click", function (e) {
-        if ($(e.target).parents(".left-side").length || $(e.target).parents('header').length) {
-            treeElement.jstree(true).deselect_all();
-            formContainerElement.html('');
-        }
-    });
+//    $('#location-remove').click(function (e) {
+//        e.preventDefault();
+//        var selected_node = treeElement.jstree('get_selected');
+//            console.log(selected_node);
+//            url = $('#' + selected_node).closest('[data-remove-url]').data('remove-url');
+//        $.post(url || $(this).closest('form').attr('action'), {
+//            ids: selected_node,
+//            csrfmiddlewaretoken: csrftoken
+//        }).done(function (response) {
+//            treeElement.jstree(true).delete_node(selected_node);
+//            formContainerElement.html('');
+//            showMessage(false, response.message);
+//        }).fail(function (xhr) {
+//            showMessage(true, xhr.responseJSON);
+//            console.log(xhr.responseJSON);
+//        });
+//        $('#confirm-delete').modal('hide');
+//    });
+//    $(document).bind("click", function (e) {
+//        if ($(e.target).parents(".left-side").length || $(e.target).parents('header').length) {
+//            treeElement.jstree(true).deselect_all();
+//            formContainerElement.html('');
+//        }
+//    });
 }

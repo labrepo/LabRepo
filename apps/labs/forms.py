@@ -44,17 +44,3 @@ class LabForm(LabBaseForm):
                 self._errors['investigator'] = self.error_class([_('You have not permission change lab\'s investigator')])
                 del data['investigator']
         return data
-
-
-class LabAdminForm(LabBaseForm):
-    pass
-    # class Meta:
-    #     document = Lab
-    #
-    # def clean(self):
-    #     data = super(LabAdminForm, self).clean()
-    #     is_test = data.get('is_test')
-    #     labs = self._meta.document.objects.filter(is_test=True)
-    #     if labs and is_test and (labs.count() > 1 or (self.instance and labs[0].pk != self.instance.pk)):
-    #         self._errors['is_test'] = self.error_class(['There was only one test lab'])
-    #     return data

@@ -81,7 +81,6 @@ LOCAL_APPS = (
     'common',
     'experiments',
     'filemanager',
-    'history',
     'labs',
     'measurements',
     'dashboard',

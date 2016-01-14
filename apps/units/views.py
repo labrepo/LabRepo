@@ -30,7 +30,7 @@ from django.db.models import Q
 
 from common.decorators import get_obj_or_404
 from common.mixins import (ActiveTabMixin, LoginRequiredMixin, AjaxableResponseMixin,
-                           RecentActivityMixin, CheckViewPermissionMixin, CommentMixin, DataMixin, JsTreeMixin,
+                           RecentActivityMixin, CheckViewPermissionMixin, CommentMixin, JsTreeMixin,
                            InitialLabMixin)
 # from common.serializer import JsonDocumentEncoder
 from uploader.views import FileUploadMixinView, DropboxFileUploadMixinView, LocalFileUploadMixinView

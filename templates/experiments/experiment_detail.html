@@ -24,12 +24,12 @@
         <div class="tab-pane active" id="exp-chat">
           <div class="row">
             <div class="col-lg-12">
-              {% if experiment_unread_comments %}
-                <div class="alert alert-warning alert-dismissible comments-alert" role="alert">
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  Where are new messages
-                </div>
-              {% endif %}
+              <!--{% if experiment_unread_comments %}-->
+                <!--<div class="alert alert-warning alert-dismissible comments-alert" role="alert">-->
+                  <!--<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+                  <!--Where are new messages-->
+                <!--</div>-->
+              <!--{% endif %}-->
               {% include 'comments/comment_form_ang.html' with not_collapse="1" %}
             </div>
           </div>
@@ -39,7 +39,7 @@
             <div class="col-lg-12">
               <div style="overflow:hidden">
                 <iframe src="http://wooflo.magic60.ru/project/{{ object.wooflo_key}}" width="100%" height="100%">
-                  Ваш браузер не поддерживает плавающие фреймы!
+                  {% trans 'Your browser doesn't support iframes' %}
                 </iframe>
               </div>
             </div>

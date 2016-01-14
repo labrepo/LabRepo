@@ -154,7 +154,7 @@ class ExperimentDeleteView(CheckLabPermissionMixin, CheckDeletePermissionMixin, 
         return messages.add_message(self.request, messages.SUCCESS, _('Experiment was removed successfully.'))
 
 
-class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermissionMixin, LabQueryMixin, CommentMixin, DetailView):
+class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermissionMixin, LabQueryMixin, DetailView):
     """
     View for display information about an existing experiment with related units
     """
@@ -220,32 +220,12 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
 
         ctx['units_graph_json'] = self.get_unit_graph_data()
 
-        ctx['unit_form'] = AddUnitToExperimentForm(initial={'lab': self.lab, 'user': self.request.user, 'experiment': self.object})
+        # ctx['unit_form'] = AddUnitToExperimentForm(initial={'lab': self.lab, 'user': self.request.user, 'experiment': self.object})
 
         UPLOAD_URL, UPLOAD_ROOT = get_upload(self.request, lab_pk=self.lab.pk, *args, **kwargs)
         ctx['UPLOAD_URL'] = UPLOAD_URL
-        print(ExperimentReadCommentEntry.objects.filter(user=self.request.user, experiment=self.object))
-        ctx['experiment_unread_comments'] = self.comments()
         return ctx
 
-    # def get_list_comment(self):
-    #     self.units = Unit.objects.filter(experiments=self.object, active=True)
-    #     queryset = list(super(ExperimentDetailView, self).get_list_comment())
-    #     queryset += list(Comment.objects.filter(instance_type='Unit', object_id__in=self.units.values_list('pk')))
-    #     return queryset
-    def comments(self):
-        from django.core.exceptions import ObjectDoesNotExist
-        try:
-            latest_comment = Comment.objects.filter(instance_type__model='experiment', object_id=self.object.id).exclude(init_user=self.request.user).latest('id').id
-        except Comment.DoesNotExist:
-            return False
-        try:
-            if ExperimentReadCommentEntry.objects.get(user=self.request.user, experiment=self.object).comment.id < latest_comment:
-                return True
-            else:
-                return False
-        except ExperimentReadCommentEntry.DoesNotExist:
-            return True
 
 class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitialMixin, AjaxableResponseMixin,
                           RecentActivityMixin, ModelFormMixin, ProcessFormView, View):

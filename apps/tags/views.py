@@ -108,7 +108,6 @@ class TagDeleteView(LoginRequiredMixin, CheckLabPermissionMixin, ActiveTabMixin,
         for obj in object_list:
             self.save_recent_activity(RecentActivity.DELETE, obj=obj)
         object_list.delete()
-        Unit.objects.filter(tags__in=ids).update(pull_all__tags=ids)
         return self.render_data(HttpResponseRedirect(self.get_success_url()))
 
     def render_data(self, response=None):

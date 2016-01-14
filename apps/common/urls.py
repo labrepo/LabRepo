@@ -13,7 +13,6 @@ js_info_dict = {
 urlpatterns = patterns(
     '',
     url(r'^accounts/', include('common.backends.registration.urls')),
-    # url(r'^(?P<lab_pk>[\d]+)/history/', include('history.urls', namespace='history')),
     url(r'^', include('labs.urls', namespace='labs')),
     url(r'^(?P<lab_pk>[\d]+)/experiments/', include('experiments.urls', namespace='experiments')),
     # url(r'^(?P<lab_pk>[\d]+)/collections/', include('unit_collections.urls', namespace='collections')),
