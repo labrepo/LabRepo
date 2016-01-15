@@ -1,5 +1,4 @@
 import json
-from bson import ObjectId
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
