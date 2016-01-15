@@ -11,9 +11,7 @@ from units.models import Unit
 
 class MeasurementTableView(LoginRequiredMixin, CheckEditPermissionMixin,
                            TemplateResponseMixin, BaseDetailView, View):
-    """
-    Render a measurement table template
-    """
+    """Render a measurement table template"""
     model = Unit
     pk_url_kwarg = 'unit_pk'
     active_tab = 'measurement'

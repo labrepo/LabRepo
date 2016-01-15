@@ -40,9 +40,7 @@ class Measurement(models.Model):
         return self.unit.is_member(user)
 
     def as_table(self):
-        """
-        Concat headers and a table data to a hadsontable representation
-        """
+        """Concat headers and table data to a hadsontable representation."""
         result = list()
         result.append(self.headers)
         result.extend(self.table_data)

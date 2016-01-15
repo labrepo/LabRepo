@@ -10,6 +10,9 @@ from comments.tornadoapp import application
 
 
 class Command(BaseCommand):
+    """
+    Run the Tornado application for comments handling.
+    """
     args = '[port_number]'
     help = 'Starts the Tornado application for comments handling.'
 

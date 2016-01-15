@@ -137,6 +137,9 @@ class LabListView(LoginRequiredMixin, ActiveTabMixin, ListView):
 
 
 class BaseLabCreateView(LoginRequiredMixin, RedirectView):
+    """
+    Create test lab
+    """
     model = Lab
     url = reverse_lazy('labs:list')
 

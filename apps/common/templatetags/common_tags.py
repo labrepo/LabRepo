@@ -6,6 +6,7 @@ register = template.Library()
 
 @register.filter(name='check_list')
 def check_list(value):
+    """Return True if value is a list"""
     return isinstance(value, list)
 
 

@@ -21,6 +21,9 @@ class CommentListView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivit
         ).order_by('action_time')
 
     def perform_create(self, serializer):
+        """
+        Create a comment instance, create recent activity record. Also, publish a message to Redis.
+        """
         obj = serializer.save()
 
         if obj.instance_type.name.lower() == 'experiment':
@@ -33,7 +36,7 @@ class CommentListView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivit
                                   obj=obj.content_object,
                                   experiment=experiment)
 
-        # # publish the message in the redis queue if it's experiment's comment
+        # Publish a message in the redis queue if it's an experiment's comment
         if experiment:
             r = redis.StrictRedis(host='localhost', port=6379, db=3)
             channel = '{}'.format(obj.object_id)

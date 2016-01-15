@@ -1,10 +1,12 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
 from units.models import Unit
 from profiles.models import LabUser
 
-class FormMixin(object):
 
+class FormMixin(object):
+    """Add bootstrap3 and select2 classes for form widgets."""
     def __init__(self, *args, **kwargs):
         super(FormMixin, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -14,7 +16,10 @@ class FormMixin(object):
 
 
 class SelectFormMixin(object):
+    """Helper class for user select fields"""
+
     def __init__(self, *args, **kwargs):
+        """Set user select fields querysets."""
         super(SelectFormMixin, self).__init__(*args, **kwargs)
         self.fields['owners'].widget.attrs['data-dependent'] = 'editors,viewers'
         self.fields['editors'].widget.attrs['data-dependent'] = 'owners,viewers'
@@ -26,6 +31,7 @@ class SelectFormMixin(object):
         self.fields['viewers'].queryset = LabUser.objects.filter(pk__in=people)
 
     def clean(self):
+        """Owners, editors,viewers fields must not intersect."""
         data = super(SelectFormMixin, self).clean()
         if set(data.get('owners', [])) & set(data.get('editors', [])):
             self._errors["members"] = self.error_class([_('Field value \'owners\' should not interfere with the field values \'editors\'')])
@@ -37,6 +43,7 @@ class SelectFormMixin(object):
 
 
 class CheckOwnerEditMixin(object):
+    """Check permissions."""
     def clean(self):
         data = super(CheckOwnerEditMixin, self).clean()
         if self.instance.pk and self.instance.is_editor(self.user):
@@ -48,6 +55,7 @@ class CheckOwnerEditMixin(object):
 
 class CheckUnitMixin(object):
     def __init__(self, *args, **kwargs):
+        """Set unit fields queryset."""
         super(CheckUnitMixin, self).__init__(*args, **kwargs)
         units = []
         unit_queryset = Unit.objects.filter(lab=self.lab.pk, active=True)
@@ -59,11 +67,3 @@ class CheckUnitMixin(object):
 
 class BaseForm(FormMixin, forms.ModelForm):
     pass
-    # def _post_clean(self):
-        # self._meta._dont_save = []
-        # super(BaseForm, self)._post_clean()
-
-    # def __init__(self, *args, **kwargs):
-    #     super(BaseForm, self).__init__(*args, **kwargs)
-    #     if not isinstance(self.instance, self._meta.document):
-    #         self.instance = self._meta.document()

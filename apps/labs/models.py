@@ -19,9 +19,6 @@ class Lab(models.Model):
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='labs_members', verbose_name=_('members'), blank=True)
     guests = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='labs_guests', blank=True, verbose_name=_('guests'))
     is_test = models.BooleanField(default=False, verbose_name=_('test lab'))
-    # storages = models.ListField(models.ReferenceField(LabStorage), verbose_name=_('storages'))
-
-    # meta = {'related_fkey_lookups': [], 'virtual_fields': [], 'verbose_name': ugettext('lab'), 'verbose_name_plural': ugettext('labs')}
 
     class Meta:
         verbose_name = _('lab')

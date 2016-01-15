@@ -3,24 +3,25 @@ from django.utils.safestring import mark_safe
 
 
 class ReadonlyWidget(forms.Widget):
-    '''Renders a value wrapped in a <p class='form-control-static'> tag.
+    """Renders a value wrapped in a <p class='form-control-static'> tag.
     
     Requires use of specific form support. (see ReadonlyForm 
     or ReadonlyModelForm)
-    '''
+    """
 
     def render(self, name, value, attrs=None):
         return mark_safe(u'<p %s >%s</p>' % (forms.util.flatatt({'class': 'form-control-static'}), value))
+
     def value_from_datadict(self, data, files, name):
         return self.original_value
 
 
 class PField(forms.Field):
-    '''A field which renders a value wrapped in a <p> tag.
+    """A field which renders a value wrapped in a <p> tag.
     
     Requires use of specific form support. (see ReadonlyForm 
     or ReadonlyModelForm)
-    '''
+    """
     
     def __init__(self, *args, **kwargs):
         kwargs['widget'] = kwargs.get('widget', ReadonlyWidget)
@@ -28,12 +29,9 @@ class PField(forms.Field):
 
 
 class Readonly(object):
-    '''Base class for ReadonlyForm and ReadonlyModelForm which provides
+    """Base class for ReadonlyForm and ReadonlyModelForm which provides
     the meat of the features described in the docstings for those classes.
-    '''
-
-    class NewMeta:
-        readonly_fields = tuple()
+    """
 
     def __init__(self, *args, **kwargs):
         super(Readonly, self).__init__(*args, **kwargs)
@@ -49,3 +47,6 @@ class Readonly(object):
                     field.widget = ReadonlyWidget(attrs={'class': 'form-control-static'})
             elif not isinstance(field, PField):
                 continue
+
+    class NewMeta:
+        readonly_fields = tuple()

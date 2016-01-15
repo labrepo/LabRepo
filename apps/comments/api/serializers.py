@@ -9,9 +9,7 @@ from experiments.models import Experiment
 
 
 class InstanceTypeField(serializers.Field):
-    """
-    Serialize django content type field from a generic relation.
-    """
+    """Serialize django content type field from a generic relation."""
 
     def to_representation(self, obj):
         return obj.name.lower()

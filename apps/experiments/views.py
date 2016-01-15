@@ -16,14 +16,13 @@ from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
 from comments.models import Comment
 from common.decorators import get_obj_or_404
-
 from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPermissionMixin, JsTreeMixin,
                            LabQueryMixin, CheckDeletePermissionMixin, RecentActivityMixin, CommentMixin,
                            AjaxableResponseMixin, InviteFormMixin, CheckLabPermissionMixin,
                            FormInitialMixin, LoginRequiredMixin)
 from dashboard.models import RecentActivity
 from experiments.models import Experiment, ExperimentReadCommentEntry
-from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm, AddUnitToExperimentForm
+from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm
 from tags.models import Tag
 from units.models import Unit
 from filemanager.views import get_upload
@@ -230,7 +229,7 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
 class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitialMixin, AjaxableResponseMixin,
                           RecentActivityMixin, ModelFormMixin, ProcessFormView, View):
     """
-    Add units to experimetn
+    Add units to a experiment
     """
     model = Experiment
     form_class = UpdateUnitsForm
@@ -258,7 +257,10 @@ class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitia
     def get_success_message(self):
         return ugettext(u'Experiment was changed successfully.')
 
-def get_wooflo_key(experiment):
+def get_wooflo_key(experiment):  # TODO: Refactor this
+    """
+    Interacts with a wooflo server and create new wooflo project.
+    """
     s = requests.Session()
     r = s.get('http://wooflo.magic60.ru/signin')
     rr = re.search(r'<input id="csrf_token" name="csrf_token" type="hidden" value="(.*?)">', r.text)

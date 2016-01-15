@@ -42,9 +42,6 @@ class Experiment(models.Model):
     active = models.BooleanField(default=True, verbose_name=_('active'))
     wooflo_key = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('wooflo project key'))
 
-    # meta = {'related_fkey_lookups': [], 'virtual_fields': [],
-    #         'verbose_name': ugettext('experiment'), 'verbose_name_plural': ugettext('experiments')}
-    #
     class Meta:
         verbose_name = _('experiment')
         verbose_name_plural = _('experiments')

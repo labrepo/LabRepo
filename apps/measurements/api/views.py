@@ -21,9 +21,7 @@ class MeasurementDetailView(LoginRequiredMixin, RecentActivityMixin, CheckLabPer
     serializer_class = MeasurementSerializer
 
     def dispatch(self, *args, **kwargs):
-        """
-        Check user permissions
-        """
+        """Check user permissions"""
         object = self.get_object()
 
         if not (object.unit.is_owner(self.request.user) or object.unit.is_member(self.request.user)):
@@ -46,18 +44,14 @@ class MeasurementDetailView(LoginRequiredMixin, RecentActivityMixin, CheckLabPer
 
 
 class UnitRevisionView(LoginRequiredMixin, CheckLabPermissionMixin, generics.RetrieveAPIView):
-    """
-    Return a measurement instance by a revision id. Handle only GET requests.
-    """
+    """Return a measurement instance by a revision id. Handle only GET requests."""
 
     queryset = Measurement.objects.all()
     serializer_class = MeasurementSerializer
     object = None
 
     def get_object(self, *args, **kwargs):
-        """
-        Query a measurement by a revision pk
-        """
+        """Query a measurement by a revision pk"""
         if self.object:
             return self.object
         measurement = Measurement.objects.get(pk=kwargs['pk'])
@@ -66,9 +60,7 @@ class UnitRevisionView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Ret
         return self.object
 
     def dispatch(self, *args, **kwargs):
-        """
-        Check user permissions
-        """
+        """Check user permissions"""
         object = self.get_object(*args, **kwargs)
         if not (object.unit.is_owner(self.request.user) or object.unit.is_member(self.request.user)):
             raise PermissionDenied

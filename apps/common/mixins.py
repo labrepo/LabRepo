@@ -81,6 +81,9 @@ class FormInitialMixin(object):
 
 
 class ActiveTabMixin(object):
+    """
+    Sets a context active_tab variable. It shows an active sidebar menu item.
+    """
     def get_context_data(self, **kwargs):
         ctx = super(ActiveTabMixin, self).get_context_data(**kwargs)
         ctx['active_tab'] = self.active_tab

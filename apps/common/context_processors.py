@@ -5,8 +5,8 @@ from experiments.models import Experiment
 from labs.models import Lab
 
 
-
 def menu_processor(request):
+    """Return experiment and lab instances which is available for current user."""
     if request.resolver_match and 'lab_pk' in request.resolver_match.kwargs:
         lab_pk = request.resolver_match.kwargs['lab_pk']
         user = request.user
@@ -25,7 +25,7 @@ def menu_processor(request):
 
 def sidebar_processor(request):
     """
-    Collapse sidebar(add AdminLTE class)
+    Save state of a sidebar, collapsed or not.
     """
     if request.COOKIES.get('sidebarcollapse'):
         return {'SIDEBAR_COLLAPSED': True}

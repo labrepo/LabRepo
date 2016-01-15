@@ -2,16 +2,13 @@ from django.utils import formats
 from django.core.urlresolvers import reverse
 
 from rest_framework import serializers
-# from rest_framework.reverse import reverse
 from reversion import revisions as reversion
 
 from measurements.models import Measurement
 
 
 class RevisionsField(serializers.Field):
-    """
-    Return the list of revisions for object from django-revision
-    """
+    """Return the list of revisions for object from django-revision"""
     def __init__(self, **kwargs):
         super(RevisionsField, self).__init__(**kwargs)
         self.value = None
