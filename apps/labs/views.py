@@ -15,7 +15,6 @@ from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckEditPermissi
 from filemanager.views import check_directory
 from labs.models import Lab
 from labs.forms import LabForm
-from fabfile import create_test_lab
 
 
 class LabCreateView(LoginRequiredMixin, InviteFormMixin, ActiveTabMixin, CreateView):

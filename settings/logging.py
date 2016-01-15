@@ -54,6 +54,7 @@ LOGGING = {
             'filename': 'logs/celery.log',
             'maxBytes': 1024*1024*5,  # 5 MB
             'backupCount': 3,
+            'formatter': 'simple'
         },
         'elastic_handler': {
             'level': 'WARNING',
@@ -61,6 +62,7 @@ LOGGING = {
             'filename': 'logs/elastic.log',
             'maxBytes': 1024*1024*5,  # 5 MB
             'backupCount': 3,
+            'formatter': 'simple'
         },
         'mail_admins': {
             'level': 'ERROR',
