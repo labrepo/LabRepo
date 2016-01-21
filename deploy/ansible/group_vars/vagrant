@@ -5,8 +5,6 @@ server_hostname: labrepo.org
 user: vagrant
 project_dir: /home/vagrant/labrepo
 
-# paste here values from secret.example
-
 admin_email: cyc60@mail.ru
 secret_key: 12321
 language_code: en-us
