@@ -5,11 +5,14 @@ from django.utils.translation import gettext_lazy as _, ugettext
 from labs.models import Lab
 
 
+SFTP, S3 = range(1, 3)
+
+
 class LabStorage(models.Model):
     """
     Filesystem storage for laboratories
     """
-    SFTP, S3 = range(1, 3)
+
     FS_TYPES = [
         (SFTP, ugettext("SFTP")),
         (S3, ugettext("S3")),

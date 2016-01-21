@@ -35,7 +35,7 @@ class MeasurementDetailView(LoginRequiredMixin, RecentActivityMixin, CheckLabPer
         Doesn't hit DB if nothing changed(Doesn't create redundant revisions).
         """
         if not (self.get_object().headers == serializer.validated_data.get('headers') and
-                        self.get_object().table_data == serializer.validated_data.get('table_data')):
+                self.get_object().table_data == serializer.validated_data.get('table_data')):
             with reversion.create_revision():
                 serializer.save()
                 reversion.set_user(self.request.user)
