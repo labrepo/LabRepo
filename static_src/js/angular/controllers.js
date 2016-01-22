@@ -202,14 +202,15 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
         };
 
         $scope.updateComment = function() {
-            var comment = Comment.create(
-                {labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id},
+            var comment = Comment.update(
+                {labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id, commentId: $scope.comment.id},
                 $scope.comment)
             angular.element(document.querySelector('#comment-modal')).modal('toggle');
         };
 
         $scope.deleteComment = function() {
-            var comment = Comment.delete(
+            var comment = $scope.comment;
+            Comment.delete(
                 {labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id, commentId: $scope.comment.id},
                 function(){
                     var index = $scope.comments.indexOf(comment);
@@ -237,7 +238,69 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
         }
 
     }]);
+var CommentCtrl = angular.module('CommentCtrl', []);
 
+CommentCtrl.controller('CommentCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'AuthUser',
+    function($scope, $sce, $rootScope, Comment, AuthUser) {
+
+        $scope.$on('UnitLoaded', function(e, unit) {
+            $scope.comments = Comment.query({labId: lab_pk, instanceType: 'unit', instanceId: unit.id})
+            $scope.object_id = unit.id;
+        });
+
+        $scope.createComment = function() {
+            var comment = Comment.create(
+                {labId: lab_pk, instanceType: 'unit', instanceId: $scope.object_id},
+                {
+                    text: $scope.text,
+                    instance_type: 'unit',
+                    object_id: $scope.object_id,
+                    init_user: AuthUser.id
+                })
+            $scope.comments.push(comment);
+            $scope.text = null;
+        };
+
+        $scope.setComment = function(comment) {
+            $scope.comment = comment;
+        };
+
+        $scope.updateComment = function() {
+            var comment = Comment.update(
+                {labId: lab_pk, instanceType: 'unit', instanceId: $scope.object_id, commentId: $scope.comment.id},
+                $scope.comment)
+            angular.element(document.querySelector('#comment-modal-unit')).modal('toggle');
+        };
+
+        $scope.deleteComment = function() {
+            var comment = $scope.comment;
+            Comment.delete(
+                {labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id, commentId: $scope.comment.id},
+                function(){
+                    var index = $scope.comments.indexOf(comment);
+                    $scope.comments.splice(index, 1);
+                }
+            )
+            angular.element(document.querySelector('#confirm-delete-comment-unit')).modal('toggle');
+        };
+
+        $scope.renderHtml = function(html_code)
+        {
+            return $sce.trustAsHtml(html_code);
+        };
+
+        $scope.summernote_config = window.summernote_config;
+        $scope.summernote_send = function(e) {
+            if ((e.keyCode == 10 || e.keyCode == 13) && (e.ctrlKey || e.shiftKey) && $scope.text)
+            {
+                e.preventDefault();
+                $scope.createComment()
+            }
+            if ((e.keyCode == 10 || e.keyCode == 13) && (e.ctrlKey || e.shiftKey)) {
+                e.preventDefault();
+            }
+        }
+    }]);
 
 var StorageCtrl = angular.module('StorageCtrl', []);
 StorageCtrl.controller('StorageCtrl', ['$scope', 'Storage',

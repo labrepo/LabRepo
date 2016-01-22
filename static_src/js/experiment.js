@@ -86,9 +86,6 @@ function update_unit_info(unit){
         treeElement.jstree('deselect_all')
         treeElement.jstree('select_node', JSON.parse(unit_data.tags))
 
-        // Comments
-        $('#unit-comments').html(unit_data.comments)
-        addSumernote();
     });
 }
 

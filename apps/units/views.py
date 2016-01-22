@@ -210,13 +210,12 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
 
 
 class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMixin, InitialLabMixin,
-                         RecentActivityMixin, ActiveTabMixin, CommentMixin, AjaxableResponseMixin, DetailView):
+                         RecentActivityMixin, AjaxableResponseMixin, DetailView):
     """
     View for return json information about an existing unit(is used on experiment page)
     """
     model = Unit
     template_name = 'units/unit_detail.html'
-    active_tab = 'units'
 
     def get_object(self, queryset=None, *args, **kwargs):
         unit = super(UnitDetailJSONView, self).get_object(queryset)
@@ -243,7 +242,6 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         ctx['tags'] = json.dumps(self.get_tree_element(self.object))
 
         ctx['uploader'] = render_to_string('units/tabs/unit_uploader.html', context)
-        ctx['comments'] = render_to_string('units/tabs/unit_comments.html', context)
 
         return self.render_to_json_response(ctx)
 
