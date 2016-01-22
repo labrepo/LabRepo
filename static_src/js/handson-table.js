@@ -50,9 +50,6 @@ $(function () {
     if ($("#dataTable").length) {
         addHandsonTable("#dataTable");
     }
-//    if ($("#dataTableEditable").length) {
-//        addHandsonTableEditable("#dataTableEditable");
-//    }
 });
 
 function getTableData(url) {
@@ -402,9 +399,8 @@ function addHandsonTable(selector) {
     }
 }
 
-//console.log(sidebar_height)
-function addHandsonTableEditable(selector, data) {
 
+function addHandsonTableEditable(selector, data) {
 
     var table = $(selector),
         title = 'table',

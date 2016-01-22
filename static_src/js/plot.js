@@ -1,4 +1,4 @@
- $('.show-plot').click(function (e) {
+$('.show-plot').click(function (e) {
     $('form#plot-form').toggle();
 });
 
@@ -39,15 +39,15 @@ $('body').on('submit', 'form#plot-form',function (e) {
     plot_data['args'] = JSON.stringify(args);
 
     plot_data['kwargs'] = JSON.stringify({"filename": "plot for {{ object }}",
-                           "fileopt": "overwrite",
-                                "style": {
-                                    "type": plot_type
-                                },
-                            "layout": {
-                                "title": "plot for {{ object }}"
-                            },
-                            "world_readable": true
-                            });
+        "fileopt": "overwrite",
+        "style": {
+            "type": plot_type
+        },
+        "layout": {
+            "title": "plot for {{ object }}"
+        },
+        "world_readable": true
+    });
     $.post('https://plot.ly/clientresp', plot_data, function( data ) {
         var plot_url =JSON.parse(data).url;
         $('.plot-link').html('<p><a target="_blank" href="' + plot_url + '">View the plot on plot.ly</a></p>')
@@ -55,10 +55,10 @@ $('body').on('submit', 'form#plot-form',function (e) {
 });
 
 function reset_plot() {
-  $('form#plot-form').hide();
-  $('.plot-link').html('')
-  $('select[name="xasis"] option:first-child').attr("selected", "selected");
-  $('select[name="yasis"] option:first-child').attr("selected", "selected");
+    $('form#plot-form').hide();
+    $('.plot-link').html('')
+    $('select[name="xasis"] option:first-child').attr("selected", "selected");
+    $('select[name="yasis"] option:first-child').attr("selected", "selected");
 
 }
 
@@ -78,7 +78,7 @@ function table_to_plot_data(table_data) {
         if (flag_empty) {
             table_data.splice(-1, 1)
         } else {
-        break
+            break
         }
     }
     // Initialize plot_data object
@@ -96,17 +96,15 @@ function table_to_plot_data(table_data) {
     return plot_data
 }
 
- $(function() {
-     var table = $("#dataTableEditable");
-     if (table.length){
-         var options = $(table).handsontable('getDataAtRow', 0);
-         $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
-         if(options){
-             for (var i = 0, max = options.length; i < max; i += 1) {
-                 $('#plot-form .asis').append('<option value="'+ i +'">' + options[i] + '</option>')
-             }
-         }
-
-     }
-
- });
+$(function() {
+    var table = $("#dataTableEditable");
+    if (table.length){
+        var options = $(table).handsontable('getDataAtRow', 0);
+        $('#plot-form .asis').find('option').not( ":disabled" ).remove().end();
+        if(options){
+            for (var i = 0, max = options.length; i < max; i += 1) {
+                $('#plot-form .asis').append('<option value="'+ i +'">' + options[i] + '</option>')
+            }
+        }
+    }
+});

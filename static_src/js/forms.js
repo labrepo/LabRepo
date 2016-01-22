@@ -5,7 +5,6 @@ $(document).ready(function () {
     addSumernote()
 
     submitForm($('.comment-form'), function (response, form) {
-//        form.closest('.comments-block').find('div#comment').append(response.data); //old
         //if not web sockets
         form.closest('.comment-area').find('.comments-list').append(response.data);  // new
 
@@ -16,7 +15,6 @@ $(document).ready(function () {
         $('#' + comment_field_id).summernote('focus');
 
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-//        CKEDITOR.instances[comment_field_id].setData('');
     });
 
     // Scroll to comment's block bottom
@@ -41,7 +39,6 @@ $(document).ready(function () {
             $('div.comment-modal form').attr('action', that.data('url')).find('[name="update-text"]').val(value);
             var comment_field_id = that.closest('.comment-area').find('div.comment-modal textarea[name="update-text"]').attr('id');
             $(that.closest('.comment-area').find('div.comment-modal textarea[name="update-text"]')).code(value);
-//            CKEDITOR.instances[comment_field_id].setData(value);
         })
         .on('click', '.comment-remove', function () {
             submitForm($(this).closest('form'), function (response) {

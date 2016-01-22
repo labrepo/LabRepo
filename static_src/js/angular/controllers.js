@@ -3,7 +3,6 @@ var unitControllers = angular.module('unitControllers', []);
 unitControllers.controller('UnitDetailCtrl', ['$scope', '$sce', 'Unit',
     function($scope, $sce, Unit) {
         $scope.experiment_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
-//        $scope.units = Unit.query({labId: lab_pk, experiment_pk: experiment_id})
         $scope.units = Unit.query({labId: lab_pk}, function(units){
             $scope.experiment_units =  units.filter(function(unit) {
                 return unit.experiments.indexOf($scope.experiment_id) > -1
@@ -93,8 +92,6 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', '$sce', 'Unit',
 var UnitLinkCtrl = angular.module('UnitLinkCtrl', []);
 UnitLinkCtrl.controller('UnitLinkCtrl', ['$scope', 'UnitLink',
     function($scope, UnitLink) {
-//        $scope.unitLinks = UnitLink.query({labId: lab_pk, unitId: $scope.$parent.unit})
-
         $scope.$on('UnitLoaded', function(e, unit) {
             $scope.getUnitLinks(unit.id)
         });
@@ -113,7 +110,6 @@ UnitLinkCtrl.controller('UnitLinkCtrl', ['$scope', 'UnitLink',
             UnitLink.delete({labId: lab_pk, linkId: UnitLinkId})
             $scope.unitLinks.splice(index,1);
         };
-
     }]);
 
 

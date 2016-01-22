@@ -30,11 +30,7 @@ var app = angular.module('LabrepoApp', [
     'LabrepoApp.directives',
     'unitServices', 'unitLinkServices', 'commentServices', 'chatSocketServices', 'storageServices', 'measurementServices',
     'ui.select2', 'summernote', 'yaru22.angular-timeago', 'ngWebSocket', 'ng-file-model']);
-//app.config(function($interpolateProvider) {
-//    $interpolateProvider.startSymbol('{[{');
-//    $interpolateProvider.endSymbol('}]}');
-//
-//});
+
 
 app.run(function ($http, $cookies) {
     $http.defaults.headers.common['X-CSRFToken'] = $cookies['csrftoken'];

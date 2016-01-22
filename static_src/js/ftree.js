@@ -142,15 +142,6 @@ function InitFancyTree(treeElement, plugins){
         }
     }).focus();
 
-//    // Add node
-////    var activeNode = $("#tree").fancytree("getRootNode");
-//    var activeNode = treeElement.fancytree("getNodeByKey", "5593e6ce0640fd0d748d16f6");
-//    console.log(activeNode)
-//    activeNode.addChildren({
-//        title: "Document using a custom icon",
-//    });
-
-
     $('#location-remove').click(function (e) {
         e.preventDefault();
         var selected_nodes = tree.getSelectedNodes()
