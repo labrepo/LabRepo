@@ -179,6 +179,7 @@ gulp.task('scripts:vendor', function () {
         "bower_components/zeroclipboard/dist/ZeroClipboard.js",
         "bower_components/jquery.fancytree/dist/jquery.fancytree-all.min.js",
         "bower_components/jstree/dist/jstree.min.js",
+        "bower_components/ng-js-tree/dist/ngJsTree.min.js",
         "bower_components/lightbox2/dist/js/lightbox.min.js",
         "bower_components/select2/select2.min.js",
         "bower_components/summernote/dist/summernote.min.js",

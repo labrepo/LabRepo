@@ -112,6 +112,41 @@ UnitLinkCtrl.controller('UnitLinkCtrl', ['$scope', 'UnitLink',
         };
     }]);
 
+var TagCtrl = angular.module('TagCtrl', []);
+
+TagCtrl.controller('TagCtrl', ['$scope', '$sce', 'Tag',
+    function($scope, $sce, Tag) {
+        $scope.treeConfig =  {
+            'core': {
+                'animation': 0,
+                'check_callback': true,
+                'themes': {'stripes': true},
+            },
+            'search': {
+                show_only_matches: true
+            },
+            'checkbox': {
+                three_state: false,
+            },
+            'plugins': ['search', 'checkbox']
+        }
+
+        Tag.query({labId: lab_pk},function(data){
+            $scope.treeData = JSON.parse(angular.toJson(data));
+            $scope.treeConfig.version++;
+        });
+        $scope.$on('UnitLoaded', function(e, unit) {
+            $scope.treeInstance.jstree(true).deselect_all();
+            $scope.treeInstance.jstree(true).select_node(unit.tag_tree);
+        });
+
+        $scope.tagsSave = function() {
+            $scope.unit.tags = $scope.treeInstance.jstree(true).get_selected();
+            $scope.saveUnit();
+
+        };
+    }]);
+
 
 var MeasurementCtrl = angular.module('MeasurementCtrl', []);
 MeasurementCtrl.controller('MeasurementCtrl', ['$scope', '$http', 'Measurement',

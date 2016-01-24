@@ -1,7 +1,10 @@
 from django.conf import settings
+
 from rest_framework import serializers
-from units.models import Unit, UnitLink
 from reversion import revisions as reversion
+
+from common.mixins import JsTreeMixin
+from units.models import Unit, UnitLink
 
 
 class RevisionCommentField(serializers.Field):
@@ -65,17 +68,21 @@ class UnitTableSerializer(serializers.ModelSerializer):
                   'change_reasons', 'experiments', 'parent', 'tags', 'lab')
 
 
-class UnitSerializer(serializers.ModelSerializer):
+class UnitSerializer(JsTreeMixin, serializers.ModelSerializer):
 
     edit_permission = serializers.SerializerMethodField()
+    tag_tree = serializers.SerializerMethodField()
     measurement = serializers.PrimaryKeyRelatedField(read_only=True)
 
     def get_edit_permission(self, obj):
         return obj.is_owner(self.context['request'].user)
 
+    def get_tag_tree(self, obj):
+        return self.get_jstree_data(obj.tags, fields=('id', 'parent', 'details'), parent_id='#')
+
     class Meta:
         model = Unit
-        fields = ('id', 'sample', 'description', 'experiments', 'parent', 'tags', 'lab', 'measurement', 'edit_permission')
+        fields = ('id', 'sample', 'description', 'experiments', 'parent', 'tags', 'tag_tree', 'lab', 'measurement', 'edit_permission')
 
 
 class UnitLinkSerializer(serializers.ModelSerializer):

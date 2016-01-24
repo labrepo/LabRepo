@@ -239,16 +239,9 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
         ctx = {}
         ctx.update(self.kwargs)
 
-        ctx['tags'] = json.dumps(self.get_tree_element(self.object))
-
         ctx['uploader'] = render_to_string('units/tabs/unit_uploader.html', context)
 
         return self.render_to_json_response(ctx)
-
-    def get_tree_element(self, object, fields=('id', 'parent', 'details'), parent_id='#'):
-        tags = object.tags
-        tags_tree = self.get_jstree_data(tags, fields, parent_id=parent_id)
-        return tags_tree
 
     def get_context_data(self, **kwargs):
         ctx = super(UnitDetailJSONView, self).get_context_data(**kwargs)

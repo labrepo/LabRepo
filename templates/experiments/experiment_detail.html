@@ -364,9 +364,9 @@
                     </div>
                   </div>
 
-                  <div class="tab-pane" id="unit-tags">
-                    <div id="tag-tree" data-content='{{ tags }}'></div>
-                    <button style="display:none" id="tag-save" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Save' %}</button>
+                  <div ng-controller="TagCtrl" class="tab-pane" id="unit-tags">
+                    <div js-tree="treeConfig"  tree="treeInstance" ng-model="treeData"></div>
+                    <button ng-show="unit" ng-click="tagsSave()" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Save' %}</button>
                   </div>
 
                   <div class="tab-pane" id="unit-comments">

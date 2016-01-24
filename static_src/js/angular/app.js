@@ -26,10 +26,10 @@ var FileManagerApp = angular.module('FileManagerApp').config(['fileManagerConfig
 
 
 var app = angular.module('LabrepoApp', [
-    'FileManagerApp', 'unitControllers', 'UnitLinkCtrl', 'chatCtrl', 'CommentCtrl','StorageCtrl', 'MeasurementCtrl',
+    'FileManagerApp', 'unitControllers', 'UnitLinkCtrl', 'chatCtrl', 'CommentCtrl','StorageCtrl', 'MeasurementCtrl', 'TagCtrl',
     'LabrepoApp.directives',
-    'unitServices', 'unitLinkServices', 'commentServices', 'chatSocketServices', 'storageServices', 'measurementServices',
-    'ui.select2', 'summernote', 'yaru22.angular-timeago', 'ngWebSocket', 'ng-file-model']);
+    'unitServices', 'unitLinkServices', 'commentServices', 'chatSocketServices', 'storageServices', 'measurementServices', 'tagServices',
+    'ui.select2', 'summernote', 'yaru22.angular-timeago', 'ngWebSocket', 'ng-file-model','ngJsTree']);
 
 
 app.run(function ($http, $cookies) {

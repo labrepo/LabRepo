@@ -44,7 +44,8 @@
     "angular-bootstrap": "~0.14.3",
     "angular-websocket": "~1.0.14",
     "ng-file-model": "*",
-    "angular-summernote": "~0.7.0"
+    "angular-summernote": "~0.7.0",
+    "ng-js-tree": "~0.0.7"
   },
   "resolutions": {
     "select2": "~3.5.4",

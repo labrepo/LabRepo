@@ -56,6 +56,18 @@ storageServices.factory('Storage', ['$resource',
         });
     }]);
 
+
+var tagServices = angular.module('tagServices', ['ngResource']);
+tagServices.factory('Tag', ['$resource',
+    function($resource){
+        return $resource('/:labId/tags/api/:tagId/', {}, {
+            'create': {method:'POST'},
+            'delete': {method:'DELETE'},
+            'update': {method:'PUT'},
+            'query':  {method:'GET', isArray:true},
+        });
+    }]);
+
 var measurementServices = angular.module('measurementServices', ['ngResource']);
 measurementServices.factory('Measurement', ['$resource',
     function($resource){

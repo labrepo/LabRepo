@@ -1,9 +1,7 @@
 var exp_pk = $("#experiment_row").data('experiment-pk');
 window.unit_pk = null;
-var treeElement = $('#tag-tree');
 
 $(function() {
-    InitJSTree(treeElement,['search', 'checkbox']);
 
     // fix bootstrap tabs urls
     var hash = window.location.hash;
@@ -49,9 +47,7 @@ function update_unit_info(unit){
      */
 
     // show hidden tab's buttons
-        $('#unit-measurements .btn').show()
-//        $('#unit-desc .btn').show()
-        $('#unit-tags .btn').show()
+    $('#unit-measurements .btn').show()
 
     var url = '/' + lab_pk + '/units/detail_json/'+ unit.id + '/'
     $.get(url, {unit_pk: unit.id}, function(unit_data){
@@ -82,10 +78,6 @@ function update_unit_info(unit){
         var button = Dropbox.createChooseButton(options);
         document.getElementById("dropbox").appendChild(button);
 
-        // Tags
-        treeElement.jstree('deselect_all')
-        treeElement.jstree('select_node', JSON.parse(unit_data.tags))
-
     });
 }
 
@@ -96,15 +88,15 @@ $('a[href="#unit-measurements"]').on('shown.bs.tab', function (e) {
     }
 });
 
-// save unit tags
-$("#unit-tags").on("click", "#tag-save", function() {
-    var selected_tags = treeElement.jstree('get_selected')
-    var scope = angular.element($("#unit-page")).scope();
-    scope.$apply(function(){
-        scope.unit.tags = selected_tags;
-        scope.saveUnit();
-    });
-});
+//// save unit tags
+//$("#unit-tags").on("click", "#tag-save", function() {
+//    var selected_tags = treeElement.jstree('get_selected')
+//    var scope = angular.element($("#unit-page")).scope();
+//    scope.$apply(function(){
+//        scope.unit.tags = selected_tags;
+//        scope.saveUnit();
+//    });
+//});
 
 
 $('body').on('click','.box-collapse', function (e) {
