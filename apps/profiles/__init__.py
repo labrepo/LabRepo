@@ -21,11 +21,11 @@ def create_test_lab(self):
     if lab:
         base_lab_id = lab.pk
         user = self
-
+        lab.pk = None
+        lab.save()
         lab.investigator = [user]
         lab.members = []
         lab.guests = []
-        lab.pk = None
         lab.is_test = False
         lab.save()
         experiments, measurement_types, tags = {}, {}, {}
@@ -61,12 +61,13 @@ def create_test_lab(self):
                 comment.save()
 
         for unit in Unit.objects.filter(lab__pk=base_lab_id):
+            unit_experiments = unit.experiments.all()
             base_unit = unit.pk
             unit.lab = lab
             unit.pk = None
             unit.save()
             unit_experiment = []
-            for experiment in unit.experiments.all():
+            for experiment in unit_experiments:
                 unit_experiment.append(experiments[unicode(experiment.pk)])
             unit.experiments = unit_experiment
             # measurements = []

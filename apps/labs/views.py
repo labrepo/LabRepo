@@ -5,10 +5,11 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView, RedirectView, FormView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView, RedirectView, FormView, View
 from django.utils.translation import ugettext_lazy as _
 from django.template.loader import render_to_string
 from django.db.models import Q
+from django.shortcuts import redirect
 
 from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckEditPermissionMixin, CheckViewPermissionMixin,
                            CheckDeletePermissionMixin, InviteFormMixin, CheckLabPermissionMixin, AjaxableResponseMixin)
@@ -136,13 +137,11 @@ class LabListView(LoginRequiredMixin, ActiveTabMixin, ListView):
         return queryset
 
 
-class BaseLabCreateView(LoginRequiredMixin, RedirectView):
+class BaseLabCreateView(LoginRequiredMixin, View):
     """
     Create test lab
     """
-    model = Lab
-    url = reverse_lazy('labs:list')
 
-    def get(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         self.request.user.create_test_lab()
-        return super(BaseLabCreateView, self).get(request, *args, **kwargs)
+        return redirect('labs:list')

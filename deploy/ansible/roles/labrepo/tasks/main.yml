@@ -94,6 +94,16 @@
   environment:
         DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"
 
+- name: Create test user
+  django_manage: command="createtestuser" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
+  environment:
+        DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"
+
+- name: Create test lab
+  django_manage: command="createtestlab" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
+  environment:
+        DJANGO_SETTINGS_MODULE: "settings.{{ django_settings_file }}"
+
 - name: Run tests
   django_manage: command="test --noinput --failfast" app_path={{ project_dir }} virtualenv={{ project_dir }}/env/
   environment:
