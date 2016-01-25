@@ -8,21 +8,13 @@ from storages.models import LabStorage
 class LabStorageSerializer(serializers.ModelSerializer):
 
     fullname = serializers.SerializerMethodField()
-    # password = serializers.ReadOnlyField()
-    file_info = serializers.SerializerMethodField()
+    key_file = serializers.FileField(required=False, max_length=None, allow_empty_file=True)
 
     def get_fullname(self, obj):
         return u'{}'.format(obj)
 
-    def get_file_info(self, obj):
-        if obj.key_file:
-            return {
-                'name': os.path.basename(obj.key_file.name)
-            }
-        return ''
-
     class Meta:
         model = LabStorage
         fields = ('id', 'lab', 'type', 'readonly', 'username', 'host', 'path',
-                  'folder_name', 'password', 'port',  'key_file', 'fullname', 'file_info')
+                  'folder_name', 'password', 'port',  'key_file', 'fullname', 'key_file_name')
         extra_kwargs = {'password': {'write_only': True}}

@@ -32,7 +32,7 @@
           </div>
           <small> {% trans "OR" %} </small>
           <div class="form-group">
-            <span ng-show="storage.file_info" ng-bind="'Current file: ' + storage.file_info.name"></span>
+            <span ng-show="storage.key_file_name" ng-bind="'Current file: ' + storage.key_file_name"></span>
             <input type="file" ng-file-model="storage.key_file"  />
           </div>
 

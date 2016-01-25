@@ -27,7 +27,8 @@ class LabStorage(models.Model):
     folder_name = models.CharField(verbose_name=_('folder name'), max_length=255,  blank=True, null=True)
     password = models.CharField(verbose_name=_('password'), max_length=255,  blank=True, null=True)
     port = models.PositiveIntegerField(verbose_name=_('port'), blank=True, null=True)
-    key_file = models.FileField(upload_to='ssh_keys', blank=True, null=True, verbose_name=_('SSH key file'))
+    public_key = models.TextField(blank=True, null=True, verbose_name=_('SSH key'))
+    key_file_name = models.TextField(blank=True, null=True, verbose_name=_('SSH key file name'))
 
     def get_path(self):
         if self.path:

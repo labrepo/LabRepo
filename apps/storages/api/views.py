@@ -19,6 +19,13 @@ class StorageListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.List
         return LabStorage.objects.filter(lab__pk=self.kwargs.get('lab_pk'))
 
     def create(self, request, *args, **kwargs):
+        """
+        Save ssh key file content.
+
+        Save ssh key file content to the db(a "public_key" field).
+        Save a filename to a "key_file_name" field.
+        The file itself isn't saved.
+        """
 
         key_file = request.data.get('key_file', None)
         if key_file:
@@ -30,8 +37,9 @@ class StorageListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.List
 
         if key_file:
             tmp_file = key_file['data'].partition('base64,')[2]
-            tmp_file_data = base64.b64decode(tmp_file)
-            obj.key_file.save(key_file['name'], ContentFile(tmp_file_data), True)
+            obj.public_key = base64.b64decode(tmp_file)
+            obj.key_file_name = key_file['name']
+            obj.save()
 
         headers = self.get_success_headers(serializer.data)
 
@@ -47,7 +55,13 @@ class StorageDetailView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Re
         return LabStorage.objects.get(id=self.kwargs.get('pk'))
 
     def update(self, request, *args, **kwargs):
+        """
+        Save ssh key file content.
 
+        Save ssh key file content to the db(a "public_key" field).
+        Save a filename to a "key_file_name" field.
+        The file itself isn't saved.
+        """
         key_file = request.data.get('key_file', None)
         if key_file:
             del request.data['key_file']
@@ -60,13 +74,8 @@ class StorageDetailView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Re
 
         if key_file:
             tmp_file = key_file['data'].partition('base64,')[2]
-            tmp_file_data = base64.b64decode(tmp_file)
-            obj.key_file.save(key_file['name'], ContentFile(tmp_file_data), True)
+            obj.public_key = base64.b64decode(tmp_file)
+            obj.key_file_name = key_file['name']
+            obj.save()
 
         return Response(serializer.data)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.key_file.delete(False)
-        instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)

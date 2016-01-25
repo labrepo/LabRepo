@@ -13,6 +13,7 @@ class LabStorageForm(NgFormValidationMixin, FormMixin, NgModelFormMixin, NgModel
     Form for create/edit laboratory storages
     """
     password = forms.CharField(widget=forms.PasswordInput(), required=False)
+    key_file = forms.FileField(required=False)
 
     class Meta:
         model = LabStorage

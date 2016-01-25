@@ -68,9 +68,8 @@ class FileManagerMixin(object):
             for storage in self.lab.storages.all():
                 if file_path.startswith(storage.get_folder_name()) or not file_path:
                     try:
-                        if storage.key_file:
-                            file_string = storage.key_file.read()
-                            pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
+                        if storage.public_key:
+                            pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(storage.public_key))
                             remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
                         elif storage.password:
                             remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
@@ -159,9 +158,8 @@ def pyfs_file_ang(lab_pk, file_path):
             for storage in lab.storages.all():
                 if relative_dir_path.startswith(storage.get_folder_name()):
                     try:
-                        if storage.key_file:
-                            file_string = storage.key_file.read()
-                            pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(file_string))
+                        if storage.public_key:
+                            pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(storage.public_key))
                             remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
                         elif storage.password:
                             remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
