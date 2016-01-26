@@ -227,7 +227,7 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
                     instance_type: 'experiment',
                     object_id: $scope.object_id,
                 })
-//            $scope.comments.push(comment);
+            $scope.comments.push(comment);
             $scope.text = null;
         };
 

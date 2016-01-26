@@ -90,6 +90,12 @@ $(function() {
 
 });
 
+$('body').on('click','.box-collapse', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $(this).closest('.box').find('.box-body').toggle(200);
+});
+
 //function comments_scroll_to_end(a) {
 //    $(".comments-block").scrollTop($(".comments-block")[0].scrollHeight);
 //};

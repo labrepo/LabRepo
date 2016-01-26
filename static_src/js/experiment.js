@@ -46,9 +46,6 @@ function update_unit_info(unit){
      * @param unit - object {id: unit_id} For the the compatibility with d3 function call.
      */
 
-    // show hidden tab's buttons
-    $('#unit-measurements .btn').show()
-
     var url = '/' + lab_pk + '/units/detail_json/'+ unit.id + '/'
     $.get(url, {unit_pk: unit.id}, function(unit_data){
 
@@ -88,22 +85,6 @@ $('a[href="#unit-measurements"]').on('shown.bs.tab', function (e) {
     }
 });
 
-//// save unit tags
-//$("#unit-tags").on("click", "#tag-save", function() {
-//    var selected_tags = treeElement.jstree('get_selected')
-//    var scope = angular.element($("#unit-page")).scope();
-//    scope.$apply(function(){
-//        scope.unit.tags = selected_tags;
-//        scope.saveUnit();
-//    });
-//});
-
-
-$('body').on('click','.box-collapse', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    $(this).closest('.box').find('.box-body').toggle(200);
-});
 
 //upload files from filemanager
 $('body').on('click', '#fm .fm-choose', function(e){
@@ -123,13 +104,6 @@ $('body').on('click', '#fm .fm-choose', function(e){
     })
     $('#fm').modal('hide')
 })
-
-$('body').on('click','.comment-cancel', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    $(this).closest('form').find('.comment-input').show();
-    $(this).closest('form').find('.comment-editor').hide();
-});
 
 $('.box-comments').scroll(function (e) {
     if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {

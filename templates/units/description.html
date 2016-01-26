@@ -3,6 +3,7 @@
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#description" data-toggle="tab">{% trans 'Description' %}</a></li>
+      <li ><a href="#comments" data-toggle="tab">{% trans 'Comments' %}</a></li>
     </ul>
     <div class="tab-content">
       <div class="tab-pane active" id="description">
@@ -19,6 +20,9 @@
             <button class="btn btn-info cancel-edit">{% trans 'cancel'|title %}</button>
           </form>
         </div>
+      </div>
+      <div class="tab-pane" id="comments">
+       {% include 'comments/comment_form_unit.html' with not_sockets="1" not_collapse="1" modal_id="unit-comments-modal" delete_modal_id="unit-comments-delete" %}
       </div>
     </div>
   </div>

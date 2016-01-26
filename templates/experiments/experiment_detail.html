@@ -312,18 +312,18 @@
                     </div>
                   </div>
 
-                  <div class="tab-pane"  ng-controller="MeasurementCtrl" id="unit-measurements">
+                  <div ng-show="unit" class="tab-pane"  ng-controller="MeasurementCtrl" id="unit-measurements">
                     <div class="btn-group">
-                      <button style="display:none" ng-click="saveTable()" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Save' %}</button>
+                      <button ng-click="saveTable()" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Save' %}</button>
                     </div>
                     <div class="btn-group">
-                      <button  style="display:none" ng-click="addColumn()" class="btn bg-olive"><i class="fa fa-plus"></i> {% trans 'Add Column' %}</button>
+                      <button  ng-click="addColumn()" class="btn bg-olive"><i class="fa fa-plus"></i> {% trans 'Add Column' %}</button>
                     </div>
                     <div class="btn-group">
-                      <button  style="display:none" class="show-plot btn bg-olive"><i class="fa fa-area-chart"></i> {% trans 'Create plot' %}</button>
+                      <button  class="show-plot btn bg-olive"><i class="fa fa-area-chart"></i> {% trans 'Create plot' %}</button>
                     </div>
                     <div class="btn-group pull-right">
-                      <button style="display:none" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">History <span class="caret"></span></button>
+                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">History <span class="caret"></span></button>
                       <ul class="dropdown-menu scrollable-menu" role="menu">
                          <li ng-repeat="revision in measurement.revisions"><a href="#" ng-click="revertRevision(revision.url)" ng-bind="revision.timestamp"></a></li>
                       </ul>
@@ -369,7 +369,7 @@
                     <button ng-show="unit" ng-click="tagsSave()" class="btn bg-olive"><i class="fa fa-save"></i> {% trans 'Save' %}</button>
                   </div>
 
-                  <div class="tab-pane" id="unit-comments">
+                  <div ng-show="unit" class="tab-pane" id="unit-comments">
                     {% include 'comments/comment_form_unit.html' with not_sockets="1" not_collapse="1" modal_id="unit-comments-modal" delete_modal_id="unit-comments-delete" %}
                   </div>
                 </div>
