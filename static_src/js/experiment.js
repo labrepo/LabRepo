@@ -1,6 +1,16 @@
 var exp_pk = $("#experiment_row").data('experiment-pk');
 window.unit_pk = null;
 
+
+function show_workfow() {
+    $('#workflow').html(
+        '<div class="row"><div class="col-lg-12"><div style="overflow:hidden">' +
+        '<iframe src="http://wooflo.magic60.ru/project/' + wooflo_key + '" width="100%" height="100%">' +
+        'Your browser doesn\'t support iframes' +
+        '</iframe></div></div></div>'
+    );
+}
+
 $(function() {
 
     // fix bootstrap tabs urls
@@ -21,6 +31,13 @@ $(function() {
     })
     if ($('.graph-area').length){
         var graph = window.graph  = new render_graph($('.graph-area').data('graph-json'), '.graph-area', update_unit_info_ang)
+    }
+
+    $('.show-workflow').one('click', function(e) {
+      show_workfow()
+    });
+    if (hash == '#workflow') {
+        show_workfow()
     }
 
 });
