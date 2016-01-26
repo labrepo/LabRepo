@@ -1,63 +1,94 @@
-{% load i18n bootstrap_tags %}
-<div class="comment-area">
-  <div class="row">
-    <div class="col-xs-12">
-      <!-- Success box -->
-      <div class="box box-solid box-info comments-block">
-        {% if not not_collapse %}
-        <div class="box-header">
-          <h3 class="box-title"><i class="fa fa-comments-o"></i> {% trans 'Comments' %}</h3>
-
-          <div class="box-tools pull-right">
-            <button class="btn btn-info btn-sm pull-right" data-widget="collapse" title=""><i class="fa fa-plus"></i>
-            </button>
-          </div>
+{% load i18n static bootstrap_tags %}
+<div ng-controller="chatCtrl">
+  <div    class="box-footer box-comments comment-activities">
+    <div ng-repeat="comment in comments" comments-scroll="yes" class="box-comment">
+      <div class="box-tools">
+        <button class="btn btn-box-tool"  title="Edit" data-toggle="modal"
+                data-target="#comment-modal" ng-click="setComment(comment)">
+          <i class="fa fa-edit"></i>
+        </button>
+        <!--<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>-->
+        <button class="btn btn-box-tool" data-target="#confirm-delete-comment"
+                data-toggle="modal"
+                ng-click="setComment(comment)"><i class="fa fa-times"></i></button>
+      </div>
+      <img class="img-circle img-sm" ng-src="{% verbatim %}{{ comment.init_user_info.avatar || '/static/images/gravatar.png' }}{% endverbatim %}" alt="user image">
+      <div class="comment-text">
+    <span class="username">
+      <span ng-bind="comment.init_user_info.full_name"></span>
+      <span class="text-muted s" ng-bind="comment.action_time | timeAgo"></span>
+    </span>
+        <div class="comment-context" ng-bind-html="renderHtml(comment.text)">
         </div>
-        {% endif %}
-        {% if not not_collapse %}
-          <div class="box-body collapse">
-        {% else %}
-          <div class="box-body">
-        {% endif %}
-          <div id="comment" class="list-group comment-activities">
-            {% for comment in comments %}
-              {% include 'comments/comment.html' %}
-            {% endfor %}
-            {% include 'alert.html' with modal_id=delete_modal_id|default:'confirm-delete-comment' class="comment-remove" modal_class="confirm-delete-comment" %}
-          </div>
-          <!-- Primary box -->
-          <div class="box box-solid box-default">
-            <div class="box-header">
-              <h3 class="box-title"><i class="fa fa-comment-o"></i> {% trans 'Add comment' %}</h3>
-
-              <!--<div class="box-tools pull-right">-->
-                <!--<button class="btn btn-info btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>-->
-              <!--</div>-->
-            </div>
-            <form action="{% url 'comment:comment' lab_pk=lab.pk %}" method="post" id="comment-form" class="comment-form">
-              <div class="box-body">
-                {% csrf_token %}
-                {{ comment_form_create|as_bootstrap }}
-                <!--{{ comment_form_create.media }}-->
-              </div>
-              <div class="box-footer text-right">
-                <button type="submit" class="btn btn-info btn-sm btn-flat">{% trans 'Submit comment'|upper %}</button>
-              </div>
-            </form>
-          </div>
-          <!-- /.box-body -->
+      </div>
+    </div>
+  </div>
+  <div class="box-footer">
+    <form name="chatForm" ng-submit="chatForm.$valid && createComment()" method="post">
+      <div class="comment-editor">
+        {% csrf_token %}
+        <div class="textarea-with-button">
+          <summernote ng-required="true" config="summernote_config" ng-model="text" on-keydown="summernote_send(evt)"></summernote>
+          <button type="submit" class="textarea-button btn btn-info btn-sm btn-flat">{% trans 'Submit comment'|upper %}</button>
         </div>
-        <!-- /.box -->
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal edit-->
+  <div class="modal fade" id="comment-modal" tabindex="-1" role="dialog" aria-labelledby="Modal"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" title="{% trans 'Close' %}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 class="modal-title" id="Modal">{% trans modal_title|title %}</h3>
+        </div>
+        <form name="updateChatForm" ng-submit="updateChatForm.$valid && updateComment()" method="post">
+          <div class="modal-body">
+            {% csrf_token %}
+            <summernote ng-required="true" config="summernote_config" ng-model="comment.text"></summernote>
+          </div>
+          <div class="modal-footer form-actions">
+            <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+            {% with btn=button_name|default:'Save' %}
+            <button type="submit" class="btn btn-flat bg-olive">{% trans btn|title %}</button>
+            {% endwith %}
+          </div>
+        </form>
       </div>
     </div>
   </div>
 
-  <!-- /.col-md -->
-  {% if not not_modal %}
-    {% block modal %}
-    {% load static i18n %}
-      {% include 'modal.html' with modal_id=modal_id|default:'comment-modal' action="" extra_form=comment_form_update modal_title='update  comment' class="comment-modal"%}
-    {% endblock %}
-  {% endif %}
+  <!-- Modal delete-->
+  <div class="modal fade" id="confirm-delete-comment" tabindex="-1" role="dialog"
+       aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="alert box box-warning">
+        <i class="fa fa-warning bg-yellow"></i>
+        <div class="box-header">
+          <div class="box-tools pull-right">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          </div>
+          <h4 class="box-title">{% trans 'Are you sure you want remove' %}
+            <span class="text-red">{% trans obj|default:'it' %}</span>?
+          </h4>
+        </div>
+        <div class="box-body text-center">
+          <form name="deleteChatForm" ng-submit="deleteChatForm.$valid && deleteComment()" method="post">
+            {% csrf_token %}
+            <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">
+              {% trans 'cancel'|title %}
+            </button>
+            <button type="submit" class="btn btn-danger btn-flat">
+              <i class="fa fa-trash-o"></i> {% trans 'delete'|title %}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>

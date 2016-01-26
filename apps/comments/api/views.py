@@ -24,7 +24,7 @@ class CommentListView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivit
         """
         Create a comment instance, create recent activity record. Also, publish a message to Redis.
         """
-        obj = serializer.save()
+        obj = serializer.save(init_user=self.request.user)
 
         if obj.instance_type.name.lower() == 'experiment':
             experiment = obj.content_object
@@ -49,3 +49,7 @@ class CommentDetailView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Re
 
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
+
+    def perform_update(self, serializer):
+        serializer.save(init_user=self.request.user)
+

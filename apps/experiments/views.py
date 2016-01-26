@@ -17,7 +17,7 @@ from django.views.generic.edit import ModelFormMixin, ProcessFormView
 from comments.models import Comment
 from common.decorators import get_obj_or_404
 from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPermissionMixin, JsTreeMixin,
-                           LabQueryMixin, CheckDeletePermissionMixin, RecentActivityMixin, CommentMixin,
+                           LabQueryMixin, CheckDeletePermissionMixin, RecentActivityMixin,
                            AjaxableResponseMixin, InviteFormMixin, CheckLabPermissionMixin,
                            FormInitialMixin, LoginRequiredMixin)
 from dashboard.models import RecentActivity

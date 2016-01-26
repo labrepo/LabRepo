@@ -226,7 +226,6 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
                     text: $scope.text,
                     instance_type: 'experiment',
                     object_id: $scope.object_id,
-                    init_user: AuthUser.id
                 })
 //            $scope.comments.push(comment);
             $scope.text = null;
@@ -273,14 +272,24 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
         }
 
     }]);
+
+
 var CommentCtrl = angular.module('CommentCtrl', []);
 
 CommentCtrl.controller('CommentCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'AuthUser',
     function($scope, $sce, $rootScope, Comment, AuthUser) {
 
+         initComments = function(unitId) {  //todo: improve initialization
+            if (unitId) {
+                    $scope.comments = Comment.query({labId: lab_pk, instanceType: 'unit', instanceId: unitId})
+                    $scope.object_id = unitId;
+                }
+            }
+        var unitId = angular.element(document.querySelector('#unit-details')).data('unit-pk');
+        initComments(unitId);
+
         $scope.$on('UnitLoaded', function(e, unit) {
-            $scope.comments = Comment.query({labId: lab_pk, instanceType: 'unit', instanceId: unit.id})
-            $scope.object_id = unit.id;
+            initComments(unit.id);
         });
 
         $scope.createComment = function() {
@@ -290,7 +299,6 @@ CommentCtrl.controller('CommentCtrl', ['$scope', '$sce', '$rootScope', 'Comment'
                     text: $scope.text,
                     instance_type: 'unit',
                     object_id: $scope.object_id,
-                    init_user: AuthUser.id
                 })
             $scope.comments.push(comment);
             $scope.text = null;

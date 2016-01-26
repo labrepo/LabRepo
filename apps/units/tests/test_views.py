@@ -277,13 +277,13 @@ class UnitTest(TestCase):
         resp = self.client.get(url, follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, unit.pk)
-        self.assertContains(resp, 'comments')
+        self.assertContains(resp, 'file-area')
 
         self.client.login(username=self.member.email, password='qwerty')
         resp = self.client.get(url, follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, unit.pk)
-        self.assertContains(resp, 'comments')
+        self.assertContains(resp, 'file-area')
 
         self.client.login(username=self.guest.email, password='qwerty')
         resp = self.client.get(url, follow=True)

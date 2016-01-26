@@ -6,8 +6,6 @@ from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.contrib.contenttypes.models import ContentType
 
-from comments.models import Comment
-from comments.forms import CommentForm
 from common.decorators import get_obj_or_404
 from dashboard.models import RecentActivity
 from labs.models import Lab
@@ -123,23 +121,6 @@ class InitialLabMixin(object):
         kwargs = super(InitialLabMixin, self).get_form_kwargs()
         kwargs['lab_pk'] = self.kwargs.get('lab_pk')
         return kwargs
-
-
-class CommentMixin(object):
-
-    def get_comment_initial(self):
-        return {'instance_type': self.model._meta.object_name, 'object_id': self.object.pk}
-
-    def get_list_comment(self):
-        content_type = ContentType.objects.get_for_model(self.model)
-        return Comment.objects.filter(instance_type=content_type, object_id=self.object.pk).order_by('action_time')
-
-    def get_context_data(self, **kwargs):
-        ctx = super(CommentMixin, self).get_context_data(**kwargs)
-        ctx['comment_form_create'] = CommentForm(initial=self.get_comment_initial(), lab_pk=self.kwargs.get('lab_pk'), prefix='create')
-        ctx['comment_form_update'] = CommentForm(initial=self.get_comment_initial(), lab_pk=self.kwargs.get('lab_pk'), prefix='update')
-        ctx['comments'] = self.get_list_comment()
-        return ctx
 
 
 class AjaxableResponseMixin(object):

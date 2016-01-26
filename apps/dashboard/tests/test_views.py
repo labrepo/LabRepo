@@ -92,16 +92,19 @@ class TestDashboardTest(TestCase):
         self.assertContains(resp, u'timeline')
 
         # Add comment
-        comment_url = reverse('comment:comment', kwargs={'lab_pk': self.lab.pk})
         text = lorem_ipsum.words(2)
+        comment_url = reverse('comment:api-list', kwargs={
+            'lab_pk': self.lab.pk,
+            'instance_type': 'experiment',
+            'object_id': experiment.pk,
+        })
         data = {
-            'create-text': text,
-            'create-instance_type': 'Experiment',
-            'create-object_id': unicode(experiment.pk)
+            'text': text,
+            'instance_type': 'experiment',
+            'object_id': experiment.pk,
         }
-
-        resp = self.client.post(comment_url, data, follow=True)
-        self.assertEqual(resp.status_code, 200)
+        resp = self.client.post(comment_url, data, format='json')
+        self.assertEqual(resp.status_code, 201)
 
         resp = self.client.get(url)
         self.assertContains(resp, title(self.owner.full_name))
@@ -123,32 +126,38 @@ class TestDashboardTest(TestCase):
         self.assertContains(resp, u'timeline')
 
         # Add comment
-        comment_url = reverse('comment:comment', kwargs={'lab_pk': self.lab.pk})
         text = lorem_ipsum.words(2)
+        comment_url = reverse('comment:api-list', kwargs={
+            'lab_pk': self.lab.pk,
+            'instance_type': 'experiment',
+            'object_id': experiment.pk,
+        })
         data = {
-            'create-text': text,
-            'create-instance_type': 'Experiment',
-            'create-object_id': unicode(experiment.pk)
+            'text': text,
+            'instance_type': 'experiment',
+            'object_id': experiment.pk,
         }
-
-        resp = self.client.post(comment_url, data, follow=True)
-        self.assertEqual(resp.status_code, 200)
+        resp = self.client.post(comment_url, data, format='json')
+        self.assertEqual(resp.status_code, 201)
 
         resp = self.client.get(url)
         self.assertContains(resp, title(self.owner.full_name))
         self.assertContains(resp, text)
 
         # Add comment to exp2
-        comment_url = reverse('comment:comment', kwargs={'lab_pk': self.lab.pk})
         text = 'some text'
+        comment_url = reverse('comment:api-list', kwargs={
+            'lab_pk': self.lab.pk,
+            'instance_type': 'experiment',
+            'object_id': experiment2.pk,
+        })
         data = {
-            'create-text': text,
-            'create-instance_type': 'Experiment',
-            'create-object_id': unicode(experiment2.pk)
+            'text': text,
+            'instance_type': 'experiment',
+            'object_id': experiment2.pk,
         }
-
-        resp = self.client.post(comment_url, data, follow=True)
-        self.assertEqual(resp.status_code, 200)
+        resp = self.client.post(comment_url, data, format='json')
+        self.assertEqual(resp.status_code, 201)
 
         resp = self.client.get(url)
         self.assertNotContains(resp, text)
@@ -180,16 +189,19 @@ class TestDashboardTest(TestCase):
         self.assertContains(resp, experiment.title)
 
         # Add comment
-        comment_url = reverse('comment:comment', kwargs={'lab_pk': self.lab.pk})
         text = lorem_ipsum.words(2)
+        comment_url = reverse('comment:api-list', kwargs={
+            'lab_pk': self.lab.pk,
+            'instance_type': 'experiment',
+            'object_id': experiment.pk,
+        })
         data = {
-            'create-text': text,
-            'create-instance_type': 'Experiment',
-            'create-object_id': unicode(experiment.pk)
+            'text': text,
+            'instance_type': 'experiment',
+            'object_id': experiment.pk,
         }
-
-        resp = self.client.post(comment_url, data, follow=True)
-        self.assertEqual(resp.status_code, 200)
+        resp = self.client.post(comment_url, data, format='json')
+        self.assertEqual(resp.status_code, 201)
 
         resp = self.client.get(url)
         self.assertContains(resp, title(self.owner.full_name))
@@ -211,32 +223,38 @@ class TestDashboardTest(TestCase):
         self.assertContains(resp, u'timeline')
 
         # Add comment
-        comment_url = reverse('comment:comment', kwargs={'lab_pk': self.lab.pk})
         text = lorem_ipsum.words(2)
+        comment_url = reverse('comment:api-list', kwargs={
+            'lab_pk': self.lab.pk,
+            'instance_type': 'experiment',
+            'object_id': experiment.pk,
+        })
         data = {
-            'create-text': text,
-            'create-instance_type': 'Experiment',
-            'create-object_id': unicode(experiment.pk)
+            'text': text,
+            'instance_type': 'experiment',
+            'object_id': experiment.pk,
         }
-
-        resp = self.client.post(comment_url, data, follow=True)
-        self.assertEqual(resp.status_code, 200)
+        resp = self.client.post(comment_url, data, format='json')
+        self.assertEqual(resp.status_code, 201)
 
         resp = self.client.get(url)
         self.assertContains(resp, title(self.owner.full_name))
         self.assertContains(resp, text)
 
         # Add comment to exp2
-        comment_url = reverse('comment:comment', kwargs={'lab_pk': self.lab.pk})
         text = 'some text'
+        comment_url = reverse('comment:api-list', kwargs={
+            'lab_pk': self.lab.pk,
+            'instance_type': 'experiment',
+            'object_id': experiment.pk,
+        })
         data = {
-            'create-text': text,
-            'create-instance_type': 'Experiment',
-            'create-object_id': unicode(experiment2.pk)
+            'text': text,
+            'instance_type': 'experiment',
+            'object_id': experiment2.pk,
         }
-
-        resp = self.client.post(comment_url, data, follow=True)
-        self.assertEqual(resp.status_code, 200)
+        resp = self.client.post(comment_url, data, format='json')
+        self.assertEqual(resp.status_code, 201)
 
         resp = self.client.get(url)
         self.assertNotContains(resp, text)

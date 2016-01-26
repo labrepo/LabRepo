@@ -30,7 +30,7 @@
                   <!--Where are new messages-->
                 <!--</div>-->
               <!--{% endif %}-->
-              {% include 'comments/comment_form_ang.html' with not_collapse="1" %}
+              {% include 'comments/comment_form.html' with not_collapse="1" %}
             </div>
           </div>
         </div>
@@ -370,7 +370,7 @@
                   </div>
 
                   <div class="tab-pane" id="unit-comments">
-                    {% include 'comments/comment_form_ang_unit.html' with not_sockets="1" not_collapse="1" modal_id="unit-comments-modal" delete_modal_id="unit-comments-delete" %}
+                    {% include 'comments/comment_form_unit.html' with not_sockets="1" not_collapse="1" modal_id="unit-comments-modal" delete_modal_id="unit-comments-delete" %}
                   </div>
                 </div>
               </div>
