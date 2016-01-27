@@ -13,6 +13,7 @@ from experiments.models import Experiment
 from labs.models import Lab
 from .models import RecentActivity
 
+
 class DashboardView(ActiveTabMixin, LoginRequiredMixin, ListView):
     model = RecentActivity
     context_object_name = 'recent'

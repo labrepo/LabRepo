@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, include, url
 
 from .views import (DashboardView, RecentActivityView, MeasurementRecentActivityView,
                     CommentRecentActivityView)
@@ -26,4 +26,6 @@ urlpatterns = patterns(
     url(r'^comment/activity/$',
         CommentRecentActivityView.as_view(),
         name='comment-activity'),
+
+    url(r'^api/', include('dashboard.api.urls')),
 )
