@@ -4,7 +4,7 @@ from rest_framework import serializers
 from reversion import revisions as reversion
 
 from common.mixins import JsTreeMixin
-from units.models import Unit, UnitLink
+from ..models import Unit, UnitLink
 
 
 class RevisionCommentField(serializers.Field):
@@ -31,6 +31,9 @@ class RevisionCommentField(serializers.Field):
 
 
 class UnitTableSerializer(serializers.ModelSerializer):
+    """
+    Serialises units to a handsontable table
+    """
 
     readonly = serializers.SerializerMethodField('get_full_name')
     experiments_names = serializers.SerializerMethodField('get_experiments_titles')
@@ -69,6 +72,9 @@ class UnitTableSerializer(serializers.ModelSerializer):
 
 
 class UnitSerializer(JsTreeMixin, serializers.ModelSerializer):
+    """
+    General Unit serializer
+    """
 
     edit_permission = serializers.SerializerMethodField()
     tag_tree = serializers.SerializerMethodField()
@@ -78,6 +84,9 @@ class UnitSerializer(JsTreeMixin, serializers.ModelSerializer):
         return obj.is_owner(self.context['request'].user)
 
     def get_tag_tree(self, obj):
+        """
+        Serialises unit tags to the jstree representation format
+        """
         return self.get_jstree_data(obj.tags, fields=('id', 'parent', 'details'), parent_id='#')
 
     class Meta:

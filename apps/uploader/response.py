@@ -1,6 +1,8 @@
 # encoding: utf-8
-from django.http import HttpResponse
 import json
+
+from django.http import HttpResponse
+
 
 MIMEANY = '*/*'
 MIMEJSON = 'application/json'

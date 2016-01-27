@@ -3,8 +3,7 @@ import factory
 from django.contrib.auth.hashers import make_password
 from django.utils import lorem_ipsum
 
-from profiles.models import LabUser
-
+from .models import LabUser
 
 
 class UserFactory(factory.DjangoModelFactory):

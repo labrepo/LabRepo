@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from elasticutils.contrib.django import MappingType, Indexable
 
-from comments.models import Comment
+from .models import Comment
 
 
 class CommentMappingType(MappingType, Indexable):

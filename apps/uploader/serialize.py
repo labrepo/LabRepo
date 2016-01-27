@@ -1,5 +1,6 @@
 # encoding: utf-8
 import re
+
 from django.core.urlresolvers import reverse
 from django.utils import formats
 

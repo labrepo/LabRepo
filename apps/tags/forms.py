@@ -7,7 +7,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
 from common.forms import BaseForm
-
 from .models import Tag
 
 

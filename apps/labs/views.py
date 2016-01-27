@@ -7,15 +7,14 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView, RedirectView, FormView, View
 from django.utils.translation import ugettext_lazy as _
-from django.template.loader import render_to_string
 from django.db.models import Q
 from django.shortcuts import redirect
 
 from common.mixins import (ActiveTabMixin, LoginRequiredMixin, CheckEditPermissionMixin, CheckViewPermissionMixin,
                            CheckDeletePermissionMixin, InviteFormMixin, CheckLabPermissionMixin, AjaxableResponseMixin)
 from filemanager.views import check_directory
-from labs.models import Lab
-from labs.forms import LabForm
+from .models import Lab
+from .forms import LabForm
 
 
 class LabCreateView(LoginRequiredMixin, InviteFormMixin, ActiveTabMixin, CreateView):

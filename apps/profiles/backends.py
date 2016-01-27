@@ -1,5 +1,5 @@
 from django.contrib.auth.models import check_password
-from profiles.models import LabUser
+from .models import LabUser
 
 
 class EmailAuthBackend(object):

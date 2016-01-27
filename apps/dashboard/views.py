@@ -9,10 +9,9 @@ from django.views.generic import ListView
 from django.db.models import Q
 
 from common.mixins import ActiveTabMixin, LoginRequiredMixin, AjaxableResponseMixin
-from dashboard.models import RecentActivity
 from experiments.models import Experiment
 from labs.models import Lab
-
+from .models import RecentActivity
 
 class DashboardView(ActiveTabMixin, LoginRequiredMixin, ListView):
     model = RecentActivity

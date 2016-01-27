@@ -6,9 +6,8 @@ from django.db.models import Q
 
 from common.forms import BaseForm, SelectFormMixin, CheckOwnerEditMixin
 from common.widgets import DateTimeWidget
-from experiments.models import Experiment
 from units.models import Unit
-
+from .models import Experiment
 
 class ExperimentForm(SelectFormMixin, CheckOwnerEditMixin, BaseForm):
 

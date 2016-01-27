@@ -4,8 +4,8 @@ from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
-from profiles.models import LabUser, TempPassword
 from common.forms import BaseForm
+from .models import LabUser, TempPassword
 
 
 class InviteUserForm(BaseForm):

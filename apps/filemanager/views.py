@@ -21,11 +21,8 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServer
 from django.shortcuts import render
 from django.utils.datastructures import SortedDict as OrderedDict
 from django.utils.encoding import smart_str
-from django.utils.safestring import mark_safe
-from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
-from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 
 from labs.models import Lab
@@ -58,7 +55,7 @@ class FileManagerMixin(object):
 
     def smart_mount(self, file_path=None):
         """
-        Mounts only fs which store file on file_path. If file_path isn't set mound all fs.
+        Mounts only fs which store file on file_path. If file_path isn't set mounts all fs.
         :param file_path: (string) relative path to the file(from a pyfs root)
         """
         self.fs = MountFS()

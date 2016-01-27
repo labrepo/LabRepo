@@ -9,8 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from common.mixins import LoginRequiredMixin, ActiveTabMixin, AjaxableResponseMixin
 from labs.models import Lab
-from profiles.models import TempPassword
-from profiles.forms import InviteUserForm, UserUpdateForm
+from .models import TempPassword
+from .forms import InviteUserForm, UserUpdateForm
 
 
 class InviteTechnician(LoginRequiredMixin, AjaxableResponseMixin, CreateView):

@@ -2,14 +2,9 @@
 import json
 import logging
 
-import bs4
-import requests
-from urlparse import urlparse
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.decorators import method_decorator
@@ -18,13 +13,7 @@ from django.utils.translation import ugettext
 from django.views.generic import View, DeleteView, UpdateView, DetailView
 from django.views.generic.edit import ModelFormMixin
 from django.views.generic.list import BaseListView, MultipleObjectTemplateResponseMixin
-from django.views.generic.detail import SingleObjectMixin
-from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import formats
-from django.core import serializers
-
-from preserialize.serialize import serialize  # todo change with drf serizlizer
 
 from django.db.models import Q
 
@@ -32,15 +21,14 @@ from common.decorators import get_obj_or_404
 from common.mixins import (ActiveTabMixin, LoginRequiredMixin, AjaxableResponseMixin,
                            RecentActivityMixin, CheckViewPermissionMixin, JsTreeMixin,
                            InitialLabMixin)
-# from common.serializer import JsonDocumentEncoder
 from uploader.views import FileUploadMixinView, DropboxFileUploadMixinView, LocalFileUploadMixinView
 from dashboard.models import RecentActivity
-from .models import Unit, UnitFile, UnitLink
 from experiments.models import Experiment
-from .forms import UnitForm
 from labs.models import Lab
 from tags.models import Tag
-# from unit_collections.models import Collection
+from .forms import UnitForm
+from .models import Unit, UnitFile
+
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +49,6 @@ class UnitTableView(LoginRequiredMixin, RecentActivityMixin, JsTreeMixin,
     extra_title = ['change reasons', 'experiments_pk', 'parent_pk', 'tags_pk']
     headers = ['pk', ugettext('sample'), ugettext('experiments'), ugettext('parents'), ugettext('tags'), 'readonly',
                ugettext('change reasons'), 'experiments_pk', 'parent_pk', 'tags_pk']
-
 
     @method_decorator(login_required)
     @method_decorator(get_obj_or_404)
@@ -209,13 +196,12 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         return self.object.measurement
 
 
-class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMixin, InitialLabMixin,
-                         RecentActivityMixin, AjaxableResponseMixin, DetailView):
+class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMixin,
+                         AjaxableResponseMixin, DetailView):
     """
-    View for return json information about an existing unit(is used on experiment page)
+    Returns json information about an existing unit(is used on the experiment page)
     """
     model = Unit
-    template_name = 'units/unit_detail.html'
 
     def get_object(self, queryset=None, *args, **kwargs):
         unit = super(UnitDetailJSONView, self).get_object(queryset)
@@ -223,24 +209,21 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, JsTreeMix
 
     @method_decorator(login_required)
     @method_decorator(get_obj_or_404)
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
         if not self.lab.is_assistant(self.request.user):
             raise PermissionDenied
-        return super(UnitDetailJSONView, self).dispatch(*args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-
         if not (self.object.is_member(request.user) or self.object.is_owner(request.user)):
             raise PermissionDenied
+        return super(UnitDetailJSONView, self).dispatch(request, *args, **kwargs)
 
+    def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         ctx = {}
         ctx.update(self.kwargs)
-
         ctx['uploader'] = render_to_string('units/tabs/unit_uploader.html', context)
-
         return self.render_to_json_response(ctx)
 
     def get_context_data(self, **kwargs):

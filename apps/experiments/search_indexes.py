@@ -4,7 +4,7 @@ from django.db.models.signals import pre_save, post_save, pre_delete
 
 from elasticutils.contrib.django import MappingType, Indexable
 
-from experiments.models import Experiment
+from .models import Experiment
 
 
 class ExperimentMappingType(MappingType, Indexable):

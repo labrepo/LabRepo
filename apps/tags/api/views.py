@@ -2,8 +2,8 @@
 from rest_framework import generics
 
 from common.mixins import LoginRequiredMixin, CheckLabPermissionMixin
-from tags.api.serializers import TagSerializer
-from tags.models import Tag
+from .serializers import TagSerializer
+from ..models import Tag
 
 
 class TagListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListCreateAPIView):

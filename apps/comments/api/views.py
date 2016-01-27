@@ -6,8 +6,8 @@ from rest_framework import generics
 
 from common.mixins import LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin
 from dashboard.models import RecentActivity
-from comments.api.serializers import CommentSerializer
-from comments.models import Comment
+from .serializers import CommentSerializer
+from ..models import Comment
 
 
 class CommentListView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin, generics.ListCreateAPIView):

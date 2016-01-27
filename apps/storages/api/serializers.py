@@ -2,7 +2,7 @@ import os
 
 from rest_framework import serializers
 
-from storages.models import LabStorage
+from ..models import LabStorage
 
 
 class LabStorageSerializer(serializers.ModelSerializer):

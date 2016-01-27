@@ -10,10 +10,9 @@ from common.decorators import get_obj_or_404
 from common.mixins import (RecentActivityMixin, AjaxableResponseMixin, ActiveTabMixin, LoginRequiredMixin,
                            LabQueryMixin, JsTreeMixin, CheckLabPermissionMixin)
 from dashboard.models import RecentActivity
-from .models import Tag
 from labs.models import Lab
 from tags.forms import TagForm
-from units.models import Unit
+from .models import Tag
 
 
 class TagCreateView(LoginRequiredMixin, CheckLabPermissionMixin, AjaxableResponseMixin, JsTreeMixin,

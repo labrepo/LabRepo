@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from rest_framework import serializers
 from reversion import revisions as reversion
 
-from measurements.models import Measurement
+from ..models import Measurement
 
 
 class RevisionsField(serializers.Field):

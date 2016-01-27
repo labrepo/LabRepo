@@ -3,8 +3,8 @@ import factory
 
 from django.utils import lorem_ipsum
 
-from .models import Tag
 from labs.models import Lab
+from .models import Tag
 
 
 class TagFactory(factory.DjangoModelFactory):

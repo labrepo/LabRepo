@@ -2,7 +2,7 @@ import factory
 
 from django.utils import lorem_ipsum
 
-from labs.models import Lab
+from .models import Lab
 
 
 class LabFactory(factory.DjangoModelFactory):

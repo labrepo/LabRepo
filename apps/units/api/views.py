@@ -16,10 +16,9 @@ from reversion import revisions as reversion
 
 from common.mixins import LoginRequiredMixin, AjaxableResponseMixin, CheckLabPermissionMixin, RecentActivityMixin
 from dashboard.models import RecentActivity
-from units.api.serializers import UnitSerializer, UnitTableSerializer,UnitLinkSerializer
-from units.models import Unit, UnitLink
 from experiments.models import Experiment
-from labs.models import Lab
+from .serializers import UnitSerializer, UnitTableSerializer,UnitLinkSerializer
+from ..models import Unit, UnitLink
 
 
 class UnitListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListAPIView):

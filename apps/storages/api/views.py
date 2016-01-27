@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from common.mixins import LoginRequiredMixin, CheckLabPermissionMixin
-from storages.api.serializers import LabStorageSerializer
-from storages.models import LabStorage
+from .serializers import LabStorageSerializer
+from ..models import LabStorage
 
 
 class StorageListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListCreateAPIView):

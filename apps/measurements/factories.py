@@ -4,7 +4,7 @@ from django.utils import lorem_ipsum
 
 import factory
 
-from measurements.models import Measurement
+from .models import Measurement
 
 
 class MeasurementFactory(factory.DjangoModelFactory):

@@ -3,9 +3,9 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 
 from profiles.api.serializers import LabUserSerializer
-from comments.models import Comment
 from units.models import Unit
 from experiments.models import Experiment
+from ..models import Comment
 
 
 class InstanceTypeField(serializers.Field):

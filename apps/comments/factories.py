@@ -4,7 +4,7 @@ from django.utils import lorem_ipsum
 
 from profiles.models import LabUser
 from experiments.factories import ExperimentFactory
-from comments.models import Comment
+from .models import Comment
 
 
 class CommentFactory(factory.DjangoModelFactory):

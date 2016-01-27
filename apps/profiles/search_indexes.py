@@ -3,8 +3,8 @@ from django.db.models.signals import pre_save, post_save, pre_delete
 
 from elasticutils.contrib.django import MappingType, Indexable
 
-from profiles.models import LabUser
 from experiments.search_indexes import ExperimentMappingType
+from .models import LabUser
 
 
 class ProfileMappingType(MappingType, Indexable):

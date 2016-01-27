@@ -4,8 +4,8 @@ import factory
 
 from django.utils import lorem_ipsum
 
-from storages.models import LabStorage, SFTP
 from labs.models import Lab
+from .models import LabStorage, SFTP
 
 
 class StorageFactory(factory.DjangoModelFactory):

@@ -160,7 +160,7 @@ class InviteFormMixin(object):
         return ctx
 
 
-class JsTreeMixin(object):  # todo it's not a mixin just a util func
+class JsTreeMixin(object):
 
     def get_jstree_data(self, object_list, fields=('id', 'parent', 'details'), parent_id='#'):
         result = []

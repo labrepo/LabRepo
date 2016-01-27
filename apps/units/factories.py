@@ -4,7 +4,7 @@ from django.utils import lorem_ipsum
 
 from labs.models import Lab
 from measurements.factories import MeasurementFactory
-from units.models import Unit
+from .models import Unit
 
 
 class UnitFactory(factory.DjangoModelFactory):

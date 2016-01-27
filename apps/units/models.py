@@ -11,10 +11,6 @@ from django.db.models import signals
 from labs.models import Lab
 from experiments.models import Experiment
 from tags.models import Tag
-# from measurements.models import Measurement
-from experiments.models import Experiment
-
-from tags.models import Tag
 
 
 class Unit(models.Model):

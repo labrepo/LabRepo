@@ -16,16 +16,16 @@ from django.views.generic.edit import ModelFormMixin, ProcessFormView
 
 from comments.models import Comment
 from common.decorators import get_obj_or_404
-from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPermissionMixin, JsTreeMixin,
+from common.mixins import (ActiveTabMixin, CheckEditPermissionMixin, CheckViewPermissionMixin,
                            LabQueryMixin, CheckDeletePermissionMixin, RecentActivityMixin,
                            AjaxableResponseMixin, InviteFormMixin, CheckLabPermissionMixin,
                            FormInitialMixin, LoginRequiredMixin)
 from dashboard.models import RecentActivity
-from experiments.models import Experiment, ExperimentReadCommentEntry
-from experiments.forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm
 from tags.models import Tag
 from units.models import Unit
 from filemanager.views import get_upload
+from .models import Experiment, ExperimentReadCommentEntry
+from .forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm
 
 
 class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMixin, InviteFormMixin, ActiveTabMixin,
@@ -153,7 +153,7 @@ class ExperimentDeleteView(CheckLabPermissionMixin, CheckDeletePermissionMixin, 
         return messages.add_message(self.request, messages.SUCCESS, _('Experiment was removed successfully.'))
 
 
-class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermissionMixin, LabQueryMixin, DetailView):
+class ExperimentDetailView(CheckLabPermissionMixin, CheckViewPermissionMixin, LabQueryMixin, DetailView):
     """
     View for display information about an existing experiment with related units
     """
@@ -212,11 +212,6 @@ class ExperimentDetailView(CheckLabPermissionMixin, JsTreeMixin, CheckViewPermis
         ctx = super(ExperimentDetailView, self).get_context_data(**kwargs)
         self.units = Unit.objects.filter(experiments=self.object, active=True)
         ctx['units'] = self.units
-
-        tags = Tag.objects.filter(lab=self.kwargs.get('lab_pk'))
-        tags_tree = self.get_jstree_data(tags, ('id', 'parent', 'details'), parent_id='#')
-        ctx['tags'] = json.dumps(tags_tree)
-
         ctx['units_graph_json'] = self.get_unit_graph_data()
 
         # ctx['unit_form'] = AddUnitToExperimentForm(initial={'lab': self.lab, 'user': self.request.user, 'experiment': self.object})

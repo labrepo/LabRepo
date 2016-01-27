@@ -1,6 +1,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save, pre_delete
-from tags.models import Tag
+
+from .models import Tag
 
 
 @receiver(post_save, sender=Tag)

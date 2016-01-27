@@ -3,7 +3,7 @@ from django.views.generic import DetailView
 from common.mixins import ActiveTabMixin, LoginRequiredMixin, CheckViewPermissionMixin, CheckLabPermissionMixin
 
 from labs.models import Lab
-from storages.forms import LabStorageForm
+from .forms import LabStorageForm
 
 
 class LabStorageIndex(LoginRequiredMixin, CheckViewPermissionMixin, ActiveTabMixin, DetailView):

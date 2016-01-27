@@ -6,8 +6,8 @@ from reversion import revisions as reversion
 
 from common.mixins import LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin
 from dashboard.models import RecentActivity
-from measurements.api.serializers import MeasurementSerializer
-from measurements.models import Measurement
+from .serializers import MeasurementSerializer
+from ..models import Measurement
 
 
 class MeasurementDetailView(LoginRequiredMixin, RecentActivityMixin, CheckLabPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
