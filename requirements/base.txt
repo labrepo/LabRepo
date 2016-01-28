@@ -26,3 +26,4 @@ paramiko==1.16.0
 django-preserialize==1.1.0
 django-imagekit==3.2.7
 django-angular==0.7.15
+django-filter==0.12.0
