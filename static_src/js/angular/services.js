@@ -90,7 +90,16 @@ chatSocketServices.factory('chatMessage', ['$websocket', '$rootScope',
         var dataStream = $websocket('ws://'+ LabRepo.domain + '/chat/'  + experiment + '/');
 
         dataStream.onMessage(function(message) {
-            $rootScope.$emit('new_chat_message', JSON.parse(message.data).comment);
+            var message = JSON.parse(message.data);
+            if (message.action == 'create') {
+                $rootScope.$emit('create_chat_message', message.comment);
+            }
+            if (message.action == 'update') {
+                $rootScope.$emit('update_chat_message', message.comment);
+            }
+            if (message.action == 'delete') {
+                $rootScope.$emit('delete_chat_message', message.comment);
+            }
         });
 
         var methods = {

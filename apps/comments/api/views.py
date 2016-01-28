@@ -42,6 +42,7 @@ class CommentListView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivit
             channel = '{}'.format(obj.object_id)
             r.publish(channel, json.dumps({
                 'comment': serializer.data,
+                'action': 'create',
             }))
 
 
@@ -51,5 +52,30 @@ class CommentDetailView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Re
     queryset = Comment.objects.all()
 
     def perform_update(self, serializer):
-        serializer.save(init_user=self.request.user)
+        """
+        Update a comment instance and publish a message to Redis.
+        """
+        obj = serializer.save(init_user=self.request.user)
+
+        if obj.instance_type.name.lower() == 'experiment':
+            r = redis.StrictRedis(host='localhost', port=6379, db=3)
+            channel = '{}'.format(obj.object_id)
+            r.publish(channel, json.dumps({
+                'comment': serializer.data,
+                'action': 'update',
+            }))
+
+    def perform_destroy(self, instance):
+        """
+        Delete a comment instance and publish a message to Redis.
+        """
+        id = instance.id
+        instance.delete()
+        if instance.instance_type.name.lower() == 'experiment':
+            r = redis.StrictRedis(host='localhost', port=6379, db=3)
+            channel = '{}'.format(instance.object_id)
+            r.publish(channel, json.dumps({
+                'comment': {'id': id},
+                'action': 'delete',
+            }))
 

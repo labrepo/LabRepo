@@ -215,8 +215,28 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
         $scope.object_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
         $scope.comments = angular.extend(Comment.query({labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id}),chatMessage.collection)
 
-        $rootScope.$on('new_chat_message', function(e, comment){
+        var getCommentIndex = function(comment){
+            var c =  $scope.comments.filter(function(c) {
+                return c.id == comment.id;
+            })[0];
+            return $scope.comments.indexOf(c)
+        };
+
+        $rootScope.$on('create_chat_message', function(e, comment){
             $scope.comments.push(comment);
+        });
+
+        $rootScope.$on('update_chat_message', function(e, comment){
+            var index = getCommentIndex(comment)
+            if(index > -1){
+                $scope.comments[index] = comment;
+            }
+        });
+        $rootScope.$on('delete_chat_message', function(e, comment){
+            var index = getCommentIndex(comment)
+            if(index > -1){
+                $scope.comments.splice(index,1);
+            }
         });
 
         $scope.createComment = function() {
@@ -227,7 +247,7 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
                     instance_type: 'experiment',
                     object_id: $scope.object_id,
                 })
-            $scope.comments.push(comment);
+//            $scope.comments.push(comment);  // handled by ws message
             $scope.text = null;
         };
 
@@ -245,11 +265,7 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
         $scope.deleteComment = function() {
             var comment = $scope.comment;
             Comment.delete(
-                {labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id, commentId: $scope.comment.id},
-                function(){
-                    var index = $scope.comments.indexOf(comment);
-                    $scope.comments.splice(index, 1);
-                }
+                {labId: lab_pk, instanceType: 'experiment', instanceId: $scope.object_id, commentId: $scope.comment.id}
             )
             angular.element(document.querySelector('#confirm-delete-comment')).modal('toggle');
         };
