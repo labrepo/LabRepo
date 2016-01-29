@@ -1,8 +1,3 @@
-import datetime
-import json
-import time
-import urllib
-
 import redis
 import tornadoredis
 
@@ -22,12 +17,6 @@ r = redis.StrictRedis(host='localhost', port=6379, db=3)
 p = r.pubsub()
 c = tornadoredis.Client()
 c.connect()
-
-
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        self.set_header('Content-Type', 'text/plain')
-        self.write('Hello. :)')
 
 
 class MessagesHandler(tornado.websocket.WebSocketHandler):

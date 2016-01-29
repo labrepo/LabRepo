@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 class UnitTableView(LoginRequiredMixin, RecentActivityMixin, JsTreeMixin,
-                     ModelFormMixin, MultipleObjectTemplateResponseMixin, BaseListView, View):
+                    ModelFormMixin, MultipleObjectTemplateResponseMixin, BaseListView, View):
     """
     Render a unit table template
     """
@@ -180,7 +180,8 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
         self.object = form.save(commit=False)
         # self.object.save(user=self.request.user)
         self.object.save()
-        self.save_recent_activity(RecentActivity.UPDATE, unit=self.object.pk, experiment=[unicode(obj.pk) for obj in self.object.experiments.all()])
+        self.save_recent_activity(RecentActivity.UPDATE, unit=self.object.pk,
+                                  experiment=[unicode(obj.pk) for obj in self.object.experiments.all()])
         self.get_success_message()
         return HttpResponseRedirect(self.get_success_url())
 

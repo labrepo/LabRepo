@@ -46,7 +46,7 @@ class TestQueries(ESTestCase):
 
     def test_unit(self):
 
-        unit = UnitFactory(experiments=[self.experiment], lab=self.lab,sample=u'ytrewq')
+        unit = UnitFactory(experiments=[self.experiment], lab=self.lab, sample=u'ytrewq')
         sleep(1)
         url = u'{}?q=ytrewq'.format(reverse('search:all', kwargs={'lab_pk': self.lab.pk}))
         resp = self.client.get(url)

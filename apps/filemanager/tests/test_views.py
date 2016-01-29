@@ -15,7 +15,7 @@ from profiles.factories import UserFactory
 class TestFilemanagerBackendTest(TestCase):
     def setUp(self):
         self.old_setting = settings.FILEMANAGER_UPLOAD_ROOT
-        settings.FILEMANAGER_UPLOAD_ROOT = settings.FILEMANAGER_UPLOAD_ROOT + '_test/'
+        settings.FILEMANAGER_UPLOAD_ROOT += '_test/'
 
         self.owner = UserFactory()
 

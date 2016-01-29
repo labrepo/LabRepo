@@ -6,8 +6,7 @@ from __future__ import unicode_literals
 import getpass
 import unicodedata
 
-from django.contrib.auth import (models as auth_app, get_permission_codename,
-    get_user_model)
+from django.contrib.auth import (models as auth_app, get_permission_codename, get_user_model)
 from django.core import exceptions
 from django.core.management.base import CommandError
 from django.db import DEFAULT_DB_ALIAS, router
@@ -116,8 +115,8 @@ def create_superuser(app, created_models, verbosity, db, **kwargs):
 
     if UserModel in created_models and kwargs.get('interactive', True):
         msg = ("\nYou just installed Django's auth system, which means you "
-            "don't have any superusers defined.\nWould you like to create one "
-            "now? (yes/no): ")
+               "don't have any superusers defined.\nWould you like to create one "
+               "now? (yes/no): ")
         confirm = input(msg)
         while 1:
             if confirm not in ('yes', 'no'):
@@ -188,7 +187,6 @@ def get_default_username(check_db=True):
             return ''
     return default_username
 
-signals.post_syncdb.connect(create_permissions,
-    dispatch_uid="django.contrib.auth.management.create_permissions")
+signals.post_syncdb.connect(create_permissions, dispatch_uid="django.contrib.auth.management.create_permissions")
 signals.post_syncdb.connect(create_superuser,
-    sender=auth_app, dispatch_uid="django.contrib.auth.management.create_superuser")
+                            sender=auth_app, dispatch_uid="django.contrib.auth.management.create_superuser")

@@ -91,7 +91,8 @@ class UnitSerializer(JsTreeMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Unit
-        fields = ('id', 'sample', 'description', 'experiments', 'parent', 'tags', 'tag_tree', 'lab', 'measurement', 'edit_permission')
+        fields = ('id', 'sample', 'description', 'experiments', 'parent',
+                  'tags', 'tag_tree', 'lab', 'measurement', 'edit_permission')
 
 
 class UnitLinkSerializer(serializers.ModelSerializer):

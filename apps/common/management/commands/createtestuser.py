@@ -8,7 +8,6 @@ from django.core.management.base import BaseCommand
 from profiles.models import LabUser
 
 
-
 class Command(BaseCommand):
 
     help = 'Used to create a test user.'

@@ -89,7 +89,6 @@ class ProfileMappingType(MappingType, Indexable):
         }
 
 
-
 @receiver(post_save, sender=LabUser)
 def update_in_index(sender, instance, **kw):
     from common import tasks

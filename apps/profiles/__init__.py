@@ -100,7 +100,6 @@ User.add_to_class('create_test_lab', create_test_lab)
 # User._meta['virtual_fields'] = []
 
 
-
 def get_related_field(self):
     return self.to._meta.pk
 

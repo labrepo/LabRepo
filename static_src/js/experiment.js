@@ -122,13 +122,13 @@ $('body').on('click', '#fm .fm-choose', function(e){
     $('#fm').modal('hide')
 })
 
-$('.box-comments').scroll(function (e) {
-    if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-        $('.comments-alert').hide(1000)
-        var url = $('#experiment_row').data('read-url')
-        $.post(url, {'comment': $('.box-comment').last().data('pk')})
-    }
-});
+//$('.box-comments').scroll(function (e) {
+//    if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+//        $('.comments-alert').hide(1000)
+//        var url = $('#experiment_row').data('read-url')
+//        $.post(url, {'comment': $('.box-comment').last().data('pk')})
+//    }
+//});
 
 
 // set height of comment block

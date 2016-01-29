@@ -75,7 +75,7 @@ class FileManagerMixin(object):
                             remote_fs = ReadOnlyFS(remote_fs)
 
                         self.fs.mountdir(storage.get_folder_name(), remote_fs)
-                    except:  #TODO: too broad, add logger
+                    except:  # TODO: too broad, add logger
                         pass
 
     def get_upload(self, request, *args, **kwargs):

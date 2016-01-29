@@ -78,7 +78,7 @@ class Unit(models.Model):
         # for collection in Collection.objects.filter(units__in=[self]):
         #     if collection.is_owner(user) or collection.is_editor(user) and user in collection.viewers:
         #         return True
-        return self.lab.is_owner(user)# or self.lab.is_member(user)
+        return self.lab.is_owner(user)  # or self.lab.is_member(user)
 
     def is_assistant(self, user):
         """

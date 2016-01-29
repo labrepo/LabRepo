@@ -17,7 +17,7 @@ from reversion import revisions as reversion
 from common.mixins import LoginRequiredMixin, AjaxableResponseMixin, CheckLabPermissionMixin, RecentActivityMixin
 from dashboard.models import RecentActivity
 from experiments.models import Experiment
-from .serializers import UnitSerializer, UnitTableSerializer,UnitLinkSerializer
+from .serializers import UnitSerializer, UnitTableSerializer, UnitLinkSerializer
 from ..models import Unit, UnitLink
 
 

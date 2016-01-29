@@ -133,8 +133,8 @@ class FileUploadMixinView(BaseUploaderMixin):
                 obj.save()
                 if f.content_type == 'application/pdf':
                     thumb_filename = self.generate_pdf_review(obj)
-                    with open(thumb_filename, 'r') as f:
-                        thumb_file = File(f)
+                    with open(thumb_filename, 'r') as tfile:
+                        thumb_file = File(tfile)
                         obj.thumbnail.save(thumb_filename, thumb_file, True)
                     os.remove(thumb_filename)
                 else:

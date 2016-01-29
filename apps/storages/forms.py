@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from djangular.forms import NgModelFormMixin, NgFormValidationMixin, NgModelForm
 
-from common.forms import  FormMixin
+from common.forms import FormMixin
 from .models import LabStorage
 
 
