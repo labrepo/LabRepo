@@ -31,13 +31,13 @@ class TestDashboardTest(TestCase):
         resp = self.client.get(url)
         self.assertContains(resp, self.lab.name)
         self.assertContains(resp, u'<div id="calendar"')
-        self.assertContains(resp, u'resent-activities-container')  # TODO: fix typo
+        self.assertContains(resp, u'recent-activities-container')
         self.assertContains(resp, u'Storages')
         self.client.login(username=self.member.email, password='qwerty')
         resp = self.client.get(url)
         self.assertContains(resp, self.lab.name)
         self.assertContains(resp, u'<div id="calendar"')
-        self.assertContains(resp, u'resent-activities-container')  # TODO: fix typo
+        self.assertContains(resp, u'recent-activities-container')
         self.assertContains(resp, u'Storages')
 
     def test_recent_experiment_activity_view(self):

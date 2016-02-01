@@ -75,7 +75,7 @@ class FileManagerMixin(object):
                             remote_fs = ReadOnlyFS(remote_fs)
 
                         self.fs.mountdir(storage.get_folder_name(), remote_fs)
-                    except:  # TODO: too broad, add logger
+                    except Exception:  # TODO: too broad, inform user, update fs
                         pass
 
     def get_upload(self, request, *args, **kwargs):
@@ -164,7 +164,7 @@ def pyfs_file_ang(lab_pk, file_path):
                         if storage.readonly:
                             remote_fs = ReadOnlyFS(remote_fs)
                         fs.mountdir(storage.get_folder_name(), remote_fs)
-                    except:  #TODO: too broad, add logger
+                    except Exception:  # TODO: too broad, inform user, update fs
                         pass
 
         file_object = fs.open(relative_dir_path, 'rb')
@@ -172,29 +172,6 @@ def pyfs_file_ang(lab_pk, file_path):
         yield file_object
     finally:
         pass
-
-
-class FileManagerDownloadView(FileManagerMixin, View):
-    """
-    Return response with a file from a pyfs
-
-    """
-    # TODO is it needed?
-    def dispatch(self, request, *args, **kwargs):
-        super(FileManagerDownloadView, self).dispatch(request, *args, **kwargs)
-        fs_path = kwargs.get('fs_path')
-        self.smart_mount(fs_path)
-
-        content_type = mimetypes.guess_type(fs_path)[0]
-        filename = smart_str(os.path.basename(fs_path))
-
-        size = self.fs.getsize(fs_path)
-        response = HttpResponse(content_type=content_type)
-        response['Content-Length'] = size
-        file_object = self.fs.open(fs_path, 'rb')
-        response['Content-Disposition'] = u'attachment; filename={}'.format(filename.decode('utf-8'))
-        response.write(file_object.read())
-        return response
 
 
 class AngularFileManagerMixin(object):

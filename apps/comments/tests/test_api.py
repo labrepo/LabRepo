@@ -104,4 +104,4 @@ class CommentApiDetailTests(APITestCase):
         self.assertEqual(Comment.objects.count(), 0)
 
 
-# TODO: recent activity, another user
+# TODO: another user

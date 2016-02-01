@@ -105,18 +105,16 @@ def create_measurement(sender, instance, created, **kwargs):
 signals.post_save.connect(create_measurement, sender=Unit)
 
 
-class UnitFile(models.Model):  # todo upd docs
+class UnitFile(models.Model):
     """
     Base class for file storage in GridFS
 
-    :parent: reference on parent document. Must be overridden
-    :file: reference on GridFsProxy object.
-    :name: (string) name of the file
-    :size: (int) size of file, bytes
+    :parent: reference on parent document.
+    :file: django filefield object.
     :content_type: (string) file content type, ex 'image/jpeg'
-    :thumbnail: reference on GridFsProxy object with file thumbnail, if file is image.
-    :outer_thumbnail_url: (string) store outer url to thumbnail for dropbox or gdrive object
-    :outer_url: (string) store outer url for dropbox or gdrive object
+    :thumbnail: django filefield object, if file is an image.
+    :outer_thumbnail_url: (url) store outer url to thumbnail for dropbox or gdrive object
+    :outer_url: (url) store outer url for dropbox or gdrive object
     :timestamp: (datetime) when object is created
     """
     parent = models.ForeignKey(Unit, verbose_name=_('unit'))

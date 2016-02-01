@@ -104,4 +104,4 @@ class StoragesApiDetailTests(APITestCase):
         self.assertEqual(LabStorage.objects.count(), 0)
 
 
-# TODO: recent activity, another user
+# TODO: another user

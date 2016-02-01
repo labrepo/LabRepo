@@ -13,7 +13,4 @@ urlpatterns = patterns(
     url(r'^remove/$', views.AngFileManagerRemoveView.as_view(), name='filemanager-remove'),
     url(r'^upload/$', views.AngFileManagerUploadView.as_view(), name='filemanager-upload'),
     url(r'^download/$', views.AngFileManagerDownloadView.as_view(), name='filemanager-download'),
-
-    url(r'^(?P<fs_path>.+)/$', views.FileManagerDownloadView.as_view(), name='filemanager-download'),
-
 )

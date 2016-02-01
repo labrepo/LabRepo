@@ -97,7 +97,6 @@ def create_test_lab(self):
 # User.add_to_class('get_absolute_url', get_absolute_url)
 # User.add_to_class('has_usable_password', has_usable_password)
 User.add_to_class('create_test_lab', create_test_lab)
-# User._meta['virtual_fields'] = []
 
 
 def get_related_field(self):
@@ -132,10 +131,3 @@ def distinct(self, field=None):
 def values_list(self, *fields, **kwargs):
     return super(QuerySet, self).values_list(*fields)
 
-
-# Relation.get_related_field = get_related_field
-# ReferenceField.get_choices = get_choices
-# ReferenceField.null = False  # todo change
-# QuerySet.ordered = True
-# QuerySet.distinct = distinct
-# QuerySet.values_list = values_list

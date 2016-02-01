@@ -33,9 +33,9 @@ class LabCreateView(LoginRequiredMixin, InviteFormMixin, ActiveTabMixin, CreateV
         :param form: :class:`labs.forms.LabForm` instance
         :return: redirect to laboratories list
         """
-        self.object = form.save()           # todo (commit=False)
+        self.object = form.save()
         if not self.request.user in self.object.investigator.all():
-            self.object.investigator.append(self.request.user)
+            self.object.investigator.add(self.request.user)
         self.object.save()
         check_directory(os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, unicode(self.object.id) + '/'))
         self.get_success_message()

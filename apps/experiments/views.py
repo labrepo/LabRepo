@@ -3,6 +3,7 @@ import dateutil
 import json
 import requests
 import re
+import logging
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -28,6 +29,7 @@ from .models import Experiment, ExperimentReadCommentEntry
 from .forms import ExperimentForm, ExperimentUpdateForm, UpdateUnitsForm
 
 
+logger = logging.getLogger(__name__)
 class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMixin, InviteFormMixin, ActiveTabMixin,
                            RecentActivityMixin, CreateView):
     """
@@ -45,7 +47,7 @@ class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMi
         :param form: :class:`experiments.forms.ExperimentForm` instance
         :return: redirect to detail laboratory's information
         """
-        self.object = form.save(commit=False) # todo (commit=False)
+        self.object = form.save(commit=False)
         self.object.lab = self.lab
         self.object.save()
         if not self.request.user in self.object.owners.all():
@@ -57,8 +59,8 @@ class ExperimentCreateView(CheckLabPermissionMixin, LabQueryMixin, FormInitialMi
 
         try:
             self.object.wooflo_key = get_wooflo_key(self.object)
-        except:
-            pass
+        except Exception as e:
+            logger.exception("Fatal error while a wooflo key generation")
 
         self.object.save()
         self.save_recent_activity(RecentActivity.ADD)
