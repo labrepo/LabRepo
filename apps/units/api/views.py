@@ -4,9 +4,7 @@ import bs4
 import requests
 from urlparse import urlparse
 
-from django.utils.decorators import method_decorator
 from django.views.generic import View
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.db.models import Q
 
 from rest_framework import generics
@@ -21,28 +19,19 @@ from .serializers import UnitSerializer, UnitTableSerializer, UnitLinkSerializer
 from ..models import Unit, UnitLink
 
 
-class UnitListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListAPIView):
-
+class UnitTableView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin, AjaxableResponseMixin, generics.GenericAPIView, View):
+    """
+    Serializes units for a handsontable view.
+    """
     serializer_class = UnitTableSerializer
 
     def get_queryset(self, **kwargs):
-        if self.kwargs.get('experiment_pk'):
-            experiments = [self.kwargs.get('experiment_pk')]
-        else:
-            experiments = Experiment.objects.filter(lab=self.lab, active=True)
-            if self.lab.is_guest(self.request.user):
-                experiments = experiments.filter(Q(owners=self.user) | Q(editors=self.user) | Q(viewers=self.user))
-            experiments = experiments.values_list('id')
-        return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'], experiments__in=experiments, active=True).distinct()
+        return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'])
 
-
-class UnitTableView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin, AjaxableResponseMixin, View):
-
-    serializer_class = UnitTableSerializer
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(UnitTableView, self).dispatch(*args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
     def post(self, *args, **kwargs):
         results = []
@@ -85,27 +74,25 @@ class UnitTableView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityM
                 results.append((index, {'errors': serializer.errors, 'success': False}))
         return self.render_to_json_response(results)
 
-    def get_queryset(self, **kwargs):
-        return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'])
 
+class UnitListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListCreateAPIView):
 
-class UnitCreateView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListCreateAPIView):
+    serializer_class = UnitTableSerializer
+
     def get_queryset(self, **kwargs):
-        if self.request.GET.get('experiment_pk'):
-            experiments = [self.request.GET.get('experiment_pk')]
+        if self.kwargs.get('experiment_pk'):
+            experiments = [self.kwargs.get('experiment_pk')]
         else:
             experiments = Experiment.objects.filter(lab=self.lab, active=True)
             if self.lab.is_guest(self.request.user):
                 experiments = experiments.filter(Q(owners=self.user) | Q(editors=self.user) | Q(viewers=self.user))
             experiments = experiments.values_list('id')
-        return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'], experiments__in=experiments, active=True)
+        return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'], experiments__in=experiments, active=True).distinct()
+
+
+class UnitDetailView(LoginRequiredMixin, CheckLabPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
+
     serializer_class = UnitSerializer
-
-
-class UnitUpdateView(LoginRequiredMixin, CheckLabPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
-
-    serializer_class = UnitSerializer
-
     queryset = Unit.objects.all()
 
 
