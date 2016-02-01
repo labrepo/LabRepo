@@ -120,7 +120,7 @@ $('body').on('click', '#fm .fm-choose', function(e){
         update_uploaders()
     })
     $('#fm').modal('hide')
-})
+});
 
 //$('.box-comments').scroll(function (e) {
 //    if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
