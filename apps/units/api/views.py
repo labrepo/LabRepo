@@ -2,6 +2,7 @@
 import json
 import bs4
 import requests
+import logging
 from urlparse import urlparse
 
 from django.views.generic import View
@@ -17,6 +18,8 @@ from dashboard.models import RecentActivity
 from experiments.models import Experiment
 from .serializers import UnitSerializer, UnitTableSerializer, UnitLinkSerializer
 from ..models import Unit, UnitLink
+
+logger = logging.getLogger(__name__)
 
 
 class UnitTableView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityMixin, AjaxableResponseMixin, generics.GenericAPIView, View):
@@ -124,7 +127,7 @@ class UnitLinkCreateView(LoginRequiredMixin, generics.CreateAPIView):
         try:
             link_info = self.get_info(link)
         except Exception as e:
-            # logger.error('Error in link preview', exc_info=True)
+            logger.exception('Error in link preview')
             link_info = {}
 
         unit_link = UnitLink.objects.create(

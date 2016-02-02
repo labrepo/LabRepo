@@ -24,6 +24,8 @@ from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.core.exceptions import PermissionDenied
+from django.contrib import messages
+from django.utils.translation import gettext_lazy as _, ugettext
 
 from labs.models import Lab
 from .decorators import filemanager_require_auth
@@ -53,10 +55,11 @@ class FileManagerMixin(object):
         if not self.lab.is_assistant(request.user):
             raise PermissionDenied
 
-    def smart_mount(self, file_path=None):
+    def smart_mount(self, file_path=None, request=None):
         """
         Mounts only fs which store file on file_path. If file_path isn't set mounts all fs.
         :param file_path: (string) relative path to the file(from a pyfs root)
+        :param request: (django request object) if passed we can add messages about error while connecting
         """
         self.fs = MountFS()
         local_fs = OSFS(self.UPLOAD_ROOT)
@@ -75,8 +78,11 @@ class FileManagerMixin(object):
                             remote_fs = ReadOnlyFS(remote_fs)
 
                         self.fs.mountdir(storage.get_folder_name(), remote_fs)
-                    except Exception:  # TODO: too broad, inform user, update fs
-                        pass
+                    except Exception:
+                        storage.active = False
+                        storage.save()
+                        if request:
+                            messages.add_message(request, messages.ERROR, _('Error while connecting to  %(storage_name)s.') % {'storage_name': storage})
 
     def get_upload(self, request, *args, **kwargs):
         lab = request.session.get('lab')
@@ -134,9 +140,7 @@ def get_upload(request, *args, **kwargs):
     return os.path.join(settings.FILEMANAGER_UPLOAD_URL, lab + '/'), os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab + '/')
 
 
-#  TODO: Replace contextmanager with http response.(loose couplings)
-@contextmanager
-def pyfs_file_ang(lab_pk, file_path):
+class PyFSFile(FileManagerMixin):
     """
     This context manager return file-like object from pyfs.
     Is used with angular filemanager.
@@ -144,34 +148,18 @@ def pyfs_file_ang(lab_pk, file_path):
     :param file_path: (string) relative path to the file(from a pyfs root)
     :return:
     """
-    try:
-        UPLOAD_ROOT = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, lab_pk + '/')
-        relative_dir_path = file_path[1:]
-        fs = MountFS()
-        local_fs = OSFS(UPLOAD_ROOT)
-        fs.mountdir('.', local_fs)
-        lab = Lab.objects.get(pk=lab_pk)
-        if not fs.exists(relative_dir_path):
-            for storage in lab.storages.all():
-                if relative_dir_path.startswith(storage.get_folder_name()):
-                    try:
-                        if storage.public_key:
-                            pkey = paramiko.RSAKey.from_private_key(StringIO.StringIO(storage.public_key))
-                            remote_fs = SFTPFS(connection=storage.host, username=storage.username, pkey=pkey, root_path=storage.get_path())
-                        elif storage.password:
-                            remote_fs = SFTPFS(connection=storage.host, username=storage.username, password=storage.password, root_path=storage.get_path())
-                        # else raise
-                        if storage.readonly:
-                            remote_fs = ReadOnlyFS(remote_fs)
-                        fs.mountdir(storage.get_folder_name(), remote_fs)
-                    except Exception:  # TODO: too broad, inform user, update fs
-                        pass
+    def __init__(self, *args, **kwargs):
+        self.lab = kwargs.get('lab')
+        self.file_path = kwargs.get('file_path')
+        self.UPLOAD_ROOT = os.path.join(settings.FILEMANAGER_UPLOAD_ROOT, self.lab + '/')
+        self.smart_mount(self.file_path)
 
-        file_object = fs.open(relative_dir_path, 'rb')
+    def __enter__(self):
+        self.file_object = self.fs.open(self.file_path[1:], 'rb')
+        return self.file_object
 
-        yield file_object
-    finally:
-        pass
+    def __exit__(self, *args, **kwargs):
+        self.fs.close()
 
 
 class AngularFileManagerMixin(object):
@@ -229,7 +217,7 @@ class AngFileManagerListView(AngularFileManagerMixin, FileManagerMixin, View):
             relative_dir_path = d['params']['path'][1:]  # remove opening slash
             if not relative_dir_path:
                 relative_dir_path = ''
-            self.smart_mount(relative_dir_path)
+            self.smart_mount(relative_dir_path, request)
             result = OrderedDict()
             result['result'] = []
             for filename in self.fs.listdir(relative_dir_path):
@@ -254,7 +242,7 @@ class AngFileManagerCreateView(AngularFileManagerMixin, FileManagerMixin, View):
             folder_name = d['params']['name']
             if not relative_dir_path:
                 relative_dir_path = ''
-            self.smart_mount(relative_dir_path)
+            self.smart_mount(relative_dir_path, request)
 
             new_path = path.join(relative_dir_path, folder_name)
 

@@ -16,5 +16,5 @@ class LabStorageSerializer(serializers.ModelSerializer):
     class Meta:
         model = LabStorage
         fields = ('id', 'lab', 'type', 'readonly', 'username', 'host', 'path',
-                  'folder_name', 'password', 'port',  'key_file', 'fullname', 'key_file_name')
+                  'folder_name', 'password', 'port',  'key_file', 'fullname', 'key_file_name', 'active')
         extra_kwargs = {'password': {'write_only': True}}

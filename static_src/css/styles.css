@@ -410,3 +410,7 @@ text.id {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.storage.error {
+    color: #dd4b39;
+}

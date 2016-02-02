@@ -20,7 +20,7 @@ from django.core.servers.basehttp import FileWrapper
 from django.core.exceptions import PermissionDenied
 from django.apps import apps
 
-from filemanager.views import pyfs_file_ang
+from filemanager.views import PyFSFile
 from .response import JSONResponse, response_mimetype
 from .serialize import serialize
 
@@ -213,7 +213,7 @@ class LocalFileUploadMixinView(BaseUploaderMixin):
             obj.content_type = mimetypes.guess_type(f.get('name'))[0]  # or 'image/png',
 
             if need_upload:
-                with pyfs_file_ang(kwargs.get('lab_pk'), f.get('link')) as file_obj:
+                with PyFSFile(lab=kwargs.get('lab_pk'), file_path=f.get('link')) as file_obj:
                     obj.file.save(f.get('name'), File(file_obj))
                 obj.save()
                 #generate thumb

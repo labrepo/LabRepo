@@ -209,7 +209,7 @@ class ExperimentDetailView(CheckLabPermissionMixin, CheckViewPermissionMixin, La
                 self.object.wooflo_key = get_wooflo_key(self.object)
                 self.object.save()
         except Exception as e:
-            pass
+            logger.exception("Fatal error while a wooflo key generation")
 
         ctx = super(ExperimentDetailView, self).get_context_data(**kwargs)
         self.units = Unit.objects.filter(experiments=self.object, active=True)
@@ -259,7 +259,7 @@ def get_wooflo_key(experiment):  # TODO: Refactor this
     Interacts with a wooflo server and create new wooflo project.
     """
     s = requests.Session()
-    r = s.get('http://wooflo.magic60.ru/signin')
+    r = s.get('http://wooflo.magic60.ru/signin', timeout=3)
     rr = re.search(r'<input id="csrf_token" name="csrf_token" type="hidden" value="(.*?)">', r.text)
     token = rr.group(1)
     r = s.post('http://wooflo.magic60.ru/signin', data={
