@@ -1,0 +1,1 @@
+Labrepo is a web-based laboratory information management system for scientists making experimental workflow organization, collaboration and data sharing across groups easy.
