@@ -99,25 +99,12 @@ class UnitDetailView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Retri
     queryset = Unit.objects.all()
 
 
-class UnitLinkListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListAPIView):
+class UnitLinkListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListCreateAPIView):
 
     serializer_class = UnitLinkSerializer
 
     def get_queryset(self, **kwargs):
         return UnitLink.objects.filter(parent__pk=self.kwargs.get('unit_pk'))
-
-
-class UnitLinkDetailView(LoginRequiredMixin, CheckLabPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
-
-    serializer_class = UnitLinkSerializer
-    queryset = UnitLink.objects.all()
-    # TODO: permissions?
-
-
-class UnitLinkCreateView(LoginRequiredMixin, generics.CreateAPIView):
-
-    serializer_class = UnitLinkSerializer
-    queryset = UnitLink.objects.all()
 
     def post(self, *args, **kwargs):
         request_data = json.loads(self.request.body)
@@ -230,3 +217,10 @@ class UnitLinkCreateView(LoginRequiredMixin, generics.CreateAPIView):
             path = parsed_url.path.split('/')[:-1]
             path = '/'.join(path)
             return parsed_url.scheme + '://' + parsed_url.netloc + path + '/' + url
+
+
+class UnitLinkDetailView(LoginRequiredMixin, CheckLabPermissionMixin, generics.RetrieveUpdateDestroyAPIView):
+
+    serializer_class = UnitLinkSerializer
+    queryset = UnitLink.objects.all()
+    # TODO: permissions?
