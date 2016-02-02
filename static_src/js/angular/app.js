@@ -25,12 +25,13 @@ var FileManagerApp = angular.module('FileManagerApp').config(['fileManagerConfig
 }]);
 
 
-var app = angular.module('LabrepoApp', [
-    'FileManagerApp', 'unitControllers', 'UnitLinkCtrl', 'chatCtrl', 'CommentCtrl','StorageCtrl', 'MeasurementCtrl', 'TagCtrl',
-    'LabrepoApp.directives',
-    'unitServices', 'unitLinkServices', 'commentServices', 'chatSocketServices', 'storageServices', 'measurementServices', 'tagServices',
-    'ui.select2', 'summernote', 'yaru22.angular-timeago', 'ngWebSocket', 'ng-file-model','ngJsTree']);
+var app = angular.module('LabrepoApp', ['FileManagerApp',
+    'ui.select2', 'summernote', 'yaru22.angular-timeago',
+    'ngWebSocket', 'ng-file-model','ngJsTree', 'ngCookies', 'ngResource']);
 
+app.config(function($resourceProvider) {
+  $resourceProvider.defaults.stripTrailingSlashes = false;
+});
 
 app.run(function ($http, $cookies) {
     $http.defaults.headers.common['X-CSRFToken'] = $cookies['csrftoken'];

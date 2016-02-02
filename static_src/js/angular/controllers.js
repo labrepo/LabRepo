@@ -1,6 +1,4 @@
-var unitControllers = angular.module('unitControllers', []);
-
-unitControllers.controller('UnitDetailCtrl', ['$scope', '$sce', 'Unit',
+angular.module('LabrepoApp').controller('UnitDetailCtrl', ['$scope', '$sce', 'Unit',
     function($scope, $sce, Unit) {
         $scope.experiment_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
         $scope.units = Unit.query({labId: lab_pk}, function(units){
@@ -89,8 +87,8 @@ unitControllers.controller('UnitDetailCtrl', ['$scope', '$sce', 'Unit',
         $scope.summernote_config = window.summernote_config;
     }]);
 
-var UnitLinkCtrl = angular.module('UnitLinkCtrl', []);
-UnitLinkCtrl.controller('UnitLinkCtrl', ['$scope', 'UnitLink',
+
+angular.module('LabrepoApp').controller('UnitLinkCtrl', ['$scope', 'UnitLink',
     function($scope, UnitLink) {
         $scope.$on('UnitLoaded', function(e, unit) {
             $scope.getUnitLinks(unit.id)
@@ -101,7 +99,7 @@ UnitLinkCtrl.controller('UnitLinkCtrl', ['$scope', 'UnitLink',
         };
 
         $scope.createUnitLink = function() {
-            var link = UnitLink.create({labId: lab_pk}, {link:$scope.link, parent: $scope.unit.id})
+            var link = UnitLink.create({labId: lab_pk, unitId: $scope.unit.id}, {link:$scope.link, parent: $scope.unit.id})
             $scope.unitLinks.push(link);
             $scope.link = null;
         };
@@ -112,9 +110,8 @@ UnitLinkCtrl.controller('UnitLinkCtrl', ['$scope', 'UnitLink',
         };
     }]);
 
-var TagCtrl = angular.module('TagCtrl', []);
 
-TagCtrl.controller('TagCtrl', ['$scope', '$sce', 'Tag',
+angular.module('LabrepoApp').controller('TagCtrl', ['$scope', '$sce', 'Tag',
     function($scope, $sce, Tag) {
         $scope.treeConfig =  {
             'core': {
@@ -148,8 +145,7 @@ TagCtrl.controller('TagCtrl', ['$scope', '$sce', 'Tag',
     }]);
 
 
-var MeasurementCtrl = angular.module('MeasurementCtrl', []);
-MeasurementCtrl.controller('MeasurementCtrl', ['$scope', '$http', 'Measurement',
+angular.module('LabrepoApp').controller('MeasurementCtrl', ['$scope', '$http', 'Measurement',
     function($scope, $http, Measurement) {
 
         createTable = function(measurementId) {  //todo: improve initialization
@@ -207,9 +203,7 @@ MeasurementCtrl.controller('MeasurementCtrl', ['$scope', '$http', 'Measurement',
     }]);
 
 
-var chatCtrl = angular.module('chatCtrl', []);
-
-chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'AuthUser', 'chatMessage',
+angular.module('LabrepoApp').controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'AuthUser', 'chatMessage',
     function($scope, $sce, $rootScope, Comment, AuthUser, chatMessage) {
 
         $scope.object_id =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
@@ -290,9 +284,7 @@ chatCtrl.controller('chatCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'Aut
     }]);
 
 
-var CommentCtrl = angular.module('CommentCtrl', []);
-
-CommentCtrl.controller('CommentCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'AuthUser',
+angular.module('LabrepoApp').controller('CommentCtrl', ['$scope', '$sce', '$rootScope', 'Comment', 'AuthUser',
     function($scope, $sce, $rootScope, Comment, AuthUser) {
 
          initComments = function(unitId) {  //todo: improve initialization
@@ -361,8 +353,8 @@ CommentCtrl.controller('CommentCtrl', ['$scope', '$sce', '$rootScope', 'Comment'
         }
     }]);
 
-var StorageCtrl = angular.module('StorageCtrl', []);
-StorageCtrl.controller('StorageCtrl', ['$scope', 'Storage',
+
+angular.module('LabrepoApp').controller('StorageCtrl', ['$scope', 'Storage',
     function($scope, Storage) {
 
         $scope.storages = Storage.query({labId: lab_pk})

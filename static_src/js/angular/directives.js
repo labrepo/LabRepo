@@ -1,11 +1,10 @@
-angular.module('LabrepoApp.directives', []).
-    directive('commentsScroll', ['$timeout', function ($timeout) {
+angular.module('LabrepoApp')
+    .directive('commentsScroll', ['$timeout', function ($timeout) {
         return {
             restrict: 'A',
             link: function (scope, element, attr) {
                 if (scope.$last === true) {
                     $timeout(function () {
-//                        scope.$emit(attr.onFinishRender);
                         var $comments = $(element).parent()
                         $comments.css('max-height', window.innerHeight -430)
                         var sidebar_height = $('.main-sidebar').height();

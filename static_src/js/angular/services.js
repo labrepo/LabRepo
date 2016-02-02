@@ -1,5 +1,4 @@
-var unitServices = angular.module('unitServices', ['ngResource']);
-unitServices.factory('Unit', ['$resource',
+angular.module('LabrepoApp').factory('Unit', ['$resource',
     function($resource){
         return $resource('/:labId/units/api/unit/:unitId', {}, {
             'update': {method:'PUT' },
@@ -8,27 +7,16 @@ unitServices.factory('Unit', ['$resource',
         });
     }]);
 
-var unitLinkServices = angular.module('unitLinkServices', ['ngResource']);
-unitLinkServices.factory('UnitLink', ['$resource',
+angular.module('LabrepoApp').factory('UnitLink', ['$resource',
     function($resource){
-        return $resource('/:labId/units/api/unit-links/:linkId/', {}, {
+        return $resource('/:labId/units/api/:unitId/unit-links/:linkId/', {}, {
             'create': {method:'POST'},
             'delete': {method:'DELETE' },
-            'query':  {
-                method:'GET',
-                url: '/:labId/units/api/unit-links/list/:unitId/',
-                params:{labId: '@labId', unitId: '@unitId'},
-                isArray:true
-            },
+            'query':  {method:'GET', isArray:true},
         });
     }]);
 
-unitLinkServices.config(function($resourceProvider) {
-    $resourceProvider.defaults.stripTrailingSlashes = false;
-});
-
-var commentServices = angular.module('commentServices', ['ngResource']);
-commentServices.factory('Comment', ['$resource',
+angular.module('LabrepoApp').factory('Comment', ['$resource',
     function($resource){
         return $resource('/:labId/comment/api/:instanceType/:instanceId/:commentId/', {}, {
             'create': {method:'POST'},
@@ -39,13 +27,8 @@ commentServices.factory('Comment', ['$resource',
         });
     }]);
 
-commentServices.config(function($resourceProvider) {
-    $resourceProvider.defaults.stripTrailingSlashes = false;
-});
 
-
-var storageServices = angular.module('storageServices', ['ngResource']);
-storageServices.factory('Storage', ['$resource',
+angular.module('LabrepoApp').factory('Storage', ['$resource',
     function($resource){
         return $resource('/:labId/storages/api/:storageId/', {}, {
             'create': {method:'POST'},
@@ -57,8 +40,7 @@ storageServices.factory('Storage', ['$resource',
     }]);
 
 
-var tagServices = angular.module('tagServices', ['ngResource']);
-tagServices.factory('Tag', ['$resource',
+angular.module('LabrepoApp').factory('Tag', ['$resource',
     function($resource){
         return $resource('/:labId/tags/api/:tagId/', {}, {
             'create': {method:'POST'},
@@ -68,8 +50,7 @@ tagServices.factory('Tag', ['$resource',
         });
     }]);
 
-var measurementServices = angular.module('measurementServices', ['ngResource']);
-measurementServices.factory('Measurement', ['$resource',
+angular.module('LabrepoApp').factory('Measurement', ['$resource',
     function($resource){
         return $resource('/:labId/measurements/api/:measurementId/', {}, {
             'get':    {method:'GET'},
@@ -77,13 +58,8 @@ measurementServices.factory('Measurement', ['$resource',
         });
     }]);
 
-commentServices.config(function($resourceProvider) {
-    $resourceProvider.defaults.stripTrailingSlashes = false;
-});
 
-
-var chatSocketServices = angular.module('chatSocketServices', ['ngWebSocket']);
-chatSocketServices.factory('chatMessage', ['$websocket', '$rootScope',
+angular.module('LabrepoApp').factory('chatMessage', ['$websocket', '$rootScope',
     function($websocket, $rootScope) {
         var experiment =  angular.element(document.querySelector('#experiment_row')).data('experiment-pk');
 

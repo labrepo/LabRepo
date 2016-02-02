@@ -204,10 +204,9 @@ gulp.task('scripts:app', function () {
 
     return gulp.src([
         "js/**.js",
-        "js/angular/services.js",
-
-        "js/angular/controllers.js",
         "js/angular/app.js",
+        "js/angular/services.js",
+        "js/angular/controllers.js",
         "js/angular/directives.js",
     ])
         .pipe(concat('app.js'))
