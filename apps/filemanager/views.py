@@ -66,6 +66,8 @@ class FileManagerMixin(object):
         self.fs.mountdir('.', local_fs)
         if not self.fs.exists(file_path) or not file_path:
             for storage in self.lab.storages.all():
+                if not storage.active:
+                    continue
                 if file_path.startswith(storage.get_folder_name()) or not file_path:
                     try:
                         if storage.public_key:
