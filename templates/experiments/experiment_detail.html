@@ -212,8 +212,7 @@
                         <h4>{% trans "Sample" %}</h4>
                         <form  ng-submit="saveUnit()" method="post">
                           <button type="button" ng-show="unit.edit_permission" ng-click="isEditorOpenSample = !isEditorOpenSample" class="fa fa-pencil btn-link pull-right" title="{% trans 'Edit' %}"></button>
-                          <div ng-show="!isEditorOpenSample" class="field-text">
-                            {% verbatim %}{{ unit.sample }}{% endverbatim %}
+                          <div ng-show="!isEditorOpenSample" class="field-text" ng-bind="unit.sample">
                           </div>
                           <div ng-show="isEditorOpenSample" >
                             <div class="form-group">
@@ -275,7 +274,7 @@
                           <div class="link-list" ng-repeat="unitLink in unitLinks">
                             <div class="box box-widget">
                         <div class="box-header">
-                          <span class="description">{% verbatim %}{{ unitLink.timestamp }}{% endverbatim %}</span>
+                          <span class="description" ng-bind="unitLink.timestamp"></span>
                           <div class="box-tools">
                             <button ng-click="deleteUnitLink(unitLink.id, $index)" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                           </div>
@@ -284,8 +283,8 @@
                           <div class="attachment-block clearfix">
                               <img class="attachment-img" ng-src="{% verbatim %}{{ unitLink.image || '/static/images/no_image.png' }}{% endverbatim %}" alt="attachment image">
                             <div class="attachment-pushed">
-                              <h4 class="attachment-heading"><a href="{% verbatim %}{{ unitLink.link }}{% endverbatim %}"><span ng-if="unitLink.title">{{ unitLink.title }}</span><span ng-if="!unitLink.title">{% verbatim %}{{ unitLink.link }}{% endverbatim %}</span></a></h4>
-                              <div class="attachment-text"><span ng-if="unitLink.description">{% verbatim %}{{ unitLink.description }}{% endverbatim %}</span><span ng-if="!unitLink.description">...</span>
+                              <h4 class="attachment-heading"><a href="{% verbatim %}{{ unitLink.link }}{% endverbatim %}"><span ng-if="unitLink.title" ng-bind="unitLink.title"></span><span ng-if="!unitLink.title" ng-bind="unitLink.link"></span></a></h4>
+                              <div class="attachment-text"><span ng-if="unitLink.description" ng-bind="unitLink.description"></span><span ng-if="!unitLink.description">...</span>
                               </div>
                             </div>
                           </div>
