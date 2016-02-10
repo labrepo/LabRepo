@@ -57,13 +57,13 @@ class Unit(models.Model):
                 return True
         return self.lab.is_owner(user)
 
-    def is_member(self, user):
+    def is_editor(self, user):
         """
         :param user: User instance
-        :return: Checks whether the user is a lab's member
+        :return: Checks whether the user can edit unit
         :rtype: bool
         """
-        return self.lab.is_member(user)
+        return self.lab.is_editor(user) or self.is_owner(user)
 
     def is_viewer(self, user):
         """
@@ -78,15 +78,7 @@ class Unit(models.Model):
         # for collection in Collection.objects.filter(units__in=[self]):
         #     if collection.is_owner(user) or collection.is_editor(user) and user in collection.viewers:
         #         return True
-        return self.lab.is_owner(user)  # or self.lab.is_member(user)
-
-    def is_assistant(self, user):
-        """
-        :param user: User instance
-        :return: Checks whether the user is a assistant of laboratory
-        :rtype: bool
-        """
-        return self.is_owner(user) or self.is_viewer(user) or self.is_member(user)
+        return self.lab.is_owner(user) or self.is_editor(user) or self.is_owner(user)# or self.lab.is_member(user)
 
     @property
     def links(self):
@@ -170,10 +162,26 @@ class UnitLink(models.Model):
             return self.link[:45]+'...' + self.link[-5:]
         return self.link
 
-    def is_assistant(self, user):
+    def is_owner(self, user):
         """
         :param user: User instance
-        :return: Checks whether the user is a assistant of laboratory
+        :return: Checks whether the user is a owner and can delete unit
         :rtype: bool
         """
-        return self.parent.is_owner(user) or self.parent.is_viewer(user) or self.parent.is_member(user)
+        self.parent.is_owner(user)
+
+    def is_editor(self, user):
+        """
+        :param user: User instance
+        :return: Checks whether the user is a user's editor and can edit unit
+        :rtype: bool
+        """
+        self.parent.is_editor(user)
+
+    def is_viewer(self, user):
+        """
+        :param user: User instance
+        :return: Checks whether the user is a viewer and can view unit
+        :rtype: bool
+        """
+        return self.parent.is_viewer(user)

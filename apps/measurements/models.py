@@ -30,14 +30,14 @@ class Measurement(models.Model):
     def get_absolute_url(self):
             return reverse('measurements:list', kwargs={'unit_pk': self.unit.pk, 'lab_pk': self.unit.lab.pk})
 
-    def is_assistant(self, user):
-        return self.unit.is_assistant(user)
-
     def is_owner(self, user):
         return self.unit.is_owner(user)
 
-    def is_member(self, user):
-        return self.unit.is_member(user)
+    def is_editor(self, user):
+        return self.unit.is_editor(user)
+
+    def is_viewer(self, user):
+        return self.unit.is_viewer(user)
 
     def as_table(self):
         """Concat headers and table data to a hadsontable representation."""

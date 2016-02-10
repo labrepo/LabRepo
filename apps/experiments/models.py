@@ -55,50 +55,26 @@ class Experiment(models.Model):
     def is_owner(self, user):
         """
         :param user: User instance
-        :return: Checks whether the user is a owner
+        :return: Checks whether the user is a owner and can delete experiment
         :rtype: bool
         """
         return user in self.owners.all() or self.lab.is_owner(user)
 
-    def is_member(self, user):
-        """
-        :param user: User instance
-        :return: Checks whether the user is a lab's member
-        :rtype: bool
-        """
-        return self.lab.is_member(user)
-
     def is_editor(self, user):
         """
         :param user: User instance
-        :return: Checks whether the user is a editor
+        :return: Checks whether the user can edit experiment
         :rtype: bool
         """
-        return user in self.editors.all()
+        return self.lab.is_editor(user) or self.is_owner(user)
 
     def is_viewer(self, user):
         """
         :param user: User instance
-        :return: Checks whether the user is a viewer
+        :return: Checks whether the user can view experiment
         :rtype: bool
         """
-        return user in self.viewers.all()
-
-    def is_experiment_assistant(self, user):
-        """
-        :param user: User instance
-        :return: Checks whether the user is a assistant of experiment
-        :rtype: bool
-        """
-        return self.is_owner(user) or self.is_editor(user) or self.is_viewer(user)
-
-    def is_assistant(self, user):
-        """
-        :param user: User instance
-        :return: Checks whether the user is a assistant of laboratory
-        :rtype: bool
-        """
-        return self.is_experiment_assistant(user) or self.is_member(user)
+        return user in self.viewers.all() or self.is_editor(user) or self.is_owner(user)
 
 
 class ExperimentReadCommentEntry(models.Model):

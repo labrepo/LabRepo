@@ -39,7 +39,7 @@ class LabForm(LabBaseForm):
     def clean(self):
         data = super(LabForm, self).clean()
 
-        if self.instance.id and self.instance.is_member(self.user):
+        if self.instance.id and self.instance.is_editor(self.user):
             if 'investigator' in self.changed_data and self.instance.investigator != data['investigator']:
                 self._errors['investigator'] = self.error_class([_('You have not permission change lab\'s investigator')])
                 del data['investigator']

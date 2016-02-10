@@ -46,7 +46,7 @@ class DashboardView(ActiveTabMixin, LoginRequiredMixin, ListView):
                 'backgroundColor': "#5cb85c",
                 'borderColor': "#5cb85c",
                 'allDay': False,
-                'editable': experiment.is_member(self.request.user) or experiment.is_owner(self.request.user)
+                'editable': experiment.is_editor(self.request.user)
             })
         return json.dumps(experiments)
 

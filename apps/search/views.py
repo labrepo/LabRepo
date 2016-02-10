@@ -84,7 +84,7 @@ class ElasticSimpleSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                 })
 
             # check permission
-            if self.lab.is_guest(user):
+            if self.lab.is_viewer(user):
                 experiments = Experiment.objects.filter(Q(id__in=[experiment.id for experiment in experiments], active=True) &
                                                         (Q(owners=user) | Q(editors=user) | Q(viewers=user)))
             experiment_ids = {
@@ -223,7 +223,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                                 }
                             }
                         })
-                    profiles = [user for user in profiles_query if User.objects.filter(pk=user['id']) and self.lab.is_assistant(User.objects.get(pk=user['id']))]
+                    profiles = [user for user in profiles_query if User.objects.filter(pk=user['id']) and self.lab.is_viewer(User.objects.get(pk=user['id']))]
 
                 if elastic_type == '_all':
                     comments_query.append({"match": search_data})
@@ -276,7 +276,7 @@ class ElasticSearchView(LoginRequiredMixin, TemplateResponseMixin, View):
                 })
 
             # check permission
-            if self.lab.is_guest(user):
+            if not self.lab.is_editor(user):
                 experiments = Experiment.objects.filter(Q(id__in=[experiment.id for experiment in experiments], active=True) &
                                                         (Q(owners=user) | Q(editors=user) | Q(viewers=user)))
             experiment_ids = {

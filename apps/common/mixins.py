@@ -24,7 +24,7 @@ class CheckLabPermissionMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
-        if not self.lab.is_assistant(self.request.user):
+        if not self.lab.is_viewer(self.request.user):
             raise PermissionDenied
         return super(CheckLabPermissionMixin, self).dispatch(*args, **kwargs)
 
@@ -34,14 +34,14 @@ class CheckEditPermissionMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         object = self.get_object()
-        if not (object.is_owner(self.request.user) or object.is_member(self.request.user)):
+        if not object.is_editor(self.request.user):
             raise PermissionDenied
         return super(CheckEditPermissionMixin, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = super(CheckEditPermissionMixin, self).get_context_data(**kwargs)
         ctx['is_owner'] = self.object.is_owner(self.request.user)
-        ctx['is_member'] = self.object.is_member(self.request.user)
+        ctx['is_editor'] = self.object.is_editor(self.request.user)
         return ctx
 
 
@@ -59,16 +59,50 @@ class CheckViewPermissionMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         object = self.get_object()
-        if not object.is_assistant(self.request.user):
+        if not object.is_viewer(self.request.user):
             raise PermissionDenied
         return super(CheckViewPermissionMixin, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):    # todo  into other mixin
         ctx = super(CheckViewPermissionMixin, self).get_context_data(**kwargs)
         ctx['is_owner'] = self.object.is_owner(self.request.user)
-        ctx['is_member'] = self.object.is_member(self.request.user)
+        ctx['is_editor'] = self.object.is_editor(self.request.user)
         return ctx
 
+
+class CheckDetailPermissionMixin(object):
+    """
+    Check permissions for detail api views.
+    """
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        object = self.get_object()
+        if self.request.method.lower() in ['get', 'head']:
+            print 'get', 'head'
+            if not object.is_viewer(self.request.user):
+                raise PermissionDenied
+        if self.request.method.lower() in ['post', 'put', 'patch', 'delete']:
+            if not object.is_owner(self.request.user):
+                raise PermissionDenied
+        return super(CheckDetailPermissionMixin, self).dispatch(*args, **kwargs)
+
+
+class CheckListPermissionMixin(object):
+    """
+    Check permissions for list api views.
+    """
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
+        if self.request.method.lower() in ['get', 'head']:
+            print 'get', 'head'
+            if not self.lab.is_viewer(self.request.user):
+                raise PermissionDenied
+
+        if self.request.method.lower() in ['post', 'put', 'patch', 'delete']:
+            if not object.is_owner(self.request.user):
+                raise PermissionDenied
+        return super(CheckDetailPermissionMixin, self).dispatch(*args, **kwargs)
 
 class FormInitialMixin(object):
 

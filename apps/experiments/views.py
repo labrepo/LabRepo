@@ -239,7 +239,7 @@ class ExperimentAddUnits(LoginRequiredMixin, CheckLabPermissionMixin, FormInitia
 
         self.object = form.cleaned_data['experiment']
 
-        if not (self.object.is_owner(self.request.user) or self.object.is_member(self.request.user)):
+        if not self.object.is_editor(self.request.user):
             raise PermissionDenied
 
         for unit in form.cleaned_data['units']:

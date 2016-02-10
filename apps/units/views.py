@@ -55,13 +55,13 @@ class UnitTableView(LoginRequiredMixin, RecentActivityMixin, JsTreeMixin,
     def dispatch(self, *args, **kwargs):
         self.user = self.request.user
         self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
-        if not self.lab.is_assistant(self.request.user):
+        if not self.lab.is_viewer(self.request.user):
             raise PermissionDenied
         return super(UnitTableView, self).dispatch(*args, **kwargs)
 
     def get_experiments(self):
         experiments = Experiment.objects.filter(lab=self.lab, active=True)
-        if self.lab.is_guest(self.user):
+        if self.lab.is_viewer(self.user):
             experiments = experiments.filter(Q(owners=self.user) | Q(editors=self.user) | Q(viewers=self.user))
         return experiments
 
@@ -95,7 +95,7 @@ class UnitTableView(LoginRequiredMixin, RecentActivityMixin, JsTreeMixin,
         ctx['title'] = json.dumps(dict(zip(self.title_fields + self.extra_title, self.headers)))
         ctx['headers'] = json.dumps(self.headers)
         # ctx['is_member'] = bool(filter(lambda x: x[self.headers.index('readonly')], units_list) or len(experiments))
-        ctx['is_member'] = bool(len(experiments))
+        ctx['is_editor'] = bool(len(experiments))
         return ctx
 
 
@@ -166,13 +166,13 @@ class UnitDetailView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLabMix
 
     def get_object(self, queryset=None):
         unit = super(UnitDetailView, self).get_object(queryset)
-        if not unit.is_assistant(self.request.user):
+        if not unit.is_viewer(self.request.user):
             raise PermissionDenied
         return unit
 
     def post(self, request, *args, **kwargs):
         response = super(UnitDetailView, self).post(request, *args, **kwargs)
-        if not (self.object.is_member(request.user) or self.object.is_owner(request.user)):
+        if not self.object.is_editor(request.user):
             raise PermissionDenied
         return response
 
@@ -204,19 +204,15 @@ class UnitDetailJSONView(LoginRequiredMixin, CheckViewPermissionMixin, InitialLa
     """
     model = Unit
 
-    def get_object(self, queryset=None, *args, **kwargs):
-        unit = super(UnitDetailJSONView, self).get_object(queryset)
-        return unit
-
     @method_decorator(login_required)
     @method_decorator(get_obj_or_404)
     def dispatch(self, request, *args, **kwargs):
         self.lab = Lab.objects.get(pk=self.kwargs.get('lab_pk'))
-        if not self.lab.is_assistant(self.request.user):
+        if not self.lab.is_viewer(self.request.user):
             raise PermissionDenied
 
         self.object = self.get_object()
-        if not (self.object.is_member(request.user) or self.object.is_owner(request.user)):
+        if not self.object.is_editor(request.user):
             raise PermissionDenied
         return super(UnitDetailJSONView, self).dispatch(request, *args, **kwargs)
 

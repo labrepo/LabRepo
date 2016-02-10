@@ -21,5 +21,5 @@ class MeasurementTableView(LoginRequiredMixin, CheckEditPermissionMixin,
         ctx = {'active_tab': self.active_tab, 'object': self.object}
         user = self.request.user
         ctx.update(self.kwargs)
-        ctx['is_member'] = self.object.is_member(user) or self.object.is_owner(user)
+        ctx['is_editor'] = self.object.is_editor(user)
         return ctx

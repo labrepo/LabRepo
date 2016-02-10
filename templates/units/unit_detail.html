@@ -21,7 +21,7 @@
     <a href="#"
        class="btn bg-yellow btn-flat btn-sm"><i class="fa fa-history"></i> {% trans 'History' %}</a>
   </div>
-  {% if is_owner or is_member %}
+  {% if is_editor %}
     <div class="btn-group">
       <a href="{% url 'measurements:list' unit_pk=object.pk lab_pk=object.lab.pk %}"
          class="btn btn-info btn-sm btn-flat btn-flat"><i

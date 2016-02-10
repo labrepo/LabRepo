@@ -14,7 +14,7 @@ def menu_processor(request):
         if not unicode(lab.id) == request.session.get('lab'):
             request.session['lab'] = unicode(lab.id)
         experiments = Experiment.objects.filter(lab=lab_pk, active=True)
-        if lab.is_guest(user):
+        if not lab.is_editor(user):
             experiments = experiments.filter(Q(owners=user) | Q(editors=user) | Q(viewers=user))
         return {'experiments_list': experiments,
                 'lab': lab,

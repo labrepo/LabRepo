@@ -24,7 +24,7 @@ class MeasurementDetailView(LoginRequiredMixin, RecentActivityMixin, CheckLabPer
         """Check user permissions"""
         object = self.get_object()
 
-        if not (object.unit.is_owner(self.request.user) or object.unit.is_member(self.request.user)):
+        if not object.unit.is_editor(self.request.user):
             raise PermissionDenied
         return super(MeasurementDetailView, self).dispatch(*args, **kwargs)
 
@@ -62,7 +62,7 @@ class UnitRevisionView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Ret
     def dispatch(self, *args, **kwargs):
         """Check user permissions"""
         object = self.get_object(*args, **kwargs)
-        if not (object.unit.is_owner(self.request.user) or object.unit.is_member(self.request.user)):
+        if not object.unit.is_editor(self.request.user):
             raise PermissionDenied
         return super(UnitRevisionView, self).dispatch(*args, **kwargs)
 

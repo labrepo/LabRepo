@@ -30,34 +30,26 @@ class Lab(models.Model):
     def get_absolute_url(self):
         return reverse('labs:detail', kwargs={'lab_pk': self.pk})
 
-    def is_guest(self, user):
-        """
-        :param user: User instance
-        :return: Checks whether the user is a guest
-        :rtype: bool
-        """
-        return user in self.guests.all()
-
-    def is_member(self, user):
-        """
-        :param user: User instance
-        :return: Checks whether the user is a member
-        :rtype: bool
-        """
-        return user in self.members.all()
-
     def is_owner(self, user):
         """
         :param user: User instance
-        :return: Checks whether the user is a principal investigator
+        :return: Checks whether the user is a principal investigator and can delete lab.
         :rtype: bool
         """
         return user in self.investigator.all()
 
-    def is_assistant(self, user):
+    def is_editor(self, user):
         """
         :param user: User instance
-        :return: Checks whether the user is a assistant of laboratory
+        :return: Checks whether the user can edit
         :rtype: bool
         """
-        return self.is_guest(user) or self.is_member(user) or self.is_owner(user)
+        return user in self.members.all() or self.is_owner(user)
+
+    def is_viewer(self, user):
+        """
+        :param user: User instance
+        :return: Checks whether the user can view lab
+        :rtype: bool
+        """
+        return user in self.guests.all() or self.is_editor(user) or self.is_owner(user)

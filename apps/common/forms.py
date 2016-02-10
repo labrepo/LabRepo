@@ -60,7 +60,7 @@ class CheckUnitMixin(object):
         units = []
         unit_queryset = Unit.objects.filter(lab=self.lab.pk, active=True)
         for unit in unit_queryset:
-            if unit.is_assistant(self.user):
+            if unit.is_viewer(self.user):
                 units.append(unit.pk)
         self.fields['units'].queryset = unit_queryset.filter(pk__in=units)
 

@@ -47,7 +47,7 @@ class UnitTableView(LoginRequiredMixin, CheckLabPermissionMixin, RecentActivityM
             # check permission
             permission = False
             for experiment in Experiment.objects.filter(pk__in=unit_data.get('experiments', [])):
-                if experiment.is_owner(self.request.user) or experiment.is_editor(self.request.user):
+                if experiment.is_editor(self.request.user):
                     permission = True
                     break
 
@@ -87,7 +87,7 @@ class UnitListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.ListCre
             experiments = [self.kwargs.get('experiment_pk')]
         else:
             experiments = Experiment.objects.filter(lab=self.lab, active=True)
-            if self.lab.is_guest(self.request.user):
+            if self.lab.is_viewer(self.request.user):
                 experiments = experiments.filter(Q(owners=self.user) | Q(editors=self.user) | Q(viewers=self.user))
             experiments = experiments.values_list('id')
         return Unit.objects.filter(lab__pk=self.kwargs['lab_pk'], experiments__in=experiments, active=True).distinct()
@@ -107,6 +107,9 @@ class UnitLinkListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Lis
         return UnitLink.objects.filter(parent__pk=self.kwargs.get('unit_pk'))
 
     def post(self, *args, **kwargs):
+        """
+        Request link url add create unit link instance
+        """
         request_data = json.loads(self.request.body)
         link = request_data.get('link')
         parent = request_data.get('parent')
@@ -131,7 +134,7 @@ class UnitLinkListView(LoginRequiredMixin, CheckLabPermissionMixin, generics.Lis
 
     def get_info(self, url):
         """
-        Get html of url
+        Get preview of url
         :param url: (string) url to parse
         :return: (dict) dict with title, description, image and canonical url
         """

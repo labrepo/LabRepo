@@ -52,7 +52,7 @@ class FileManagerMixin(object):
         self.UPLOAD_URL, self.UPLOAD_ROOT = self.get_upload(request, *args, **kwargs)
         self.lab = Lab.objects.get(pk=request.session.get('lab'))
 
-        if not self.lab.is_assistant(request.user):
+        if not self.lab.is_viewer(request.user):
             raise PermissionDenied
 
     def smart_mount(self, file_path=None, request=None):
