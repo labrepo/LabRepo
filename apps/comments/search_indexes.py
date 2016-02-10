@@ -56,7 +56,7 @@ class CommentMappingType(MappingType, Indexable):
             },
             'text': obj.text,
             'url': obj.get_absolute_url(),
-            '_parent': unicode(obj.content_object.pk)   # todo use only experiments pk
+            '_parent': unicode(obj.object_id)   # parent experiments pk
         }
 
     @classmethod
@@ -91,10 +91,12 @@ class CommentMappingType(MappingType, Indexable):
 @receiver(post_save, sender=Comment)
 def update_in_index(sender, instance, **kw):
     from common import tasks
-    tasks.index_objects.delay(CommentMappingType, [instance.id])
+    if instance.instance_type.name.lower() == 'experiment':
+        tasks.index_objects.delay(CommentMappingType, [instance.id])
 
 
 @receiver(pre_delete, sender=Comment)
 def remove_from_index(sender, instance, **kw):
     from common import tasks
-    tasks.unindex_objects.delay(CommentMappingType, [instance.id])
+    if instance.instance_type.name.lower() == 'experiment':
+        tasks.unindex_objects.delay(CommentMappingType, [instance.id])
